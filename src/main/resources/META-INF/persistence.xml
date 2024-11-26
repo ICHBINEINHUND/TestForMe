@@ -1,0 +1,47 @@
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+                                 http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+             version="2.1">
+
+    <persistence-unit name="myJpaUnit">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <!-- Kết nối cơ sở dữ liệu -->
+<!--        <class>com.example.dkkp_app.model.MyEntity</class> &lt;!&ndash; Thêm các entity class của bạn tại đây &ndash;&gt;-->
+        <class>com.example.dkkp_app.model.User_Entity</class> <!-- Thêm các entity class của bạn tại đây -->
+
+        <!-- Cấu hình kết nối -->
+        <properties>
+            <property name="hibernate.jdbc.lob.non_contextual_creation" value="true"/>
+            <!-- JDBC URL cho PostgreSQL -->
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/DKKP"/>
+
+            <!-- Tên người dùng và mật khẩu -->
+            <property name="javax.persistence.jdbc.user" value="postgres"/>
+            <property name="javax.persistence.jdbc.password" value="1"/>
+
+            <!-- Driver class cho PostgreSQL -->
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+
+            <!-- Cấu hình driver cho Hibernate -->
+            <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
+
+            <!-- Hibernate Dialect cho PostgreSQL -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/>
+
+            <!-- Hibernate Show SQL (Hiển thị SQL trong console) -->
+            <property name="hibernate.show_sql" value="true"/>
+
+            <!-- Hibernate Format SQL (Định dạng lại SQL để dễ đọc) -->
+            <property name="hibernate.format_sql" value="true"/>
+
+            <!-- Hibernate Update DB schema -->
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+
+            <!-- Tắt caching nếu không muốn -->
+            <property name="hibernate.cache.use_second_level_cache" value="false"/>
+        </properties>
+    </persistence-unit>
+
+</persistence>
