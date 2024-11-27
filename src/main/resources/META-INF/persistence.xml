@@ -7,13 +7,12 @@
     <persistence-unit name="myJpaUnit">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <!-- Kết nối cơ sở dữ liệu -->
-<!--        <class>com.example.dkkp_app.model.MyEntity</class> &lt;!&ndash; Thêm các entity class của bạn tại đây &ndash;&gt;-->
-        <class>com.example.dkkp_app.model.User_Entity</class> <!-- Thêm các entity class của bạn tại đây -->
+        <!-- Các entity class của bạn -->
+        <class>com.example.dkkp_app.model.User_Entity</class>
 
-        <!-- Cấu hình kết nối -->
         <properties>
             <property name="hibernate.jdbc.lob.non_contextual_creation" value="true"/>
+
             <!-- JDBC URL cho PostgreSQL -->
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/DKKP"/>
 
@@ -23,9 +22,6 @@
 
             <!-- Driver class cho PostgreSQL -->
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-
-            <!-- Cấu hình driver cho Hibernate -->
-            <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
 
             <!-- Hibernate Dialect cho PostgreSQL -->
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/>
@@ -41,6 +37,19 @@
 
             <!-- Tắt caching nếu không muốn -->
             <property name="hibernate.cache.use_second_level_cache" value="false"/>
+
+
+            <!-- Cấu hình HikariCP Connection Pool -->
+            <property name="hibernate.hikari.jdbcUrl" value="jdbc:postgresql://localhost:5432/DKKP"/>
+            <property name="hibernate.hikari.username" value="postgres"/>
+            <property name="hibernate.hikari.password" value="1"/>
+
+            <!-- HikariCP Tuning -->
+            <property name="hibernate.hikari.maximumPoolSize" value="20"/>
+            <property name="hibernate.hikari.minimumIdle" value="5"/>
+            <property name="hibernate.hikari.idleTimeout" value="300000"/>
+            <property name="hibernate.hikari.maxLifetime" value="1800000"/>
+            <property name="hibernate.hikari.connectionTimeout" value="30000"/>
         </properties>
     </persistence-unit>
 
