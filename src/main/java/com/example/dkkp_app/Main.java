@@ -10,7 +10,7 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         // Tạo đối tượng User_Entity mới
-        User_Entity user = new User_Entity("U007", "John Doe", Date.valueOf("2024-11-27"));
+        User_Entity user = new User_Entity("U1232", "John Doe", Date.valueOf("2024-11-27"));
 
         // Tạo UserDao và lưu đối tượng vào cơ sở dữ liệu
         UserDao userDao = new UserDao();

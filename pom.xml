@@ -83,6 +83,25 @@
         </dependency>
 
         <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.12</version> <!-- Phiên bản mới hơn có thể đã sửa lỗi bảo mật -->
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.5.12</version> <!-- Cập nhật lên phiên bản mới hơn -->
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.0</version> <!-- Phiên bản mới nhất -->
+        </dependency>
+
+
+
+
+        <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>5.0.0</version> <!-- Hoặc phiên bản mới hơn nếu có -->

@@ -11,6 +11,8 @@
         <class>com.example.dkkp_app.model.User_Entity</class>
 
         <properties>
+
+            <property name="hibernate.use_sql_comments" value="false"/>
             <property name="hibernate.jdbc.lob.non_contextual_creation" value="true"/>
 
             <!-- JDBC URL cho PostgreSQL -->
@@ -27,10 +29,10 @@
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/>
 
             <!-- Hibernate Show SQL (Hiển thị SQL trong console) -->
-            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.show_sql" value="false"/>
 
             <!-- Hibernate Format SQL (Định dạng lại SQL để dễ đọc) -->
-            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.format_sql" value="false"/>
 
             <!-- Hibernate Update DB schema -->
             <property name="hibernate.hbm2ddl.auto" value="update"/>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Tắt logging cho Hibernate -->
+    <logger name="org.hibernate" level="OFF"/>
+    <logger name="org.hibernate.orm" level="OFF"/>
+    <logger name="org.hibernate.jpa" level="OFF"/>
+    <logger name="org.hibernate.dialect" level="OFF"/>
+    <logger name="org.hibernate.engine" level="OFF"/>
+    <logger name="org.hibernate.annotations" level="OFF"/>
+    <!-- Tắt logging cho Hibernate sql -->
+
+    <logger name="org.hibernate.SQL" level="OFF"/>
+    <logger name="org.hibernate.transaction" level="OFF"/>
+    <logger name="org.hibernate.type.descriptor.sql" level="OFF"/>
+    <logger name="org.hibernate.loader" level="OFF"/>
+    <logger name="org.hibernate.hql" level="OFF"/>
+    <logger name="org.hibernate.engine" level="OFF"/>
+
+    <!-- Tắt logging cho SLF4J -->
+    <logger name="org.slf4j" level="OFF"/>
+
+    <!-- Root logger tắt hoàn toàn -->
+    <root level="OFF">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+    <!-- Cấu hình appender Console để xuất log ra console (tắt log hoàn toàn) -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+</configuration>
