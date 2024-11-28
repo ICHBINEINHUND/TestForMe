@@ -43,4 +43,11 @@ public class UserDao {
             throw e;
         }
     }
+
+    public List<User_Entity> getUsersByName(String name) {
+        String jpql = "SELECT u FROM User_Entity u WHERE u.NAME_USER = :name";
+        Query query = entityManager.createQuery(jpql);
+        query.setParameter("name", name);  // Gán tham số vào câu truy vấn
+        return query.getResultList();  // Trả về danh sách người dùng theo tên
+    }
 }
