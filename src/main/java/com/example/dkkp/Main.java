@@ -4,13 +4,15 @@ import com.example.dkkp.dao.UserDao;
 import com.example.dkkp.model.User_Entity;
 import com.example.dkkp.service.UserService;
 
-import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
   public static void main(String[] args) {
-    User_Entity user = new User_Entity("NAZI", "Adolf Hitler", Date.valueOf("2024-11-28"));
+    User_Entity user = new User_Entity("Na221", "Adolf Hitler", LocalDateTime.of(LocalDate.parse("2024-11-28"), LocalTime.MIDNIGHT));
     UserDao userDao = new UserDao();
     userDao.createUser(user);
     System.out.println("User Has Been Added Successfully!");

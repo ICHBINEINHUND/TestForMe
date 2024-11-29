@@ -5,7 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
+
 
 @Entity
 @Table(name = "import")
@@ -14,13 +15,13 @@ public class Import {
   @Column(name = "\"ID_IMP\"")
   private String ID_IMP;
   @Column(name = "\"DATE_IMP\"")
-  private Date DATE_IMP;
+  private LocalDateTime DATE_IMP;
   @Column(name = "\"ID_SUP\"")
   private String ID_SUP;
   @Column(name = "\"PRICE_IMP\"")
   private Double PRICE_IMP;
 
-  public Import(String ID_IMP, Date DATE_IMP, String ID_SUP, Double PRICE_IMP) {
+  public Import(String ID_IMP, LocalDateTime DATE_IMP, String ID_SUP, Double PRICE_IMP) {
     this.ID_IMP = ID_IMP;
     this.DATE_IMP = DATE_IMP;
     this.ID_SUP = ID_SUP;
@@ -37,11 +38,11 @@ public class Import {
     this.ID_IMP = ID_IMP;
   }
 
-  public Date getDATE_IMP() {
+  public LocalDateTime getDATE_IMP() {
     return DATE_IMP;
   }
 
-  public void setDATE_IMP(Date DATE_IMP) {
+  public void setDATE_IMP(LocalDateTime DATE_IMP) {
     this.DATE_IMP = DATE_IMP;
   }
 

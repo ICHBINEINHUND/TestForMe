@@ -5,7 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
+
 
 @Entity
 @Table(name = "voucher")
@@ -22,17 +23,17 @@ public class Voucher_Entity {
   @Column(name = "\"DISCOUNT_PER\"")
   private Double DISCOUNT_PER;
   @Column(name = "\"DATE_BEGIN\"")
-  private Date DATE_BEGIN;
+  private LocalDateTime DATE_BEGIN;
   @Column(name = "\"DATE_END\"")
-  private Date DATE_END;
+  private LocalDateTime DATE_END;
   @Column(name = "\"MAX_USE\"")
   private Integer MAX_USE;
   @Column(name = "\"USAGE_COUNT\"")
   private Integer USAGE_COUNT;
   @Column(name = "\"VOU_STATUS\"")
-  private String VOU_STATUS;
+  private Boolean VOU_STATUS;
 
-  public Voucher_Entity(String ID_VOU, String VOU_NAME, String VOU_DESCRIPT, Double MAX_DISCOUNT_PRICE, Double DISCOUNT_PER, Date DATE_BEGIN, Date DATE_END, Integer MAX_USE, Integer USAGE_COUNT, String VOU_STATUS) {
+  public Voucher_Entity(String ID_VOU, String VOU_NAME, String VOU_DESCRIPT, Double MAX_DISCOUNT_PRICE, Double DISCOUNT_PER, LocalDateTime DATE_BEGIN, LocalDateTime DATE_END, Integer MAX_USE, Integer USAGE_COUNT, Boolean VOU_STATUS) {
     this.ID_VOU = ID_VOU;
     this.VOU_NAME = VOU_NAME;
     this.VOU_DESCRIPT = VOU_DESCRIPT;
@@ -87,19 +88,19 @@ public class Voucher_Entity {
     this.DISCOUNT_PER = DISCOUNT_PER;
   }
 
-  public Date getDATE_BEGIN() {
+  public LocalDateTime getDATE_BEGIN() {
     return DATE_BEGIN;
   }
 
-  public void setDATE_BEGIN(Date DATE_BEGIN) {
+  public void setDATE_BEGIN(LocalDateTime DATE_BEGIN) {
     this.DATE_BEGIN = DATE_BEGIN;
   }
 
-  public Date getDATE_END() {
+  public LocalDateTime getDATE_END() {
     return DATE_END;
   }
 
-  public void setDATE_END(Date DATE_END) {
+  public void setDATE_END(LocalDateTime DATE_END) {
     this.DATE_END = DATE_END;
   }
 
@@ -119,11 +120,11 @@ public class Voucher_Entity {
     this.USAGE_COUNT = USAGE_COUNT;
   }
 
-  public String getVOU_STATUS() {
+  public Boolean getVOU_STATUS() {
     return VOU_STATUS;
   }
 
-  public void setVOU_STATUS(String VOU_STATUS) {
+  public void setVOU_STATUS(Boolean VOU_STATUS) {
     this.VOU_STATUS = VOU_STATUS;
   }
 }
