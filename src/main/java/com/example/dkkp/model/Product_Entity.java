@@ -1,9 +1,8 @@
 package com.example.dkkp.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "product")
@@ -11,30 +10,25 @@ public class Product_Entity {
   @Id
   @Column(name = "\"ID_SP\"")
   private String ID_SP;
-  @Column(name = "\"ID_PA\"")
-  private String ID_PA;
   @Column(name = "\"NAME_SP\"")
   private String NAME_SP;
   @Column(name = "\"DES_SP\"")
   private String DES_SP;
-  @Column(name = "\"TYPE\"")
-  private String TYPE;
+  @Column(name = "\"ID_CATEGORY\"")
+  private String ID_CATEGORY;
   @Column(name = "\"PRICE_SP\"")
   private double PRICE_SP;
   @Column(name = "\"IMAGE_SP\"")
   private String IMAGE_SP;
-
-  public Product_Entity(String ID_SP, String ID_PA, String NAME_SP, String DES_SP, String TYPE, double PRICE_SP, String IMAGE_SP) {
-    this.ID_SP = ID_SP;
-    this.ID_PA = ID_PA;
-    this.NAME_SP = NAME_SP;
-    this.DES_SP = DES_SP;
-    this.TYPE = TYPE;
-    this.PRICE_SP = PRICE_SP;
-    this.IMAGE_SP = IMAGE_SP;
-  }
-
-  public Product_Entity() {}
+  @Column(name = "\"VIEW_COUNT\"")
+  private Integer VIEW_COUNT;
+  @Column(name = "\"QUANTITY\"")
+  private Integer QUANTITY;
+  @Column(name = "\"DISCOUNT\"")
+  private Double DISCOUNT;
+  @Column(name = "\"IDS_OPTION\"")
+  @ElementCollection
+  private List<Integer> IDS_OPTION;
 
   public String getID_SP() {
     return ID_SP;
@@ -42,14 +36,6 @@ public class Product_Entity {
 
   public void setID_SP(String ID_SP) {
     this.ID_SP = ID_SP;
-  }
-
-  public String getID_PA() {
-    return ID_PA;
-  }
-
-  public void setID_PA(String ID_PA) {
-    this.ID_PA = ID_PA;
   }
 
   public String getNAME_SP() {
@@ -68,12 +54,12 @@ public class Product_Entity {
     this.DES_SP = DES_SP;
   }
 
-  public String getTYPE() {
-    return TYPE;
+  public String getID_CATEGORY() {
+    return ID_CATEGORY;
   }
 
-  public void setTYPE(String TYPE) {
-    this.TYPE = TYPE;
+  public void setID_CATEGORY(String ID_CATEGORY) {
+    this.ID_CATEGORY = ID_CATEGORY;
   }
 
   public double getPRICE_SP() {
@@ -90,5 +76,53 @@ public class Product_Entity {
 
   public void setIMAGE_SP(String IMAGE_SP) {
     this.IMAGE_SP = IMAGE_SP;
+  }
+
+  public Integer getVIEW_COUNT() {
+    return VIEW_COUNT;
+  }
+
+  public void setVIEW_COUNT(Integer VIEW_COUNT) {
+    this.VIEW_COUNT = VIEW_COUNT;
+  }
+
+  public Integer getQUANTITY() {
+    return QUANTITY;
+  }
+
+  public void setQUANTITY(Integer QUANTITY) {
+    this.QUANTITY = QUANTITY;
+  }
+
+  public Double getDISCOUNT() {
+    return DISCOUNT;
+  }
+
+  public void setDISCOUNT(Double DISCOUNT) {
+    this.DISCOUNT = DISCOUNT;
+  }
+
+  public List<Integer> getIDS_OPTION() {
+    return IDS_OPTION;
+  }
+
+  public void setIDS_OPTION(List<Integer> IDS_OPTION) {
+    this.IDS_OPTION = IDS_OPTION;
+  }
+
+  public Product_Entity(String ID_SP, String NAME_SP, String DES_SP, String ID_CATEGORY, double PRICE_SP, String IMAGE_SP, Integer VIEW_COUNT, Integer QUANTITY, Double DISCOUNT, List<Integer> IDS_OPTION) {
+    this.ID_SP = ID_SP;
+    this.NAME_SP = NAME_SP;
+    this.DES_SP = DES_SP;
+    this.ID_CATEGORY = ID_CATEGORY;
+    this.PRICE_SP = PRICE_SP;
+    this.IMAGE_SP = IMAGE_SP;
+    this.VIEW_COUNT = VIEW_COUNT;
+    this.QUANTITY = QUANTITY;
+    this.DISCOUNT = DISCOUNT;
+    this.IDS_OPTION = IDS_OPTION;
+  }
+
+  public Product_Entity() {
   }
 }

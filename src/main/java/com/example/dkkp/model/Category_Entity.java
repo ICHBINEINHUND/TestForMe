@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@Table(name = "import")
-public class Import {
+@Table(name = "category")
+public class Category_Entity {
   @Id
   @Column(name = "\"ID_IMP\"")
   private String ID_IMP;
@@ -21,14 +21,14 @@ public class Import {
   @Column(name = "\"PRICE_IMP\"")
   private Double PRICE_IMP;
 
-  public Import(String ID_IMP, LocalDateTime DATE_IMP, String ID_SUP, Double PRICE_IMP) {
+  public Category_Entity(String ID_IMP, LocalDateTime DATE_IMP, String ID_SUP, Double PRICE_IMP) {
     this.ID_IMP = ID_IMP;
     this.DATE_IMP = DATE_IMP;
     this.ID_SUP = ID_SUP;
     this.PRICE_IMP = PRICE_IMP;
   }
 
-  public Import() {}
+  public Category_Entity() {}
 
   public String getID_IMP() {
     return ID_IMP;
