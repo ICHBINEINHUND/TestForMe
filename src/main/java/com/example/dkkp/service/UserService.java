@@ -12,10 +12,10 @@ public class UserService {
     this.userDao = new UserDao();
   }
 
-  public List<User_Entity> getUsersByName(String name) {
-    if (name == null || name.trim().isEmpty()) {
-      throw new IllegalArgumentException("Name Cannot Be Null!");
+  public List<User_Entity> getUsersByName(String id) {
+    if (id == null || id.trim().isEmpty()) {
+      throw new IllegalArgumentException("ID Cannot Be Null!");
     }
-    return userDao.getUsersByName(name);
+    return userDao.getUsersByID(id);
   }
 }

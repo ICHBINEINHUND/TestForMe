@@ -18,8 +18,8 @@ public class Email_Check_Entity {
   private String EMAIL;
   @Column(name = "\"TOKEN\"")
   private String TOKEN;
-  @Column(name = "\"DATE_ẸND\"")
-  private LocalDateTime DATE_ẸND;
+  @Column(name = "\"DATE_END\"")
+  private LocalDateTime DATE_END;
 
   public String getID_CHECK() {
     return ID_CHECK;
@@ -46,20 +46,20 @@ public class Email_Check_Entity {
   }
 
   public LocalDateTime getDate_End() {
-    return DATE_ẸND;
+    return DATE_END;
   }
 
   public void setDate_End(LocalDateTime DATE_ẸND) {
-    this.DATE_ẸND = DATE_ẸND;
+    this.DATE_END = DATE_ẸND;
   }
 
   public Email_Check_Entity() {
   }
 
-  public Email_Check_Entity(String ID_CHECK, String EMAIL, String TOKEN, LocalDateTime DATE_ẸND) {
+  public Email_Check_Entity(String ID_CHECK, String EMAIL, String TOKEN, LocalDateTime DATE_END) {
     this.ID_CHECK = ID_CHECK;
     this.EMAIL = EMAIL;
     this.TOKEN = TOKEN;
-    this.DATE_ẸND = DATE_ẸND;
+    this.DATE_END = DATE_END;
   }
 }

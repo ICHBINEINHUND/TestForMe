@@ -1,15 +1,12 @@
 package com.example.dkkp.dao;
 
-import com.example.dkkp.model.User_Entity;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
-import jakarta.persistence.TypedQuery;
+import com.example.dkkp.model.Report_Bug;
+import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-public class UserDao {
+public class ReportDao {
   private final EntityManager entityManager;
   private static final EntityManagerFactory entityManagerFactory;
 
@@ -17,11 +14,11 @@ public class UserDao {
     entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
   }
 
-  public UserDao() {
+  public ReportDao() {
     this.entityManager = entityManagerFactory.createEntityManager();
   }
 
-  public void createUser(User_Entity user) {
+  public void createUser(Report_Bug user) {
     EntityTransaction transaction = entityManager.getTransaction();
     try {
       transaction.begin();
@@ -35,16 +32,23 @@ public class UserDao {
     }
   }
 
-  public List<User_Entity> getAllUsers() {
-    String jpql = "SELECT u FROM User_Entity u";
-    TypedQuery<User_Entity> query = entityManager.createQuery(jpql, User_Entity.class);
+  public List<Report_Bug> getAllUsers() {
+    String jpql = "SELECT u FROM Report_Bug u";
+    TypedQuery<Report_Bug> query = entityManager.createQuery(jpql, Report_Bug.class);
     return query.getResultList();
   }
 
-  public List<User_Entity> getUsersByID(String id) {
-    String jpql = "SELECT u FROM User_Entity u WHERE u.ID_USER = :id";
-    TypedQuery<User_Entity> query = entityManager.createQuery(jpql, User_Entity.class);
+  public List<Report_Bug> getUsersByID(String id) {
+    String jpql = "SELECT u FROM Report_Bug u WHERE u.ID_USER = :id";
+    TypedQuery<Report_Bug> query = entityManager.createQuery(jpql, Report_Bug.class);
     query.setParameter("id", id);
+    return query.getResultList();
+  }
+
+  public List<Report_Bug> getUsersByDateReportBefore(LocalDateTime dateJoin) {
+    String jpql = "SELECT u FROM Report_Bug u WHERE u.DATE_REPORT < :dateJoin";
+    TypedQuery<Report_Bug> query = entityManager.createQuery(jpql, Report_Bug.class);
+    query.setParameter("dateJoin", dateJoin);
     return query.getResultList();
   }
 
