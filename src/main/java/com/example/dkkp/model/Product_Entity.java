@@ -26,9 +26,9 @@ public class Product_Entity {
   private Integer QUANTITY;
   @Column(name = "\"DISCOUNT\"")
   private Double DISCOUNT;
-  @Column(name = "\"IDS_OPTION\"")
+  @Column(name = "\"IDS_OPTION_VALUES\"")
   @ElementCollection
-  private List<Integer> IDS_OPTION;
+  private List<Integer> IDS_OPTION_VALUES;
 
   public String getID_SP() {
     return ID_SP;
@@ -102,15 +102,15 @@ public class Product_Entity {
     this.DISCOUNT = DISCOUNT;
   }
 
-  public List<Integer> getIDS_OPTION() {
-    return IDS_OPTION;
+  public List<Integer> getIDS_OPTION_VALUES() {
+    return IDS_OPTION_VALUES;
   }
 
-  public void setIDS_OPTION(List<Integer> IDS_OPTION) {
-    this.IDS_OPTION = IDS_OPTION;
+  public void setIDS_OPTION_VALUES(List<Integer> IDS_OPTION_VALUES) {
+    this.IDS_OPTION_VALUES = IDS_OPTION_VALUES;
   }
 
-  public Product_Entity(String ID_SP, String NAME_SP, String DES_SP, String ID_CATEGORY, double PRICE_SP, String IMAGE_SP, Integer VIEW_COUNT, Integer QUANTITY, Double DISCOUNT, List<Integer> IDS_OPTION) {
+  public Product_Entity(String ID_SP, String NAME_SP, String DES_SP, String ID_CATEGORY, double PRICE_SP, String IMAGE_SP, Integer VIEW_COUNT, Integer QUANTITY, Double DISCOUNT, List<Integer> IDS_OPTION_VALUES) {
     this.ID_SP = ID_SP;
     this.NAME_SP = NAME_SP;
     this.DES_SP = DES_SP;
@@ -120,7 +120,7 @@ public class Product_Entity {
     this.VIEW_COUNT = VIEW_COUNT;
     this.QUANTITY = QUANTITY;
     this.DISCOUNT = DISCOUNT;
-    this.IDS_OPTION = IDS_OPTION;
+    this.IDS_OPTION_VALUES = IDS_OPTION_VALUES;
   }
 
   public Product_Entity() {
