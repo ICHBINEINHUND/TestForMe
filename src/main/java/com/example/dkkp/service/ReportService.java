@@ -16,12 +16,6 @@ public class ReportService {
     this.reportDao  = new ReportDao ();
   }
 
-  public List<Report_Bug> getUsersByName(String id) {
-    if (id == null || id.trim().isEmpty()) {
-      throw new IllegalArgumentException("ID Cannot Be Null!");
-    }
-    return reportDao.getReportsByID(id);
-  }
 
   public void createNewReport(){
     String ID_REPORT =" 12ee22";
@@ -31,7 +25,45 @@ public class ReportService {
     String ID_USER = "12ee2";
 
     Report_Bug rp = new Report_Bug(ID_REPORT,TYPE_BUG,SCRIPT_BUG,DATE_REPORT,ID_USER);
-    reportDao .createReport(rp);
+    reportDao.createReport(rp);
     System.out.println("da push thanh cong");
+  }
+
+  public void deleteReport(String id){
+    if(id == null){
+      reportDao.deleteAllReports();
+    }else{
+      reportDao.deleteReportById(id);
+    }
+  }
+
+  public List<Report_Bug> getImportByCombinedCondition(LocalDateTime dateJoin, String typeDate, String userId,String id, String sortField, String sortOrder) {
+    List<Report_Bug> result;
+
+    if (dateJoin == null && id == null) {
+      result = reportDao.getAllImport();
+    } else {
+      result = null;
+      List<List<Report_Bug>> conditions = List.of(
+              dateJoin != null ? reportDao.getReport_BugByDate(dateJoin, typeDate) : null,
+              id != null ? reportDao.getReport_BugByReportID(id) : null,
+              userId != null ? reportDao.getReport_BugByReportID(id) : null
+      );
+
+      for (List<Report_Bug> condition : conditions) {
+        if (condition != null) {
+          if (result == null) {
+            result = condition;
+          } else {
+            result.retainAll(condition);
+          }
+        }
+      }
+    }
+
+    if (result != null && sortField != null && sortOrder != null) {
+      result = reportDao.sortResults(result, sortField, sortOrder);
+    }
+    return result != null ? result : List.of();
   }
 }

@@ -1,13 +1,12 @@
 package com.example.dkkp.dao;
 
-import com.example.dkkp.model.Email_Check_Entity;
-import com.example.dkkp.model.Import_Entity;
-import com.example.dkkp.model.Report_Bug;
 import com.example.dkkp.model.Import_Entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ImportDao {
   private final EntityManager entityManager;
@@ -21,11 +20,11 @@ public class ImportDao {
     this.entityManager = entityManagerFactory.createEntityManager();
   }
 
-  public void createToken(Email_Check_Entity user) {
+  public void createImport(Import_Entity importE) {
     EntityTransaction transaction = entityManager.getTransaction();
     try {
       transaction.begin();
-      entityManager.persist(user);
+      entityManager.persist(importE);
       transaction.commit();
     } catch (RuntimeException e) {
       if (transaction.isActive()) {
@@ -35,8 +34,30 @@ public class ImportDao {
     }
   }
 
-  public List<Import_Entity> getImportByDateImport(LocalDateTime dateJoin,String typeTimeCheck) {
-    StringBuilder  jpql = new StringBuilder("SELECT u FROM Import_Entity u WHERE u.DATE_IMP ");
+  public List<Import_Entity> getAllImport() {
+    String jpql = "SELECT u FROM Import_Detail_Entity u";
+    TypedQuery<Import_Entity> query = entityManager.createQuery(jpql, Import_Entity.class);
+    return query.getResultList();
+  }
+
+  public List<Import_Entity> sortById(List<Import_Entity> imports, String sortOrder) {
+    return imports.stream()
+            .sorted("desc".equalsIgnoreCase(sortOrder)
+                    ? Comparator.comparing(Import_Entity::getID_IMP).reversed()
+                    : Comparator.comparing(Import_Entity::getID_IMP))
+            .collect(Collectors.toList());
+  }
+
+  public List<Import_Entity> sortByDate(List<Import_Entity> imports, String sortOrder) {
+    return imports.stream()
+            .sorted("desc".equalsIgnoreCase(sortOrder)
+                    ? Comparator.comparing(Import_Entity::getDATE_IMP).reversed()
+                    : Comparator.comparing(Import_Entity::getDATE_IMP))
+            .collect(Collectors.toList());
+  }
+
+  public List<Import_Entity> getImportByDateImport(LocalDateTime dateJoin, String typeTimeCheck) {
+    StringBuilder jpql = new StringBuilder("SELECT u FROM Import_Entity u WHERE u.DATE_IMP ");
     if ("<".equals(typeTimeCheck)) {
       jpql.append("< :dateJoin");
     } else if (">".equals(typeTimeCheck)) {
@@ -56,35 +77,34 @@ public class ImportDao {
     return query.getResultList();
   }
 
-  private List<Import_Entity> getImportbyPrice(String price) {
-    String jpql = "SELECT u FROM Import_Entity u WHERE u.PRICE_IMP = :price";
-    TypedQuery<Import_Entity> query = entityManager.createQuery(jpql, Import_Entity.class);
-    query.setParameter("price", price);
-    return query.getResultList();
-  }
-
-  public List<Import_Entity> getImportByCombinedCondition(LocalDateTime dateJoin,String typeDate, String id, String price) {
-    List<Import_Entity> result = null;
-
-    List<List<Import_Entity>> conditions = List.of(
-            dateJoin != null ? getImportByDateImport(dateJoin, typeDate) : null,
-            id != null ? getImportByID(id) : null,
-            price != null ? getImportbyPrice(price) : null
-    );
-
-    for (List<Import_Entity> condition : conditions) {
-      if (condition != null) {
-        if (result == null) {
-          result = condition;
-        } else {
-          result.retainAll(condition);
-        }
-      }
+  // Phương thức sắp xếp chung cho tất cả các trường
+  public List<Import_Entity> sortResults(List<Import_Entity> imports, String sortField, String sortOrder) {
+    switch (sortField) {
+      case "id":
+        return sortById(imports, sortOrder);
+      case "date":
+        return sortByDate(imports, sortOrder);
+      default:
+        throw new IllegalArgumentException("Invalid sort field: " + sortField);
     }
-    return result != null ? result : List.of();
   }
 
-
+  public void deleteImport(String id) {
+    EntityTransaction transaction = entityManager.getTransaction();
+    try {
+      transaction.begin();
+      Import_Entity importToDelete = entityManager.find(Import_Entity.class, id);
+      if (importToDelete != null) {
+        entityManager.remove(importToDelete);  // Xóa đối tượng
+      }
+      transaction.commit();
+    } catch (RuntimeException e) {
+      if (transaction.isActive()) {
+        transaction.rollback();
+      }
+      throw e;
+    }
+  }
 
   public static void shutdown() {
     if (entityManagerFactory != null && entityManagerFactory.isOpen()) {

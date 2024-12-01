@@ -17,12 +17,23 @@ public class Import_Detail_Entity {
   private String ID_SP;
   @Column(name = "\"PRICE_IMP_SP\"")
   private Double PRICE_IMP_SP;
+  @Column(name = "\"AVAILABLE\"")
+  private boolean AVAILABLE;
 
-  public Import_Detail_Entity(String ID_IMP, Integer QUANTITY_SP, String ID_SP, Double PRICE_IMP_SP) {
+  public boolean isAVAILABLE() {
+    return AVAILABLE;
+  }
+
+  public void setAVAILABLE(boolean AVAILABLE) {
+    this.AVAILABLE = AVAILABLE;
+  }
+
+  public Import_Detail_Entity(String ID_IMP, Integer QUANTITY_SP, String ID_SP, Double PRICE_IMP_SP, boolean AVAILABLE) {
     this.ID_IMP = ID_IMP;
     this.QUANTITY_SP = QUANTITY_SP;
     this.ID_SP = ID_SP;
     this.PRICE_IMP_SP = PRICE_IMP_SP;
+    this.AVAILABLE = AVAILABLE;
   }
 
   public Import_Detail_Entity() {}

@@ -18,8 +18,9 @@ public class Import_Entity {
   private LocalDateTime DATE_IMP;
   @Column(name = "\"DESCRIPTION\"")
   private String DESCRIPTION;
-  @Column(name = "\"PRICE_IMP\"")
-  private Double PRICE_IMP;
+  @Column(name = "\"EDITED\"")
+  private boolean EDITED;
+
 
   public String getID_IMP() {
     return ID_IMP;
@@ -45,19 +46,20 @@ public class Import_Entity {
     this.DESCRIPTION = DESCRIPTION;
   }
 
-  public Double getPRICE_IMP() {
-    return PRICE_IMP;
+
+  public boolean isEDITED() {
+    return EDITED;
   }
 
-  public void setPRICE_IMP(Double PRICE_IMP) {
-    this.PRICE_IMP = PRICE_IMP;
+  public void setEDITED(boolean EDITED) {
+    this.EDITED = EDITED;
   }
 
-  public Import_Entity(String ID_IMP, LocalDateTime DATE_IMP, String DESCRIPTION, Double PRICE_IMP) {
+  public Import_Entity(String ID_IMP, LocalDateTime DATE_IMP, String DESCRIPTION, boolean EDITED) {
     this.ID_IMP = ID_IMP;
     this.DATE_IMP = DATE_IMP;
     this.DESCRIPTION = DESCRIPTION;
-    this.PRICE_IMP = PRICE_IMP;
+    this.EDITED = EDITED;
   }
 
   public Import_Entity() {
