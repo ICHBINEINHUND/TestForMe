@@ -3,14 +3,16 @@
   <persistence-unit name="DKKPPersistenceUnit" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <class>com.example.dkkp.model.User_Entity</class>
+    <class>com.example.dkkp.model.Product_Entity</class>
     <properties>
       <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
       <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/DKKP"/>
       <property name="jakarta.persistence.jdbc.user" value="postgres"/>
       <property name="jakarta.persistence.jdbc.password" value="1"/>
-      <property name="hibernate.hbm2ddl.auto" value="validate"/>
+      <property name="hibernate.hbm2ddl.auto" value="update"/>
       <property name="hibernate.show_sql" value="true"/>
       <property name="hibernate.format_sql" value="true"/>
+
       <property name="hibernate.use_sql_comments" value="false"/>
       <property name="hibernate.jdbc.lob.non_contextual_creation" value="true"/>
       <property name="hibernate.cache.use_second_level_cache" value="false"/>
@@ -19,6 +21,7 @@
       <property name="hibernate.hikari.idleTimeout" value="300000"/>
       <property name="hibernate.hikari.maxLifetime" value="1800000"/>
       <property name="hibernate.hikari.connectionTimeout" value="30000"/>
+<!--      <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />-->
     </properties>
   </persistence-unit>
 </persistence>

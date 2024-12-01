@@ -27,6 +27,7 @@ public class UserDao {
       transaction.begin();
       entityManager.persist(user);
       transaction.commit();
+      System.out.println("totroi");
     } catch (RuntimeException e) {
       if (transaction.isActive()) {
         transaction.rollback();

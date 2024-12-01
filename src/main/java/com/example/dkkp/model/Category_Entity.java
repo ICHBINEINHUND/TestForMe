@@ -12,53 +12,54 @@ import java.time.LocalDateTime;
 @Table(name = "category")
 public class Category_Entity {
   @Id
-  @Column(name = "\"ID_IMP\"")
-  private String ID_IMP;
-  @Column(name = "\"DATE_IMP\"")
-  private LocalDateTime DATE_IMP;
-  @Column(name = "\"ID_SUP\"")
-  private String ID_SUP;
-  @Column(name = "\"PRICE_IMP\"")
-  private Double PRICE_IMP;
+  @Column(name = "\"ID_CATEGORY\"")
+  private String ID_CATEGORY;
+  @Column(name = "\"NAME_CATEGORY\"")
+  private String NAME_CATEGORY;
+  @Column(name = "\"ID_PARENT\"")
+  private String ID_PARENT;
+  @Column(name = "\"ID_BRAND\"")
+  private String ID_BRAND;
 
-  public Category_Entity(String ID_IMP, LocalDateTime DATE_IMP, String ID_SUP, Double PRICE_IMP) {
-    this.ID_IMP = ID_IMP;
-    this.DATE_IMP = DATE_IMP;
-    this.ID_SUP = ID_SUP;
-    this.PRICE_IMP = PRICE_IMP;
+  public String getID_CATEGORY() {
+    return ID_CATEGORY;
   }
 
-  public Category_Entity() {}
-
-  public String getID_IMP() {
-    return ID_IMP;
+  public void setID_CATEGORY(String ID_CATEGORY) {
+    this.ID_CATEGORY = ID_CATEGORY;
   }
 
-  public void setID_IMP(String ID_IMP) {
-    this.ID_IMP = ID_IMP;
+  public String getNAME_CATEGORY() {
+    return NAME_CATEGORY;
   }
 
-  public LocalDateTime getDATE_IMP() {
-    return DATE_IMP;
+  public void setNAME_CATEGORY(String NAME_CATEGORY) {
+    this.NAME_CATEGORY = NAME_CATEGORY;
   }
 
-  public void setDATE_IMP(LocalDateTime DATE_IMP) {
-    this.DATE_IMP = DATE_IMP;
+  public String getID_PARENT() {
+    return ID_PARENT;
   }
 
-  public String getID_SUP() {
-    return ID_SUP;
+  public void setID_PARENT(String ID_PARENT) {
+    this.ID_PARENT = ID_PARENT;
   }
 
-  public void setID_SUP(String ID_SUP) {
-    this.ID_SUP = ID_SUP;
+  public String getID_BRAND() {
+    return ID_BRAND;
   }
 
-  public Double getPRICE_IMP() {
-    return PRICE_IMP;
+  public void setID_BRAND(String ID_BRAND) {
+    this.ID_BRAND = ID_BRAND;
   }
 
-  public void setPRICE_IMP(Double PRICE_IMP) {
-    this.PRICE_IMP = PRICE_IMP;
+  public Category_Entity(String ID_CATEGORY, String NAME_CATEGORY, String ID_PARENT, String ID_BRAND) {
+    this.ID_CATEGORY = ID_CATEGORY;
+    this.NAME_CATEGORY = NAME_CATEGORY;
+    this.ID_PARENT = ID_PARENT;
+    this.ID_BRAND = ID_BRAND;
+  }
+
+  public Category_Entity() {
   }
 }

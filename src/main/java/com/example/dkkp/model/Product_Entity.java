@@ -1,12 +1,16 @@
 package com.example.dkkp.model;
 
+import io.hypersistence.utils.hibernate.type.array.ListArrayType;
 import jakarta.persistence.*;
-
+import org.hibernate.annotations.Type;
 import java.util.List;
+
+
 
 @Entity
 @Table(name = "product")
 public class Product_Entity {
+
   @Id
   @Column(name = "\"ID_SP\"")
   private String ID_SP;
@@ -26,8 +30,8 @@ public class Product_Entity {
   private Integer QUANTITY;
   @Column(name = "\"DISCOUNT\"")
   private Double DISCOUNT;
-  @Column(name = "\"IDS_OPTION_VALUES\"")
-  @ElementCollection
+  @Column(name = "\"IDS_OPTION_VALUES\"", columnDefinition = "integer[]")
+  @Type(ListArrayType.class)
   private List<Integer> IDS_OPTION_VALUES;
 
   public String getID_SP() {

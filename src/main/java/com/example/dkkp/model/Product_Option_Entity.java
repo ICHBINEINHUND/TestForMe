@@ -19,9 +19,9 @@ public class Product_Option_Entity {
   @Column(name = "\"TYPE\"")
   private String TYPE;
   @Column(name = "\"ID_CATEGORY\"")
-  private Double ID_CATEGORY;
+  private String ID_CATEGORY;
 
-  public Product_Option_Entity(String ID_OPTION, String NAME_OPTION, String TYPE, Double ID_CATEGORY) {
+  public Product_Option_Entity(String ID_OPTION, String NAME_OPTION, String TYPE, String ID_CATEGORY) {
     this.ID_OPTION = ID_OPTION;
     this.NAME_OPTION = NAME_OPTION;
     this.TYPE = TYPE;
@@ -55,11 +55,11 @@ public class Product_Option_Entity {
     this.TYPE = TYPE;
   }
 
-  public Double getID_CATEGORY() {
+  public String getID_CATEGORY() {
     return ID_CATEGORY;
   }
 
-  public void setID_CATEGORY(Double ID_CATEGORY) {
+  public void setID_CATEGORY(String ID_CATEGORY) {
     this.ID_CATEGORY = ID_CATEGORY;
   }
 }

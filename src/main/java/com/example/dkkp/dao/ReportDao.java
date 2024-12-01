@@ -18,11 +18,11 @@ public class ReportDao {
     this.entityManager = entityManagerFactory.createEntityManager();
   }
 
-  public void createUser(Report_Bug user) {
+  public void createReport(Report_Bug report) {
     EntityTransaction transaction = entityManager.getTransaction();
     try {
       transaction.begin();
-      entityManager.persist(user);
+      entityManager.persist(report);
       transaction.commit();
     } catch (RuntimeException e) {
       if (transaction.isActive()) {
@@ -32,20 +32,20 @@ public class ReportDao {
     }
   }
 
-  public List<Report_Bug> getAllUsers() {
+  public List<Report_Bug> getAllReports() {
     String jpql = "SELECT u FROM Report_Bug u";
     TypedQuery<Report_Bug> query = entityManager.createQuery(jpql, Report_Bug.class);
     return query.getResultList();
   }
 
-  public List<Report_Bug> getUsersByID(String id) {
-    String jpql = "SELECT u FROM Report_Bug u WHERE u.ID_USER = :id";
+  public List<Report_Bug> getReportsByID(String id) {
+    String jpql = "SELECT u FROM Report_Bug u WHERE u.ID_REPORT = :id";
     TypedQuery<Report_Bug> query = entityManager.createQuery(jpql, Report_Bug.class);
     query.setParameter("id", id);
     return query.getResultList();
   }
 
-  public List<Report_Bug> getUsersByDateReportBefore(LocalDateTime dateJoin) {
+  public List<Report_Bug> getReportsByDateReportBefore(LocalDateTime dateJoin) {
     String jpql = "SELECT u FROM Report_Bug u WHERE u.DATE_REPORT < :dateJoin";
     TypedQuery<Report_Bug> query = entityManager.createQuery(jpql, Report_Bug.class);
     query.setParameter("dateJoin", dateJoin);
