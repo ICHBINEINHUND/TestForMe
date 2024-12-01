@@ -44,7 +44,7 @@
       <version>6.6.3.Final</version>
     </dependency>
     <dependency>
-      <groupId>org.hibernate</groupId>
+      <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-hikaricp</artifactId>
       <version>6.6.3.Final</version>
     </dependency>
