@@ -27,7 +27,6 @@ public class UserDao {
       transaction.begin();
       entityManager.persist(user);
       transaction.commit();
-      System.out.println("totroi");
     } catch (RuntimeException e) {
       if (transaction.isActive()) {
         transaction.rollback();
@@ -46,6 +45,12 @@ public class UserDao {
     String jpql = "SELECT u FROM User_Entity u WHERE u.ID_USER = :id";
     TypedQuery<User_Entity> query = entityManager.createQuery(jpql, User_Entity.class);
     query.setParameter("id", id);
+    return query.getResultList();
+  }
+  public List<User_Entity> getUsersByMail(String mail) {
+    String jpql = "SELECT u FROM User_Entity u WHERE u.EMAIL_ACC = :mail";
+    TypedQuery<User_Entity> query = entityManager.createQuery(jpql, User_Entity.class);
+    query.setParameter("mail", mail);
     return query.getResultList();
   }
   public boolean isUserByMail(String mail) {

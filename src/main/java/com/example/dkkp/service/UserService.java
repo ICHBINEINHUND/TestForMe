@@ -7,6 +7,7 @@ import com.example.dkkp.model.User_Entity;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class UserService {
@@ -40,6 +41,12 @@ public class UserService {
         return userDao.getUsersByID(ID_USER);
     }
 
+    public boolean checkPass(String EMAIL_ACC, String PASSWORD) {
+        List<User_Entity> foundUsers = userDao.getUsersByMail(EMAIL_ACC);
+        User_Entity us = foundUsers.getFirst();
+        return Objects.equals(us.getPASSWORD_ACC(), PASSWORD);
+    }
+
     public void login(String EMAIL_ACC, String PASSWORD_ACC) {
         //add check
         userDao.loginValidate(EMAIL_ACC, PASSWORD_ACC);
@@ -50,6 +57,13 @@ public class UserService {
     public boolean updateUserInfo(String id, String email, String phone, String password, String role, String name) {
         // add check
         return userDao.updateUser(id, email, phone, password, role, name);
+    }
+
+    public boolean changePassword(String email,String oldPassword, String newPassword) {
+        if(checkPass(email,oldPassword)){
+           return userDao.changePasswordByEmail(email, newPassword);
+        };
+        return false;
     }
 
     public boolean forgotPassword(String email) {

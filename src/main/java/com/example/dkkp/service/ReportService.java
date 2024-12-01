@@ -37,7 +37,7 @@ public class ReportService {
     }
   }
 
-  public List<Report_Bug> getImportByCombinedCondition(LocalDateTime dateJoin, String typeDate, String userId,String id, String sortField, String sortOrder) {
+  public List<Report_Bug> getReportByCombinedCondition(LocalDateTime dateJoin, String typeDate, String userId,String id, String sortField, String sortOrder) {
     List<Report_Bug> result;
 
     if (dateJoin == null && id == null) {
@@ -47,7 +47,7 @@ public class ReportService {
       List<List<Report_Bug>> conditions = List.of(
               dateJoin != null ? reportDao.getReport_BugByDate(dateJoin, typeDate) : null,
               id != null ? reportDao.getReport_BugByReportID(id) : null,
-              userId != null ? reportDao.getReport_BugByReportID(id) : null
+              userId != null ? reportDao.getReport_BugByReportID(userId) : null
       );
 
       for (List<Report_Bug> condition : conditions) {
