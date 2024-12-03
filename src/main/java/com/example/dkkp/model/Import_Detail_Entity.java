@@ -19,6 +19,8 @@ public class Import_Detail_Entity {
   private Double PRICE_IMP_SP;
   @Column(name = "\"AVAILABLE\"")
   private boolean AVAILABLE;
+  @Column(name = "\"EDITED_ID\"")
+  private String EDITED_ID;
 
   public boolean isAVAILABLE() {
     return AVAILABLE;
@@ -28,12 +30,21 @@ public class Import_Detail_Entity {
     this.AVAILABLE = AVAILABLE;
   }
 
-  public Import_Detail_Entity(String ID_IMP, Integer QUANTITY_SP, String ID_SP, Double PRICE_IMP_SP, boolean AVAILABLE) {
+  public String getEDITED_ID() {
+    return EDITED_ID;
+  }
+
+  public void setEDITED_ID(String EDITED_ID) {
+    this.EDITED_ID = EDITED_ID;
+  }
+
+  public Import_Detail_Entity(String ID_IMP, Integer QUANTITY_SP, String ID_SP, Double PRICE_IMP_SP, boolean AVAILABLE, String EDITED_ID) {
     this.ID_IMP = ID_IMP;
     this.QUANTITY_SP = QUANTITY_SP;
     this.ID_SP = ID_SP;
     this.PRICE_IMP_SP = PRICE_IMP_SP;
     this.AVAILABLE = AVAILABLE;
+    this.EDITED_ID = EDITED_ID;
   }
 
   public Import_Detail_Entity() {}

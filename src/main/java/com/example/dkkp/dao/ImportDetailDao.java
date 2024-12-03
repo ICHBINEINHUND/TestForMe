@@ -1,13 +1,11 @@
 package com.example.dkkp.dao;
 
-import com.example.dkkp.model.Email_Check_Entity;
 import com.example.dkkp.model.Import_Detail_Entity;
-import com.example.dkkp.model.Import_Entity;
+import com.example.dkkp.model.User_Entity;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ImportDetailDao {
   private final EntityManager entityManager;
@@ -35,50 +33,74 @@ public class ImportDetailDao {
     }
   }
 
-  public List<Import_Detail_Entity> getAllImportDetails() {
-    String jpql = "SELECT u FROM Import_Detail_Entity u";
-    TypedQuery<Import_Detail_Entity> query = entityManager.createQuery(jpql, Import_Detail_Entity.class);
-    return query.getResultList();
+  public List<Import_Detail_Entity> getFilteredImportDetails(String id, Double minPrice, Double maxPrice, Integer minQuantity, Integer maxQuantity,String edited_id, String sortField, String sortOrder, int offset, int setOff) {
+    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Import_Detail_Entity> query = cb.createQuery(Import_Detail_Entity.class);
+    Root<Import_Detail_Entity> root = query.from(Import_Detail_Entity.class);
+
+    Predicate conditions = cb.conjunction();
+
+    if (id != null && !id.trim().isEmpty()) {
+      conditions = cb.and(conditions, cb.equal(root.get("ID_SP"), id));
+    }
+
+    if (edited_id != null && !edited_id.trim().isEmpty()) {
+      conditions = cb.and(conditions, cb.equal(root.get("EDITED_ID"), edited_id));
+    }
+
+    if (minPrice != null) {
+      conditions = cb.and(conditions, cb.greaterThanOrEqualTo(root.get("PRICE_IMP_SP"), minPrice));
+    }
+    if (maxPrice != null) {
+      conditions = cb.and(conditions, cb.lessThanOrEqualTo(root.get("PRICE_IMP_SP"), maxPrice));
+    }
+
+    if (minQuantity != null) {
+      conditions = cb.and(conditions, cb.greaterThanOrEqualTo(root.get("QUANTITY_SP"), minQuantity));
+    }
+    if (maxQuantity != null) {
+      conditions = cb.and(conditions, cb.lessThanOrEqualTo(root.get("QUANTITY_SP"), maxQuantity));
+    }
+
+    query.where(conditions);
+
+    if (sortField != null && sortOrder != null) {
+      Path<?> sortPath = root.get(sortField);
+      if ("desc".equalsIgnoreCase(sortOrder)) {
+        query.orderBy(cb.desc(sortPath));
+      } else {
+        query.orderBy(cb.asc(sortPath));
+      }
+    }
+
+    TypedQuery<Import_Detail_Entity> typedQuery = entityManager.createQuery(query);
+    typedQuery.setFirstResult(offset);
+    typedQuery.setMaxResults(setOff);
+
+    return typedQuery.getResultList();
   }
 
-  public List<Import_Detail_Entity> getImportDetailByID(String id) {
-    String jpql = "SELECT u FROM Import_Entity u WHERE u.ID_IMP = :id";
-    TypedQuery<Import_Detail_Entity> query = entityManager.createQuery(jpql, Import_Detail_Entity.class);
-    query.setParameter("id", id);
-    return query.getResultList();
+
+
+  public boolean deleteImportDetail(String id) {
+    EntityTransaction transaction = entityManager.getTransaction();
+    try {
+      transaction.begin();
+      Import_Detail_Entity import_detail = entityManager.find(Import_Detail_Entity.class, id);
+      if (import_detail == null) {
+        return false;
+      }
+      import_detail.setAVAILABLE(false);
+      entityManager.merge(import_detail);
+      transaction.commit();
+      return true;
+    } catch (RuntimeException e) {
+      if (transaction.isActive()) {
+        transaction.rollback();
+      }
+      throw e;
+    }
   }
-
-  private List<Import_Detail_Entity> getImportDetailbyPrice(String price) {
-    String jpql = "SELECT u FROM Import_Detail_Entity u WHERE u.PRICE_IMP_SP = :price";
-    TypedQuery<Import_Detail_Entity> query = entityManager.createQuery(jpql, Import_Detail_Entity.class);
-    query.setParameter("price", price);
-    return query.getResultList();
-  }
-
-
-  public List<Import_Detail_Entity> sortByPrice() {
-    return getAllImportDetails()
-            .stream()
-            .sorted((e1, e2) -> Double.compare(e1.getPRICE_IMP_SP(), e2.getPRICE_IMP_SP()))
-            .collect(Collectors.toList());
-  }
-
-  public List<Import_Detail_Entity> sortByQuantity() {
-    return getAllImportDetails()
-            .stream()
-            .sorted((e1, e2) -> Integer.compare(e1.getQUANTITY_SP(), e2.getQUANTITY_SP()))
-            .collect(Collectors.toList());
-  }
-
-  public List<Import_Detail_Entity> sortById() {
-    return getAllImportDetails()
-            .stream()
-            .sorted((e1, e2) -> e1.getID_SP().compareTo(e2.getID_SP()))
-            .collect(Collectors.toList());
-  }
-
-
-
 
   public static void shutdown() {
     if (entityManagerFactory != null && entityManagerFactory.isOpen()) {

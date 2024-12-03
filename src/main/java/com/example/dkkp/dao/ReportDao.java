@@ -1,13 +1,11 @@
 package com.example.dkkp.dao;
 
-import com.example.dkkp.model.Import_Entity;
 import com.example.dkkp.model.Report_Bug;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.*;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ReportDao {
   private final EntityManager entityManager;
@@ -21,6 +19,7 @@ public class ReportDao {
     this.entityManager = entityManagerFactory.createEntityManager();
   }
 
+  // Tạo báo cáo
   public void createReport(Report_Bug report) {
     EntityTransaction transaction = entityManager.getTransaction();
     try {
@@ -35,95 +34,84 @@ public class ReportDao {
     }
   }
 
-  public List<Report_Bug> getAllImport() {
-    String jpql = "SELECT u FROM Report_Bug u";
-    TypedQuery<Report_Bug> query = entityManager.createQuery(jpql, Report_Bug.class);
-    return query.getResultList();
-  }
+  public List<Report_Bug> getFilteredReports(
+          String userId,
+          String reportId,
+          LocalDateTime dateReport,
+          String typeDate,
+          String sortField,
+          String sortOrder,
+          int offset,
+          int setOff
+  ) {
+    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Report_Bug> query = cb.createQuery(Report_Bug.class);
+    Root<Report_Bug> root = query.from(Report_Bug.class);
 
-  public List<Report_Bug> sortById(List<Report_Bug> report, String sortOrder) {
-    return report.stream()
-            .sorted("desc".equalsIgnoreCase(sortOrder)
-                    ? Comparator.comparing(Report_Bug::getID_USER).reversed()
-                    : Comparator.comparing(Report_Bug::getID_USER))
-            .collect(Collectors.toList());
-  }
-  public List<Report_Bug> sortByUserId(List<Report_Bug> report, String sortOrder) {
-    return report.stream()
-            .sorted("desc".equalsIgnoreCase(sortOrder)
-                    ? Comparator.comparing(Report_Bug::getID_USER).reversed()
-                    : Comparator.comparing(Report_Bug::getID_USER))
-            .collect(Collectors.toList());
-  }
+    Predicate conditions = cb.conjunction();
 
-  public List<Report_Bug> sortByDate(List<Report_Bug> report, String sortOrder) {
-    return report.stream()
-            .sorted("desc".equalsIgnoreCase(sortOrder)
-                    ? Comparator.comparing(Report_Bug::getDATE_REPORT).reversed()
-                    : Comparator.comparing(Report_Bug::getDATE_REPORT))
-            .collect(Collectors.toList());
-  }
-
-  public List<Report_Bug> getReport_BugByDate(LocalDateTime dateJoin, String typeTimeCheck) {
-    StringBuilder jpql = new StringBuilder("SELECT u FROM Report_Bug u WHERE u.DATE_REPORT ");
-    if ("<".equals(typeTimeCheck)) {
-      jpql.append("< :dateJoin");
-    } else if (">".equals(typeTimeCheck)) {
-      jpql.append("> :dateJoin");
-    } else if ("=".equals(typeTimeCheck)) {
-      jpql.append("= :dateJoin");
+    if (userId != null && !userId.trim().isEmpty()) {
+      conditions = cb.and(conditions, cb.equal(root.get("ID_USER"), userId));
     }
-    TypedQuery<Report_Bug> query = entityManager.createQuery(jpql.toString(), Report_Bug.class);
-    query.setParameter("dateJoin", dateJoin);
-    return query.getResultList();
-  }
 
-  public List<Report_Bug> getReport_BugByUserID(String id) {
-    String jpql = "SELECT u FROM Report_Bug u WHERE u.ID_USER = :id";
-    TypedQuery<Report_Bug> query = entityManager.createQuery(jpql, Report_Bug.class);
-    query.setParameter("id", id);
-    return query.getResultList();
-  }
-
-  public List<Report_Bug> getReport_BugByReportID(String id) {
-    String jpql = "SELECT u FROM Report_Bug u WHERE u.ID_REPORT = :id";
-    TypedQuery<Report_Bug> query = entityManager.createQuery(jpql, Report_Bug.class);
-    query.setParameter("id", id);
-    return query.getResultList();
-  }
-
-  public List<Report_Bug> getReportsByDateReportBefore(LocalDateTime dateJoin) {
-    String jpql = "SELECT u FROM Report_Bug u WHERE u.DATE_REPORT < :dateJoin";
-    TypedQuery<Report_Bug> query = entityManager.createQuery(jpql, Report_Bug.class);
-    query.setParameter("dateJoin", dateJoin);
-    return query.getResultList();
-  }
-
-  public List<Report_Bug> sortResults(List<Report_Bug> report, String sortField, String sortOrder) {
-    switch (sortField) {
-      case "id":
-        return sortById(report, sortOrder);
-      case "date":
-        return sortByDate(report, sortOrder);
-      case "userId":
-        return sortByUserId(report, sortOrder);
-      default:
-        throw new IllegalArgumentException("Invalid sort field: " + sortField);
+    if (reportId != null && !reportId.trim().isEmpty()) {
+      conditions = cb.and(conditions, cb.equal(root.get("ID_REPORT"), reportId));
     }
+
+    if (dateReport != null && typeDate != null) {
+      switch (typeDate) {
+        case "<":
+          conditions = cb.and(conditions, cb.lessThan(root.get("DATE_REPORT"), dateReport));
+          break;
+        case "<=":
+          conditions = cb.and(conditions, cb.lessThanOrEqualTo(root.get("DATE_REPORT"), dateReport));
+          break;
+        case "=":
+          conditions = cb.and(conditions, cb.equal(root.get("DATE_REPORT"), dateReport));
+          break;
+        case ">=":
+          conditions = cb.and(conditions, cb.greaterThanOrEqualTo(root.get("DATE_REPORT"), dateReport));
+          break;
+        case ">":
+          conditions = cb.and(conditions, cb.greaterThan(root.get("DATE_REPORT"), dateReport));
+          break;
+        default:
+          throw new IllegalArgumentException("Invalid typeDate: " + typeDate);
+      }
+    }
+
+    query.where(conditions);
+
+
+    if (sortField != null && sortOrder != null) {
+      Path<?> sortPath = root.get(sortField);
+      if ("desc".equalsIgnoreCase(sortOrder)) {
+        query.orderBy(cb.desc(sortPath));
+      } else {
+        query.orderBy(cb.asc(sortPath));
+      }
+    }
+
+
+    TypedQuery<Report_Bug> typedQuery = entityManager.createQuery(query);
+    typedQuery.setFirstResult(offset);
+    typedQuery.setMaxResults(setOff);
+
+    return typedQuery.getResultList();
   }
+
 
   public boolean deleteReportById(String reportId) {
     EntityTransaction transaction = entityManager.getTransaction();
     try {
       transaction.begin();
       Report_Bug reportToDelete = entityManager.find(Report_Bug.class, reportId);
-      if (reportToDelete != null) {
-        entityManager.remove(reportToDelete);
-        transaction.commit();
-        return true;
+      if (reportToDelete == null) {
+        return false;
       }
+      entityManager.remove(reportToDelete);
       transaction.commit();
-      return false;
+      return true;
     } catch (RuntimeException e) {
       if (transaction.isActive()) {
         transaction.rollback();
@@ -138,12 +126,8 @@ public class ReportDao {
       transaction.begin();
       String jpql = "DELETE FROM Report_Bug";
       int deletedCount = entityManager.createQuery(jpql).executeUpdate();
-      if (deletedCount > 0) {
-        transaction.commit();
-        return true;
-      }
       transaction.commit();
-      return false;
+      return deletedCount > 0;
     } catch (RuntimeException e) {
       if (transaction.isActive()) {
         transaction.rollback();

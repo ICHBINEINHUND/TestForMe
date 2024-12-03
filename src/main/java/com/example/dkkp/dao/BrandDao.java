@@ -45,7 +45,12 @@ public class BrandDao {
     query.setParameter("id", id);
     return query.getResultList();
   }
-
+  public List<Brand_Entity> getBrandByName(String name) {
+    String jpql = "SELECT u FROM Brand_Entity u WHERE u.NAME_BRAND = :name";
+    TypedQuery<Brand_Entity> query = entityManager.createQuery(jpql, Brand_Entity.class);
+    query.setParameter("name", name);
+    return query.getResultList();
+  }
 
   public boolean updateBrand(String id, String name,String des) {
     EntityTransaction transaction = entityManager.getTransaction();

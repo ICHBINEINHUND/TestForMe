@@ -2,11 +2,10 @@ package com.example.dkkp.dao;
 
 import com.example.dkkp.model.Import_Entity;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.*;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ImportDao {
   private final EntityManager entityManager;
@@ -18,6 +17,11 @@ public class ImportDao {
 
   public ImportDao() {
     this.entityManager = entityManagerFactory.createEntityManager();
+  }
+
+  // Thêm phương thức getEntityManager
+  public EntityManager getEntityManager() {
+    return this.entityManager;
   }
 
   public void createImport(Import_Entity importE) {
@@ -40,53 +44,48 @@ public class ImportDao {
     return query.getResultList();
   }
 
-  public List<Import_Entity> sortById(List<Import_Entity> imports, String sortOrder) {
-    return imports.stream()
-            .sorted("desc".equalsIgnoreCase(sortOrder)
-                    ? Comparator.comparing(Import_Entity::getID_IMP).reversed()
-                    : Comparator.comparing(Import_Entity::getID_IMP))
-            .collect(Collectors.toList());
-  }
+  public List<Import_Entity> getFilteredImports(LocalDateTime dateJoin, String typeDate, String id, Boolean edited, String sortField, String sortOrder, int offset, int setOff) {
+    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Import_Entity> query = cb.createQuery(Import_Entity.class);
+    Root<Import_Entity> root = query.from(Import_Entity.class);
 
-  public List<Import_Entity> sortByDate(List<Import_Entity> imports, String sortOrder) {
-    return imports.stream()
-            .sorted("desc".equalsIgnoreCase(sortOrder)
-                    ? Comparator.comparing(Import_Entity::getDATE_IMP).reversed()
-                    : Comparator.comparing(Import_Entity::getDATE_IMP))
-            .collect(Collectors.toList());
-  }
+    Predicate conditions = cb.conjunction();
 
-  public List<Import_Entity> getImportByDateImport(LocalDateTime dateJoin, String typeTimeCheck) {
-    StringBuilder jpql = new StringBuilder("SELECT u FROM Import_Entity u WHERE u.DATE_IMP ");
-    if ("<".equals(typeTimeCheck)) {
-      jpql.append("< :dateJoin");
-    } else if (">".equals(typeTimeCheck)) {
-      jpql.append("> :dateJoin");
-    } else if ("=".equals(typeTimeCheck)) {
-      jpql.append("= :dateJoin");
+    if (dateJoin != null) {
+      switch (typeDate) {
+        case "<":
+          conditions = cb.and(conditions, cb.lessThan(root.get("DATE_IMP"), dateJoin));
+          break;
+        case ">":
+          conditions = cb.and(conditions, cb.greaterThan(root.get("DATE_IMP"), dateJoin));
+          break;
+        case "=":
+          conditions = cb.and(conditions, cb.equal(root.get("DATE_IMP"), dateJoin));
+          break;
+      }
     }
-    TypedQuery<Import_Entity> query = entityManager.createQuery(jpql.toString(), Import_Entity.class);
-    query.setParameter("dateJoin", dateJoin);
-    return query.getResultList();
-  }
 
-  public List<Import_Entity> getImportByID(String id) {
-    String jpql = "SELECT u FROM Import_Entity u WHERE u.ID_IMP = :id";
-    TypedQuery<Import_Entity> query = entityManager.createQuery(jpql, Import_Entity.class);
-    query.setParameter("id", id);
-    return query.getResultList();
-  }
-
-  // Phương thức sắp xếp chung cho tất cả các trường
-  public List<Import_Entity> sortResults(List<Import_Entity> imports, String sortField, String sortOrder) {
-    switch (sortField) {
-      case "id":
-        return sortById(imports, sortOrder);
-      case "date":
-        return sortByDate(imports, sortOrder);
-      default:
-        throw new IllegalArgumentException("Invalid sort field: " + sortField);
+    if (id != null) {
+      conditions = cb.and(conditions, cb.equal(root.get("ID_IMP"), id));
     }
+    if (edited != null) {
+      conditions = cb.and(conditions, cb.equal(root.get("EDITED"), edited));
+    }
+    query.where(conditions);
+
+    if (sortField != null && sortOrder != null) {
+      Path<?> sortPath = root.get(sortField);
+      if ("desc".equalsIgnoreCase(sortOrder)) {
+        query.orderBy(cb.desc(sortPath));
+      } else {
+        query.orderBy(cb.asc(sortPath));
+      }
+    }
+    TypedQuery<Import_Entity> typedQuery = entityManager.createQuery(query);
+    typedQuery.setFirstResult(offset); // Vị trí bắt đầu
+    typedQuery.setMaxResults(setOff);  // Số lượng bản ghi mỗi lần
+
+    return typedQuery.getResultList();
   }
 
   public void deleteImport(String id) {
@@ -98,6 +97,48 @@ public class ImportDao {
         entityManager.remove(importToDelete);  // Xóa đối tượng
       }
       transaction.commit();
+    } catch (RuntimeException e) {
+      if (transaction.isActive()) {
+        transaction.rollback();
+      }
+      throw e;
+    }
+  }
+
+  public boolean updateEditedImport(String id) {
+    EntityTransaction transaction = entityManager.getTransaction();
+    try {
+      transaction.begin();
+
+      Import_Entity importToEdit = entityManager.find(Import_Entity.class, id);
+      if (importToEdit == null) {
+        return false;
+      }
+      importToEdit.setEDITED(true);
+      entityManager.merge(importToEdit);
+      transaction.commit();
+      return true;
+    } catch (RuntimeException e) {
+      if (transaction.isActive()) {
+        transaction.rollback();
+      }
+      throw e;
+    }
+  }
+
+  public boolean updateDescriptionImport(String id, String description) {
+    EntityTransaction transaction = entityManager.getTransaction();
+    try {
+      transaction.begin();
+
+      Import_Entity importToEdit = entityManager.find(Import_Entity.class, id);
+      if (importToEdit == null) {
+        return false;
+      }
+      importToEdit.setDESCRIPTION(description);
+      entityManager.merge(importToEdit);
+      transaction.commit();
+      return true;
     } catch (RuntimeException e) {
       if (transaction.isActive()) {
         transaction.rollback();

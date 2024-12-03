@@ -27,42 +27,27 @@ public class CategoryService {
     categoryDao.createCategory(category);
     System.out.println("da push thanh cong");
   }
+  public List<Category_Entity> getFilteredCategories(
+          String id,
+          String name,
+          String idParent,
+          String idBrand,
+          Boolean isBaseProduct,
+          String sortField,
+          String sortOrder,
+          int offset,
+          int setOff
+  ) {
+    return categoryDao.getFilteredCategories(
+            id, name, idParent, idBrand, isBaseProduct, sortField, sortOrder, offset, setOff
+    );
+  }
 
   public void deleteCategory(String id){
       categoryDao.deleteCategoryById(id);
   }
 
-  public List<Category_Entity> getCategoryByCombinedCondition(String ID_CATEGORY, String NAME_CATEGORY, String ID_PARENT, String ID_BRAND, boolean IS_BASE_PRODUCT, String sortField, String sortOrder) {
-    List<Category_Entity> result;
 
-    if (ID_CATEGORY == null && NAME_CATEGORY == null && ID_PARENT == null&& ID_BRAND == null) {
-      result = categoryDao.getAllCategory();
-    } else  {
-      result = null;
-      List<List<Category_Entity>> conditions = List.of(
-              ID_CATEGORY != null ? categoryDao.getCategoryByID(ID_CATEGORY) : null,
-              NAME_CATEGORY != null ? categoryDao.getCategoryByName(NAME_CATEGORY) : null,
-              ID_PARENT != null ? categoryDao.getCategoryByID_PARENT(ID_PARENT) : null,
-              ID_BRAND != null ? categoryDao.getCategoryByID_BRAND(ID_BRAND) : null,
-              categoryDao.getCategoryByIS_BASE_PRODUCT(IS_BASE_PRODUCT)
-      );
-
-      for (List<Category_Entity> condition : conditions) {
-        if (condition != null) {
-          if (result == null) {
-            result = condition;
-          } else {
-            result.retainAll(condition);
-          }
-        }
-      }
-    }
-
-    if (result != null && sortField != null && sortOrder != null) {
-      result = categoryDao.sortResults(result, sortField, sortOrder);
-    }
-    return result != null ? result : List.of();
-  }
 
   public boolean updateCategory(String id, String name,String id_parent,String id_brand,boolean is_product) {
     // add check

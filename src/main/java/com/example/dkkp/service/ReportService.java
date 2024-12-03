@@ -37,33 +37,18 @@ public class ReportService {
     }
   }
 
-  public List<Report_Bug> getReportByCombinedCondition(LocalDateTime dateJoin, String typeDate, String userId,String id, String sortField, String sortOrder) {
-    List<Report_Bug> result;
-
-    if (dateJoin == null && id == null) {
-      result = reportDao.getAllImport();
-    } else {
-      result = null;
-      List<List<Report_Bug>> conditions = List.of(
-              dateJoin != null ? reportDao.getReport_BugByDate(dateJoin, typeDate) : null,
-              id != null ? reportDao.getReport_BugByReportID(id) : null,
-              userId != null ? reportDao.getReport_BugByReportID(userId) : null
-      );
-
-      for (List<Report_Bug> condition : conditions) {
-        if (condition != null) {
-          if (result == null) {
-            result = condition;
-          } else {
-            result.retainAll(condition);
-          }
-        }
-      }
-    }
-
-    if (result != null && sortField != null && sortOrder != null) {
-      result = reportDao.sortResults(result, sortField, sortOrder);
-    }
-    return result != null ? result : List.of();
+  public List<Report_Bug> getFilteredReports(
+          String userId,
+          String reportId,
+          LocalDateTime dateReport,
+          String typeDate,
+          String sortField,
+          String sortOrder,
+          int offset,
+          int setOff
+  ) {
+    return reportDao.getFilteredReports(userId, reportId, dateReport, typeDate, sortField, sortOrder, offset, setOff);
   }
+
+
 }

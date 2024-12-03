@@ -25,16 +25,12 @@ public class UserService {
     }
 
     public void registerNewUser(String ID_USER, String EMAIL_ACC, String PHONE_ACC, String PASSWORD_ACC, String ROLE_ACC, String NAME_USER) {
-//    String ID_USER ="12ee2";
-//    String EMAIL_ACC ="22s223e@gmail.com";
-//    String PHONE_ACC = "098748950";
-//    String PASSWORD_ACC = "jdlalk1";
-//    String ROLE_ACC = "admin";
-//    String NAME_USER = "memay beo";
+
         LocalDateTime DATE_JOIN = LocalDateTime.now();
         User_Entity user = new User_Entity(ID_USER, EMAIL_ACC, PHONE_ACC, PASSWORD_ACC, ROLE_ACC, NAME_USER, DATE_JOIN);
         userDao.createUser(user);
         System.out.println("da push thanh cong");
+        getInformation(ID_USER);
     }
 
     public List<User_Entity> getInformation(String ID_USER) {
@@ -66,25 +62,36 @@ public class UserService {
         return false;
     }
 
+
+
     public boolean forgotPassword(String email) {
         if (userDao.isUserByMail(email)) {
             CheckMailService check = new CheckMailService();
             check.createToken(email);
-            Scanner ip = new Scanner(System.in);
-            System.out.println("Nhap token");
-            String token = ip.nextLine();
-            if (check.checkToken(email, token)) {
-                System.out.println();
-                String newPass = ip.nextLine();
-                if (userDao.changePasswordByEmail(email, newPass)) {
-                    check.shutdown();
-                    UserDao.shutdown();
-                    return true;
-                }
-            }
-            return false;
+            return true;
         }
-        ;
         return false;
     }
+
+    //    public boolean forgotPassword(String email) {
+//        if (userDao.isUserByMail(email)) {
+//            CheckMailService check = new CheckMailService();
+//            check.createToken(email);
+//            Scanner ip = new Scanner(System.in);
+//            System.out.println("Nhap token");
+//            String token = ip.nextLine();
+//            if (check.checkToken(email, token)) {
+//                System.out.println();
+//                String newPass = ip.nextLine();
+//                if (userDao.changePasswordByEmail(email, newPass)) {
+//                    check.shutdown();
+//                    UserDao.shutdown();
+//                    return true;
+//                }
+//            }
+//            return false;
+//        }
+//        ;
+//        return false;
+//    }
 }

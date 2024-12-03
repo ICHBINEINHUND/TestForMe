@@ -16,9 +16,9 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         System.out.println("dc");
-
-        UserService userService = new UserService();
-        userService.forgotPassword("22s223e@gmail.com");
+//
+//        UserService userService = new UserService();
+//        userService.forgotPassword("22s223e@gmail.com");
 
 
 //        UserService userService = new UserService();
@@ -38,18 +38,18 @@ public class Main {
 //            }
 //        }
 
-//        CheckMailService checkM = new CheckMailService();
+        CheckMailService checkM = new CheckMailService();
 
 //        if(checkM.createToken("efn@gmail.com")){
 //            System.out.println("da them token thanh cong");
 //        }else {
 //            System.out.println("them that bai");
 //        };
-//
-//        if(checkM.checkToken("efn@gmail.com","325879")){
-//            System.out.println("thanh cong");
-//        }else {
-//            System.out.println("khong thanh cong");
-//        };
+
+        if(checkM.checkToken("22s223e@gmail.com","934187")){
+            System.out.println("thanh cong");
+        }else {
+            System.out.println("khong thanh cong");
+        };
     }
 }
