@@ -17,7 +17,7 @@ public class UserService {
         this.userDao = new UserDao();
     }
 
-    public List<User_Entity> getUsersByID(String id) {
+    public User_Entity getUsersByID(String id) {
         if (id == null || id.trim().isEmpty()) {
             throw new IllegalArgumentException("ID Cannot Be Null!");
         }
@@ -33,14 +33,13 @@ public class UserService {
         getInformation(ID_USER);
     }
 
-    public List<User_Entity> getInformation(String ID_USER) {
+    public User_Entity getInformation(String ID_USER) {
         return userDao.getUsersByID(ID_USER);
     }
 
     public boolean checkPass(String EMAIL_ACC, String PASSWORD) {
-        List<User_Entity> foundUsers = userDao.getUsersByMail(EMAIL_ACC);
-        User_Entity us = foundUsers.getFirst();
-        return Objects.equals(us.getPASSWORD_ACC(), PASSWORD);
+        User_Entity foundUsers = userDao.getUsersByMail(EMAIL_ACC);
+        return Objects.equals(foundUsers.getPASSWORD_ACC(), PASSWORD);
     }
 
     public void login(String EMAIL_ACC, String PASSWORD_ACC) {

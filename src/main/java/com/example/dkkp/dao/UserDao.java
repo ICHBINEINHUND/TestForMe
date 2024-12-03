@@ -41,17 +41,17 @@ public class UserDao {
     return query.getResultList();
   }
 
-  public List<User_Entity> getUsersByID(String id) {
+  public User_Entity getUsersByID(String id) {
     String jpql = "SELECT u FROM User_Entity u WHERE u.ID_USER = :id";
     TypedQuery<User_Entity> query = entityManager.createQuery(jpql, User_Entity.class);
     query.setParameter("id", id);
-    return query.getResultList();
+    return query.getSingleResult();
   }
-  public List<User_Entity> getUsersByMail(String mail) {
+  public User_Entity getUsersByMail(String mail) {
     String jpql = "SELECT u FROM User_Entity u WHERE u.EMAIL_ACC = :mail";
     TypedQuery<User_Entity> query = entityManager.createQuery(jpql, User_Entity.class);
     query.setParameter("mail", mail);
-    return query.getResultList();
+    return query.getSingleResult();
   }
   public boolean isUserByMail(String mail) {
     String jpql = "SELECT u FROM User_Entity u WHERE u.EMAIL_ACC = :mail";
