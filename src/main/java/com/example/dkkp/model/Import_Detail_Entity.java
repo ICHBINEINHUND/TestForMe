@@ -9,18 +9,21 @@ import jakarta.persistence.Table;
 @Table(name = "import_detail")
 public class Import_Detail_Entity {
   @Id
-  @Column(name = "\"ID_IMP\"")
-  private String ID_IMP;
+  @Column(name = "\"ID_IMPD\"")
+  private String ID_IMPD;
+  @Column(name = "\"ID_IPARENT\"")
+  private String ID_IPARENT;
   @Column(name = "\"QUANTITY_SP\"")
   private Integer QUANTITY_SP;
   @Column(name = "\"ID_SP\"")
   private String ID_SP;
+  @Column(name = "\"DESCRIPTION\"")
+  private String DESCRIPTION;
   @Column(name = "\"PRICE_IMP_SP\"")
   private Double PRICE_IMP_SP;
   @Column(name = "\"AVAILABLE\"")
   private boolean AVAILABLE;
-  @Column(name = "\"EDITED_ID\"")
-  private String EDITED_ID;
+
 
   public boolean isAVAILABLE() {
     return AVAILABLE;
@@ -30,31 +33,40 @@ public class Import_Detail_Entity {
     this.AVAILABLE = AVAILABLE;
   }
 
-  public String getEDITED_ID() {
-    return EDITED_ID;
-  }
-
-  public void setEDITED_ID(String EDITED_ID) {
-    this.EDITED_ID = EDITED_ID;
-  }
-
-  public Import_Detail_Entity(String ID_IMP, Integer QUANTITY_SP, String ID_SP, Double PRICE_IMP_SP, boolean AVAILABLE, String EDITED_ID) {
-    this.ID_IMP = ID_IMP;
+  public Import_Detail_Entity(String ID_IMPD, String ID_IPARENT, Integer QUANTITY_SP, String ID_SP, String DESCRIPTION, Double PRICE_IMP_SP, boolean AVAILABLE) {
+    this.ID_IMPD = ID_IMPD;
+    this.ID_IPARENT = ID_IPARENT;
     this.QUANTITY_SP = QUANTITY_SP;
     this.ID_SP = ID_SP;
+    this.DESCRIPTION = DESCRIPTION;
     this.PRICE_IMP_SP = PRICE_IMP_SP;
     this.AVAILABLE = AVAILABLE;
-    this.EDITED_ID = EDITED_ID;
+  }
+
+  public String getID_IPARENT() {
+    return ID_IPARENT;
+  }
+
+  public void setID_IPARENT(String ID_IPARENT) {
+    this.ID_IPARENT = ID_IPARENT;
+  }
+
+  public String getDESCRIPTION() {
+    return DESCRIPTION;
+  }
+
+  public void setDESCRIPTION(String DESCRIPTION) {
+    this.DESCRIPTION = DESCRIPTION;
   }
 
   public Import_Detail_Entity() {}
 
-  public String getID_IMP() {
-    return ID_IMP;
+  public String getID_IMPD() {
+    return ID_IMPD;
   }
 
-  public void setID_IMP(String ID_IMP) {
-    this.ID_IMP = ID_IMP;
+  public void setID_IMPD(String ID_IMP) {
+    this.ID_IMPD = ID_IMP;
   }
 
   public Integer getQUANTITY_SP() {

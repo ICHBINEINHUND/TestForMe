@@ -32,8 +32,11 @@ public class ImportDetailDao {
       throw e;
     }
   }
+  public EntityManager getEntityManager() {
+    return this.entityManager;
+  }
 
-  public List<Import_Detail_Entity> getFilteredImportDetails(String id, Double minPrice, Double maxPrice, Integer minQuantity, Integer maxQuantity,String edited_id, String sortField, String sortOrder, int offset, int setOff) {
+  public List<Import_Detail_Entity> getFilteredImportDetails(String id,String idParent,String idSP, String sortField, String sortOrder, int offset, int setOff) {
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();
     CriteriaQuery<Import_Detail_Entity> query = cb.createQuery(Import_Detail_Entity.class);
     Root<Import_Detail_Entity> root = query.from(Import_Detail_Entity.class);
@@ -41,25 +44,13 @@ public class ImportDetailDao {
     Predicate conditions = cb.conjunction();
 
     if (id != null && !id.trim().isEmpty()) {
-      conditions = cb.and(conditions, cb.equal(root.get("ID_SP"), id));
+      conditions = cb.and(conditions, cb.equal(root.get("ID_IMPD"), id));
     }
-
-    if (edited_id != null && !edited_id.trim().isEmpty()) {
-      conditions = cb.and(conditions, cb.equal(root.get("EDITED_ID"), edited_id));
+    if (idParent != null && !idParent.trim().isEmpty()) {
+      conditions = cb.and(conditions, cb.equal(root.get("ID_IPARENT"), idParent));
     }
-
-    if (minPrice != null) {
-      conditions = cb.and(conditions, cb.greaterThanOrEqualTo(root.get("PRICE_IMP_SP"), minPrice));
-    }
-    if (maxPrice != null) {
-      conditions = cb.and(conditions, cb.lessThanOrEqualTo(root.get("PRICE_IMP_SP"), maxPrice));
-    }
-
-    if (minQuantity != null) {
-      conditions = cb.and(conditions, cb.greaterThanOrEqualTo(root.get("QUANTITY_SP"), minQuantity));
-    }
-    if (maxQuantity != null) {
-      conditions = cb.and(conditions, cb.lessThanOrEqualTo(root.get("QUANTITY_SP"), maxQuantity));
+    if (idSP != null && !idSP.trim().isEmpty()) {
+      conditions = cb.and(conditions, cb.equal(root.get("ID_SP"), idSP));
     }
 
     query.where(conditions);
@@ -82,25 +73,26 @@ public class ImportDetailDao {
 
 
 
-  public boolean deleteImportDetail(String id) {
+  public boolean deleteImportDetail(String idParent) {
     EntityTransaction transaction = entityManager.getTransaction();
     try {
       transaction.begin();
-      Import_Detail_Entity import_detail = entityManager.find(Import_Detail_Entity.class, id);
-      if (import_detail == null) {
-        return false;
-      }
-      import_detail.setAVAILABLE(false);
-      entityManager.merge(import_detail);
+      Query query = entityManager.createQuery(
+              "UPDATE Import_Detail_Entity e SET e.AVAILABLE = false WHERE e.ID_IPARENT = :idParent"
+      );
+      query.setParameter("idParent", idParent);
+      int rowsUpdated = query.executeUpdate();
       transaction.commit();
-      return true;
+      return rowsUpdated > 0;
     } catch (RuntimeException e) {
       if (transaction.isActive()) {
         transaction.rollback();
+        return false;
       }
       throw e;
     }
   }
+
 
   public static void shutdown() {
     if (entityManagerFactory != null && entityManagerFactory.isOpen()) {

@@ -11,27 +11,40 @@ public class Bill_Detail_Entity {
   @Id
   @Column(name = "\"ID_BILL\"")
   private String ID_BILL;
+  @Column(name = "\"ID_PARENT\"")
+  private String ID_PARENT;
   @Column(name = "\"QUANTITY_BILL\"")
   private int QUANTITY_BILL;
-  @Column(name = "\"PHONE_BILL\"")
-  private String PHONE_BILL;
-  @Column(name = "\"ADD_BILL\"")
-  private String ADD_BILL;
   @Column(name = "\"PRICE_BUY\"")
   private Double PRICE_BUY;
   @Column(name = "\"ID_SP\"")
   private String ID_SP;
-  @Column(name = "\"ID_VOU\"")
-  private String ID_VOU;
+  @Column(name = "\"AVAILABLE\"")
+  private Boolean AVAILABLE;
 
-  public Bill_Detail_Entity(String ID_BILL, int QUANTITY_BILL, String PHONE_BILL, String ADD_BILL, Double PRICE_BUY, String ID_SP, String ID_VOU) {
+  public Bill_Detail_Entity(String ID_BILL, String ID_PARENT, int QUANTITY_BILL, Double PRICE_BUY, String ID_SP, Boolean AVAILABLE) {
     this.ID_BILL = ID_BILL;
+    this.ID_PARENT = ID_PARENT;
     this.QUANTITY_BILL = QUANTITY_BILL;
-    this.PHONE_BILL = PHONE_BILL;
-    this.ADD_BILL = ADD_BILL;
     this.PRICE_BUY = PRICE_BUY;
     this.ID_SP = ID_SP;
-    this.ID_VOU = ID_VOU;
+    this.AVAILABLE = AVAILABLE;
+  }
+
+  public Boolean getAVAILABLE() {
+    return AVAILABLE;
+  }
+
+  public void setAVAILABLE(Boolean AVAILABLE) {
+    this.AVAILABLE = AVAILABLE;
+  }
+
+  public String getID_PARENT() {
+    return ID_PARENT;
+  }
+
+  public void setID_PARENT(String ID_PARENT) {
+    this.ID_PARENT = ID_PARENT;
   }
 
   public Bill_Detail_Entity() {}
@@ -52,22 +65,6 @@ public class Bill_Detail_Entity {
     this.QUANTITY_BILL = QUANTITY_BILL;
   }
 
-  public String getPHONE_BILL() {
-    return PHONE_BILL;
-  }
-
-  public void setPHONE_BILL(String PHONE_BILL) {
-    this.PHONE_BILL = PHONE_BILL;
-  }
-
-  public String getADD_BILL() {
-    return ADD_BILL;
-  }
-
-  public void setADD_BILL(String ADD_BILL) {
-    this.ADD_BILL = ADD_BILL;
-  }
-
   public Double getPRICE_BUY() {
     return PRICE_BUY;
   }
@@ -84,11 +81,4 @@ public class Bill_Detail_Entity {
     this.ID_SP = ID_SP;
   }
 
-  public String getID_VOU() {
-    return ID_VOU;
-  }
-
-  public void setID_VOU(String ID_VOU) {
-    this.ID_VOU = ID_VOU;
-  }
 }
