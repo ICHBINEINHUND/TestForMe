@@ -56,7 +56,7 @@ public class UserService {
 
     public boolean changePassword(String email,String oldPassword, String newPassword) {
         if(checkPass(email,oldPassword)){
-           return userDao.changePasswordByEmail(email, newPassword);
+            return userDao.changePasswordByEmail(email, newPassword);
         };
         return false;
     }
