@@ -2,9 +2,7 @@ package com.example.dkkp.service;
 
 import com.example.dkkp.dao.BillDao;
 import com.example.dkkp.dao.BillDetailDao;
-import com.example.dkkp.model.EnumType;
-import com.example.dkkp.model.Import_Detail_Entity;
-import com.example.dkkp.model.Bill_Entity;
+import com.example.dkkp.model.*;
 import jakarta.persistence.EntityTransaction;
 
 import java.time.LocalDateTime;
@@ -27,17 +25,18 @@ public class BillService {
     }
 
     public List<Bill_Entity> getBillByCombinedCondition(
-            LocalDateTime dateExport,
+            Bill_Entity billEntity,
             String typeDate,
-            String id,
-            String phone,
-            String add,
-            String idUser,
-            EnumType.Status_Bill statusBill,
             String sortField,
             String sortOrder,
             int setOff
     ) {
+        LocalDateTime dateExport = billEntity.getDate_EXP();
+        String id = billEntity.getID_BILL();
+        String phone = billEntity.getPHONE_BILL();
+        String add = billEntity.getADD_BILL();
+        String idUser = billEntity.getID_USER();
+        EnumType.Status_Bill statusBill = billEntity.getBILL_STATUS();
         ExecutorService executor = Executors.newFixedThreadPool(3);
         AtomicBoolean continueFlag = new AtomicBoolean(true);
 
@@ -58,7 +57,7 @@ public class BillService {
                         break;
                     }
                     List<Bill_Entity> partialResult = billDao.getFilteredBills(
-                            dateExport, typeDate, id, phone,add,idUser,statusBill, sortField, sortOrder, offset, setOff
+                            dateExport, typeDate, id, phone, add, idUser, statusBill, add, sortField, sortOrder, offset, setOff
                     );
 
                     if (partialResult.isEmpty()) {
@@ -78,7 +77,7 @@ public class BillService {
         return results;
     }
 
-    public boolean deleteBillAndDetail(String id){
+    public boolean deleteBillAndDetail(String id) {
         if (id != null) {
             EntityTransaction transaction = billDao.getEntityManager().getTransaction();
             try {
@@ -89,7 +88,7 @@ public class BillService {
                 }
 
                 boolean delBillDetail = billDetailDao.cancelBillDetail(id);
-                if(!delBillDetail){
+                if (!delBillDetail) {
                     throw new RuntimeException("Error");
                 }
                 transaction.commit();
@@ -103,8 +102,98 @@ public class BillService {
 
     public boolean changeBillStatus(String id, EnumType.Status_Bill statusBill) {
         if (id != null && statusBill != null) {
-            billDao.changeBillStatus(id, statusBill);
-            return true;
+            EntityTransaction transaction = billDao.getEntityManager().getTransaction();
+            try {
+                transaction.begin();
+                if (statusBill == EnumType.Status_Bill.CANC) {
+                    billDao.changeBillStatus(id, statusBill);
+                    transaction.commit();
+                    return plusProduct(id);
+                }
+                if (billDao.getBillByID(id).getBILL_STATUS() == EnumType.Status_Bill.PEN) {
+                    billDao.changeBillStatus(id, statusBill);
+                    transaction.commit();
+                    return minusProduct(id);
+                }
+                transaction.commit();
+                return billDao.changeBillStatus(id, statusBill);
+            } catch (RuntimeException e) {
+                if (transaction.isActive()) {
+                    transaction.rollback();
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean minusProduct(String id) {
+        if (id != null) {
+            EntityTransaction transaction = billDao.getEntityManager().getTransaction();
+            try {
+                transaction.begin();
+                if (billDao.getFilteredBills(null, null, id, null, null, null, null, null, null, null, null, null) != null) {
+                    List<Bill_Detail_Entity> listBillDetail = billDetailDao.getFilteredBillDetails(null, null, null, null, id, null, null, null, null, null);
+                    for (Bill_Detail_Entity billDetail : listBillDetail) {
+                        String idSp = billDetail.getID_SP();
+                        Integer quantity = billDetail.getQUANTITY_BILL();
+                        ProductService productService = new ProductService();
+                        Product_Entity productE = productService.getProductByIDS(idSp);
+                        if (productE == null) {
+                            throw new RuntimeException("Error");
+                        }
+                        if (productE.getQUANTITY() < quantity) {
+                            throw new RuntimeException("Error");
+                        }
+                        Integer newQuantity = productE.getQUANTITY() - quantity;
+
+                        Product_Entity productEntity = new Product_Entity(id, null, null, null, null, null, null, newQuantity, null, null);
+                        if (!productService.changeProduct(productEntity)) {
+                            throw new RuntimeException("Error");
+                        }
+                    }
+                    transaction.commit();
+                }
+
+            } catch (RuntimeException e) {
+                if (transaction.isActive()) {
+                    transaction.rollback();
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean plusProduct(String id) {
+        if (id != null) {
+            EntityTransaction transaction = billDao.getEntityManager().getTransaction();
+            try {
+                transaction.begin();
+                if (billDao.getFilteredBills(null, null, id, null, null, null, null, null, null, null, null, null) != null) {
+                    List<Bill_Detail_Entity> listBillDetail = billDetailDao.getFilteredBillDetails(null, null, null, null, id, null, null, null, null, null);
+                    for (Bill_Detail_Entity billDetail : listBillDetail) {
+                        String idSp = billDetail.getID_SP();
+                        Integer quantity = billDetail.getQUANTITY_BILL();
+                        ProductService productService = new ProductService();
+                        Product_Entity productE = productService.getProductByIDS(idSp);
+                        if (productE == null) {
+                            throw new RuntimeException("Error");
+                        }
+                        Integer newQuantity = productE.getQUANTITY() + quantity;
+
+                        Product_Entity productEntity = new Product_Entity(id, null, null, null, null, null, null, newQuantity, null, null);
+                        if (!productService.changeProduct(productEntity)) {
+                            throw new RuntimeException("Error");
+                        }
+                    }
+                    transaction.commit();
+                }
+
+            } catch (RuntimeException e) {
+                if (transaction.isActive()) {
+                    transaction.rollback();
+                }
+            }
         }
         return false;
     }

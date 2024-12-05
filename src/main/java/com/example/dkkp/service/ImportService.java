@@ -2,10 +2,8 @@ package com.example.dkkp.service;
 
 import com.example.dkkp.dao.ImportDao;
 import com.example.dkkp.dao.ImportDetailDao;
-import com.example.dkkp.model.EnumType;
-import com.example.dkkp.model.Import_Detail_Entity;
-import com.example.dkkp.model.Import_Entity;
-import com.example.dkkp.model.User_Entity;
+import com.example.dkkp.dao.ProductDao;
+import com.example.dkkp.model.*;
 import jakarta.persistence.EntityTransaction;
 
 import java.time.LocalDateTime;
@@ -21,10 +19,12 @@ import java.util.stream.Collectors;
 public class ImportService {
     private final ImportDao importDao;
     private final ImportDetailDao importDetailDao;
+    private final ProductDao productDao;
 
     public ImportService() {
         this.importDao = new ImportDao();
         this.importDetailDao = new ImportDetailDao();
+        this.productDao = new ProductDao();
     }
 
     public List<Import_Entity> getImportByCombinedCondition(
@@ -128,6 +128,39 @@ public class ImportService {
 
         executor.shutdown();
         return results;
+    }
+
+    public boolean confirmImportAddProduct(String id) {
+        if (id != null) {
+            EntityTransaction transaction = importDao.getEntityManager().getTransaction();
+            try {
+                transaction.begin();
+                if (importDao.checkImport(id)) {
+                    List<Import_Detail_Entity> listImportDetail = importDetailDao.getFilteredImportDetails(null, id, null, null, null, null, null);
+                    for (Import_Detail_Entity importDetail : listImportDetail) {
+                        String idSp = importDetail.getID_SP();
+                        Integer quantity = importDetail.getQUANTITY_SP();
+                        ProductService productService = new ProductService();
+                        Product_Entity productE = productService.getProductByIDS(idSp);
+                        if (productE == null) {
+                            throw new RuntimeException("Error");
+                        }
+                        Integer newQuantity = productE.getQUANTITY() + quantity;
+                        Product_Entity productEntity = new Product_Entity(id, null, null, null, null, null, null, newQuantity, null, null);
+                        if (!productService.changeProduct(productEntity)) {
+                            throw new RuntimeException("Error");
+                        }
+                    }
+                    transaction.commit();
+                }
+
+            } catch (RuntimeException e) {
+                if (transaction.isActive()) {
+                    transaction.rollback();
+                }
+            }
+        }
+        return false;
     }
 
     public boolean deleteImport(String idParent) {

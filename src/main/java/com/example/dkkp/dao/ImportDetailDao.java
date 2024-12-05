@@ -36,7 +36,7 @@ public class ImportDetailDao {
     return this.entityManager;
   }
 
-  public List<Import_Detail_Entity> getFilteredImportDetails(String id,String idParent,String idSP, String sortField, String sortOrder, int offset, int setOff) {
+  public List<Import_Detail_Entity> getFilteredImportDetails(String id,String idParent,String idSP, String sortField, String sortOrder, Integer offset, Integer setOff) {
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();
     CriteriaQuery<Import_Detail_Entity> query = cb.createQuery(Import_Detail_Entity.class);
     Root<Import_Detail_Entity> root = query.from(Import_Detail_Entity.class);
@@ -65,8 +65,8 @@ public class ImportDetailDao {
     }
 
     TypedQuery<Import_Detail_Entity> typedQuery = entityManager.createQuery(query);
-    typedQuery.setFirstResult(offset);
-    typedQuery.setMaxResults(setOff);
+    if(offset !=null) typedQuery.setFirstResult(offset);
+    if(setOff !=null) typedQuery.setMaxResults(setOff);
 
     return typedQuery.getResultList();
   }

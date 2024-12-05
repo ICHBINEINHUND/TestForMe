@@ -9,8 +9,8 @@ import jakarta.persistence.Table;
 @Table(name = "bill_detail")
 public class Bill_Detail_Entity {
   @Id
-  @Column(name = "\"ID_BILL\"")
-  private String ID_BILL;
+  @Column(name = "\"ID_BILL_DETAIL\"")
+  private String ID_BILL_DETAIL;
   @Column(name = "\"ID_PARENT\"")
   private String ID_PARENT;
   @Column(name = "\"QUANTITY_BILL\"")
@@ -23,7 +23,7 @@ public class Bill_Detail_Entity {
   private Boolean AVAILABLE;
 
   public Bill_Detail_Entity(String ID_BILL, String ID_PARENT, int QUANTITY_BILL, Double PRICE_BUY, String ID_SP, Boolean AVAILABLE) {
-    this.ID_BILL = ID_BILL;
+    this.ID_BILL_DETAIL = ID_BILL;
     this.ID_PARENT = ID_PARENT;
     this.QUANTITY_BILL = QUANTITY_BILL;
     this.PRICE_BUY = PRICE_BUY;
@@ -50,11 +50,11 @@ public class Bill_Detail_Entity {
   public Bill_Detail_Entity() {}
 
   public String getID_BILL() {
-    return ID_BILL;
+    return ID_BILL_DETAIL;
   }
 
   public void setID_BILL(String ID_BILL) {
-    this.ID_BILL = ID_BILL;
+    this.ID_BILL_DETAIL = ID_BILL;
   }
 
   public int getQUANTITY_BILL() {

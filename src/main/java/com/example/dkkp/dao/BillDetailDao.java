@@ -25,8 +25,8 @@ public class BillDetailDao {
         try {
             transaction.begin();
 
-            int batchSize = 10;
-            for (int i = 0; i < listBillDetail.size(); i++) {
+            Integer batchSize = 10;
+            for (Integer i = 0; i < listBillDetail.size(); i++) {
                 Bill_Detail_Entity billDetail = listBillDetail.get(i);
                 entityManager.persist(billDetail);
 
@@ -44,7 +44,7 @@ public class BillDetailDao {
         }
     }
 
-    public List<Bill_Detail_Entity> getFilteredImportDetails(String id, Double minPrice, Double maxPrice, Integer minQuantity, Integer maxQuantity, String edited_id, String sortField, String sortOrder, int offset, int setOff) {
+    public List<Bill_Detail_Entity> getFilteredBillDetails(String id, Double Price,String idSP, Integer Quantity, String idParent,Boolean availabe, String sortField, String sortOrder, Integer offset, Integer setOff) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Bill_Detail_Entity> query = cb.createQuery(Bill_Detail_Entity.class);
         Root<Bill_Detail_Entity> root = query.from(Bill_Detail_Entity.class);
@@ -52,24 +52,24 @@ public class BillDetailDao {
         Predicate conditions = cb.conjunction();
 
         if (id != null && !id.trim().isEmpty()) {
-            conditions = cb.and(conditions, cb.equal(root.get("ID_BILL"), id));
-        }
-        if (edited_id != null && !edited_id.trim().isEmpty()) {
-            conditions = cb.and(conditions, cb.equal(root.get("EDITED_ID"), edited_id));
+            conditions = cb.and(conditions, cb.equal(root.get("ID_BILL_DETAIL"), id));
         }
 
-        if (minPrice != null) {
-            conditions = cb.and(conditions, cb.greaterThanOrEqualTo(root.get("PRICE_IMP_SP"), minPrice));
+        if (Price != null) {
+            conditions = cb.and(conditions, cb.greaterThanOrEqualTo(root.get("PRICE_BUY"), Price));
         }
-        if (maxPrice != null) {
-            conditions = cb.and(conditions, cb.lessThanOrEqualTo(root.get("PRICE_IMP_SP"), maxPrice));
+        if (Quantity != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("QUANTITY_BILL"), Quantity));
         }
 
-        if (minQuantity != null) {
-            conditions = cb.and(conditions, cb.greaterThanOrEqualTo(root.get("QUANTITY_BILL"), minQuantity));
+        if (idParent != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_PARENT"), idParent));
         }
-        if (maxQuantity != null) {
-            conditions = cb.and(conditions, cb.lessThanOrEqualTo(root.get("QUANTITY_BILL"), maxQuantity));
+        if (idSP != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_SP"), idSP));
+        }
+        if (availabe != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("AVAILABLE"), availabe));
         }
 
         query.where(conditions);
@@ -84,8 +84,8 @@ public class BillDetailDao {
         }
 
         TypedQuery<Bill_Detail_Entity> typedQuery = entityManager.createQuery(query);
-        typedQuery.setFirstResult(offset);
-        typedQuery.setMaxResults(setOff);
+        if(offset !=null) typedQuery.setFirstResult(offset);
+        if(setOff !=null) typedQuery.setMaxResults(setOff);
 
         return typedQuery.getResultList();
     }

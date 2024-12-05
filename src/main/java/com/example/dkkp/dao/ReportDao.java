@@ -41,8 +41,8 @@ public class ReportDao {
           String typeDate,
           String sortField,
           String sortOrder,
-          int offset,
-          int setOff
+          Integer offset,
+          Integer setOff
   ) {
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();
     CriteriaQuery<Report_Bug> query = cb.createQuery(Report_Bug.class);
@@ -94,8 +94,8 @@ public class ReportDao {
 
 
     TypedQuery<Report_Bug> typedQuery = entityManager.createQuery(query);
-    typedQuery.setFirstResult(offset);
-    typedQuery.setMaxResults(setOff);
+    if(offset !=null) typedQuery.setFirstResult(offset);
+    if(setOff !=null) typedQuery.setMaxResults(setOff);
 
     return typedQuery.getResultList();
   }
@@ -125,7 +125,7 @@ public class ReportDao {
     try {
       transaction.begin();
       String jpql = "DELETE FROM Report_Bug";
-      int deletedCount = entityManager.createQuery(jpql).executeUpdate();
+      Integer deletedCount = entityManager.createQuery(jpql).executeUpdate();
       transaction.commit();
       return deletedCount > 0;
     } catch (RuntimeException e) {

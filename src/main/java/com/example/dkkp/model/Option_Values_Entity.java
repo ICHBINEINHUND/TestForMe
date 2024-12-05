@@ -11,7 +11,7 @@ import jakarta.persistence.Table;
 public class Option_Values_Entity {
   @Id
   @Column(name = "\"ID_VALUE\"")
-  private String ID_VALUE;
+  private Integer ID_VALUE;
   @Column(name = "\"VALUE\"")
   private String VALUE;
   @Column(name = "\"ID_PARENT\"")
@@ -19,11 +19,11 @@ public class Option_Values_Entity {
   @Column(name = "\"ID_OPTION\"")
   private String  ID_OPTION;
 
-  public String getID_VALUE() {
+  public Integer getID_VALUE() {
     return ID_VALUE;
   }
 
-  public void setID_VALUE(String ID_VALUE) {
+  public void setID_VALUE(Integer ID_VALUE) {
     this.ID_VALUE = ID_VALUE;
   }
 
@@ -51,7 +51,7 @@ public class Option_Values_Entity {
     this.ID_OPTION = ID_OPTION;
   }
 
-  public Option_Values_Entity(String ID_VALUE, String VALUE, String ID_PARENT, String ID_OPTION) {
+  public Option_Values_Entity(Integer ID_VALUE, String VALUE, String ID_PARENT, String ID_OPTION) {
     this.ID_VALUE = ID_VALUE;
     this.VALUE = VALUE;
     this.ID_PARENT = ID_PARENT;

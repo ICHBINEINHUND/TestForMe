@@ -114,7 +114,7 @@ public class Product_Entity {
     this.IDS_OPTION_VALUES = IDS_OPTION_VALUES;
   }
 
-  public Product_Entity(String ID_SP, String NAME_SP, String DES_SP, String ID_CATEGORY, double PRICE_SP, String IMAGE_SP, Integer VIEW_COUNT, Integer QUANTITY, Double DISCOUNT, List<Integer> IDS_OPTION_VALUES) {
+  public Product_Entity(String ID_SP, String NAME_SP, String DES_SP, String ID_CATEGORY, Double PRICE_SP, String IMAGE_SP, Integer VIEW_COUNT, Integer QUANTITY, Double DISCOUNT, List<Integer> IDS_OPTION_VALUES) {
     this.ID_SP = ID_SP;
     this.NAME_SP = NAME_SP;
     this.DES_SP = DES_SP;
@@ -126,6 +126,7 @@ public class Product_Entity {
     this.DISCOUNT = DISCOUNT;
     this.IDS_OPTION_VALUES = IDS_OPTION_VALUES;
   }
+
 
   public Product_Entity() {
   }
