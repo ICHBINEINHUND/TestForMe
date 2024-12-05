@@ -1,0 +1,91 @@
+package com.example.dkkp.dao;
+
+import com.example.dkkp.model.Import_Detail_Entity;
+import jakarta.persistence.*;
+import jakarta.persistence.criteria.*;
+
+import java.util.List;
+
+public class ImportDetailDao {
+  private final EntityManager entityManager;
+  private static final EntityManagerFactory entityManagerFactory;
+
+  static {
+    entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
+  }
+
+  public ImportDetailDao() {
+    this.entityManager = entityManagerFactory.createEntityManager();
+  }
+
+  public void createImportDetail(Import_Detail_Entity importDetail) {
+    EntityTransaction transaction = entityManager.getTransaction();
+    try {
+      transaction.begin();
+      entityManager.persist(importDetail);
+      transaction.commit();
+    } catch (RuntimeException e) {
+      if (transaction.isActive()) {
+        transaction.rollback();
+      }
+      throw e;
+    }
+  }
+
+  public EntityManager getEntityManager() {
+    return this.entityManager;
+  }
+
+  public List<Import_Detail_Entity> getFilteredImportDetails(String id, String idParent, String idSP, String sortField, String sortOrder, int offset, int setOff) {
+    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Import_Detail_Entity> query = cb.createQuery(Import_Detail_Entity.class);
+    Root<Import_Detail_Entity> root = query.from(Import_Detail_Entity.class);
+    Predicate conditions = cb.conjunction();
+    if (id != null && !id.trim().isEmpty()) {
+      conditions = cb.and(conditions, cb.equal(root.get("ID_IMPD"), id));
+    }
+    if (idParent != null && !idParent.trim().isEmpty()) {
+      conditions = cb.and(conditions, cb.equal(root.get("ID_IPARENT"), idParent));
+    }
+    if (idSP != null && !idSP.trim().isEmpty()) {
+      conditions = cb.and(conditions, cb.equal(root.get("ID_SP"), idSP));
+    }
+    query.where(conditions);
+    if (sortField != null && sortOrder != null) {
+      Path<?> sortPath = root.get(sortField);
+      if ("desc".equalsIgnoreCase(sortOrder)) {
+        query.orderBy(cb.desc(sortPath));
+      } else {
+        query.orderBy(cb.asc(sortPath));
+      }
+    }
+    TypedQuery<Import_Detail_Entity> typedQuery = entityManager.createQuery(query);
+    typedQuery.setFirstResult(offset);
+    typedQuery.setMaxResults(setOff);
+    return typedQuery.getResultList();
+  }
+
+  public boolean deleteImportDetail(String idParent) {
+    EntityTransaction transaction = entityManager.getTransaction();
+    try {
+      transaction.begin();
+      Query query = entityManager.createQuery("UPDATE Import_Detail_Entity e SET e.AVAILABLE = false WHERE e.ID_IPARENT = :idParent");
+      query.setParameter("idParent", idParent);
+      int rowsUpdated = query.executeUpdate();
+      transaction.commit();
+      return rowsUpdated > 0;
+    } catch (RuntimeException e) {
+      if (transaction.isActive()) {
+        transaction.rollback();
+        return false;
+      }
+      throw e;
+    }
+  }
+
+  public static void shutdown() {
+    if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
+      entityManagerFactory.close();
+    }
+  }
+}
