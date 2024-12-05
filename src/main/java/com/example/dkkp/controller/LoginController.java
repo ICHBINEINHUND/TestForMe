@@ -20,7 +20,7 @@ public class LoginController {
 
   @FXML
   private void handleLogin(ActionEvent event) {
-    if (username == null && password == null) {
+    if (username != null && password != null) {
       HomeView homeView = new HomeView();
       Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
       homeView.showHomeView(currentStage);
