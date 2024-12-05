@@ -1,0 +1,45 @@
+.loginSP,
+.loginVB,
+.homeSP {
+  -fx-background-color: #fff;
+}
+
+.loginVB {
+  -fx-border-radius: 10px;
+  -fx-border-width: 2px;
+  -fx-border-color: black;
+}
+
+.logoHB {
+  -fx-padding: 40 0 40 0;
+}
+
+.homeVB {
+  -fx-background-color: #1e1e2e;
+  -fx-border-width: 2px;
+  -fx-border-color: transparent #8e44ad transparent transparent;
+}
+
+.dashboardBtn,
+.productBtn,
+.importBtn,
+.exportBtn {
+  -fx-background-color: #1e1e2e;
+  -fx-cursor: hand;
+  -fx-font-size: 18px;
+  -fx-text-fill: #8e44ad;
+}
+
+.dashboardBtn:hover,
+.productBtn:hover,
+.importBtn:hover,
+.exportBtn:hover {
+  -fx-text-fill: white;
+  -fx-border-width: 4px;
+  -fx-border-color: transparent transparent transparent #8e44ad;
+}
+
+.activeBtn {
+  -fx-background-color: #8e44ad;
+  -fx-text-fill: white;
+}

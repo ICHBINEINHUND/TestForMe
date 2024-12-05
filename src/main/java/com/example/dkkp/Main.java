@@ -5,6 +5,12 @@ import com.example.dkkp.model.User_Entity;
 import com.example.dkkp.service.CheckMailService;
 import com.example.dkkp.service.ReportService;
 import com.example.dkkp.service.UserService;
+import io.github.palexdev.materialfx.theming.JavaFXThemes;
+import io.github.palexdev.materialfx.theming.MaterialFXStylesheets;
+import io.github.palexdev.materialfx.theming.UserAgentBuilder;
+import javafx.application.Application;
+import javafx.stage.Stage;
+import com.example.dkkp.view.LoginView;
 
 
 import java.time.LocalDate;
@@ -52,4 +58,7 @@ public class Main {
             System.out.println("khong thanh cong");
         };
     }
+  public static void main(String[] args) {
+    launch(args);
+  }
 }
