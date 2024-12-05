@@ -4,6 +4,7 @@ import com.example.dkkp.model.Brand_Entity;
 import com.example.dkkp.model.Report_Bug;
 import com.example.dkkp.model.User_Entity;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.*;
 
 import java.util.List;
 
@@ -19,12 +20,13 @@ public class BrandDao {
     this.entityManager = entityManagerFactory.createEntityManager();
   }
 
-  public void createBrand(Brand_Entity brand) {
+  public boolean createBrand(Brand_Entity brand) {
     EntityTransaction transaction = entityManager.getTransaction();
     try {
       transaction.begin();
       entityManager.persist(brand);
       transaction.commit();
+      return true;
     } catch (RuntimeException e) {
       if (transaction.isActive()) {
         transaction.rollback();
@@ -50,6 +52,37 @@ public class BrandDao {
     TypedQuery<Brand_Entity> query = entityManager.createQuery(jpql, Brand_Entity.class);
     query.setParameter("name", name);
     return query.getResultList();
+  }
+
+  public List<Brand_Entity> getFilteredBrand(String id, String name,String sortField,String sortOrder) {
+    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Brand_Entity> query = cb.createQuery(Brand_Entity.class);
+    Root<Brand_Entity> root = query.from(Brand_Entity.class);
+
+    Predicate conditions = cb.conjunction();
+
+    if (id != null && !id.trim().isEmpty()) {
+      conditions = cb.and(conditions, cb.equal(root.get("ID_BRAND"), id));
+    }
+
+    if (name != null && !name.trim().isEmpty()) {
+      conditions = cb.and(conditions, cb.equal(root.get("NAME_BRAND"), name));
+    }
+    if(id == null && name == null){
+      conditions = cb.conjunction();
+    }
+
+    query.where(conditions);
+    if (sortField != null && sortOrder != null) {
+      Path<?> sortPath = root.get(sortField);
+      if ("desc".equalsIgnoreCase(sortOrder)) {
+        query.orderBy(cb.desc(sortPath));
+      } else {
+        query.orderBy(cb.asc(sortPath));
+      }
+    }
+    TypedQuery<Brand_Entity> typedQuery = entityManager.createQuery(query);
+    return typedQuery.getResultList();
   }
 
   public boolean updateBrand(String id, String name,String des) {

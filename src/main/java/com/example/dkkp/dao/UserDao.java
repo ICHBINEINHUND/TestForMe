@@ -21,12 +21,13 @@ public class UserDao {
     this.entityManager = entityManagerFactory.createEntityManager();
   }
 
-  public void createUser(User_Entity user) {
+  public boolean createUser(User_Entity user) {
     EntityTransaction transaction = entityManager.getTransaction();
     try {
       transaction.begin();
       entityManager.persist(user);
       transaction.commit();
+      return true;
     } catch (RuntimeException e) {
       if (transaction.isActive()) {
         transaction.rollback();
@@ -70,7 +71,7 @@ public class UserDao {
     return !users.isEmpty();
   }
 
-  public boolean updateUser(String id, String email, String phone, String password, String role, String name) {
+  public boolean updateUser(String id, String email, String phone, String role, String name) {
     EntityTransaction transaction = entityManager.getTransaction();
     try {
       transaction.begin();
@@ -80,7 +81,6 @@ public class UserDao {
       }
       if (email != null) user.setEMAIL_ACC(email);
       if (phone != null) user.setPHONE_ACC(phone);
-      if (password != null) user.setPASSWORD_ACC(password);
       if (role != null) user.setROLE_ACC(role);
       if (name != null) user.setNAME_USER(name);
       entityManager.merge(user);

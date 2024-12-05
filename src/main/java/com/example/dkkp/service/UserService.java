@@ -18,79 +18,63 @@ public class UserService {
     }
 
     public User_Entity getUsersByID(String id) {
+        // chạy được
         if (id == null || id.trim().isEmpty()) {
             throw new IllegalArgumentException("ID Cannot Be Null!");
         }
         return userDao.getUsersByID(id);
     }
 
-    public void registerNewUser(String ID_USER, String EMAIL_ACC, String PHONE_ACC, String PASSWORD_ACC, String ROLE_ACC, String NAME_USER) {
-
+    public boolean registerNewUser(User_Entity user) {
+        //chạy được
+        // add check ( từ user lấy các property để kiểm tra nếu đạt
+        // thì gọi return userDao.createUser(user);
         LocalDateTime DATE_JOIN = LocalDateTime.now();
-        User_Entity user = new User_Entity(ID_USER, EMAIL_ACC, PHONE_ACC, PASSWORD_ACC, ROLE_ACC, NAME_USER, DATE_JOIN);
-        userDao.createUser(user);
-        System.out.println("da push thanh cong");
-        getInformation(ID_USER);
+        User_Entity userC = user;
+        return userDao.createUser(user);
     }
 
-    public User_Entity getInformation(String ID_USER) {
-        return userDao.getUsersByID(ID_USER);
-    }
 
-    public boolean checkPass(String EMAIL_ACC, String PASSWORD) {
-        User_Entity foundUsers = userDao.getUsersByMail(EMAIL_ACC);
-        return Objects.equals(foundUsers.getPASSWORD_ACC(), PASSWORD);
-    }
-
-    public void login(String EMAIL_ACC, String PASSWORD_ACC) {
+    public boolean login(String EMAIL_ACC, String PASSWORD_ACC) {
         //add check
-        userDao.loginValidate(EMAIL_ACC, PASSWORD_ACC);
-        System.out.println("da push thanh cong");
+        // chạy được
+        // sửa lại các điều kiện kiểm tra email và pass
+        if(EMAIL_ACC != null || !EMAIL_ACC.trim().isEmpty()) {
+            if(PASSWORD_ACC != null || !PASSWORD_ACC.trim().isEmpty()) {
+        return userDao.loginValidate(EMAIL_ACC, PASSWORD_ACC);
+            }
+        }
+        return false;
     }
 
 
-    public boolean updateUserInfo(String id, String email, String phone, String password, String role, String name) {
+    public boolean updateUserInfo(String id, String email, String phone, String role, String name) {
         // add check
-        return userDao.updateUser(id, email, phone, password, role, name);
+        // chạy được
+        return userDao.updateUser(id, email, phone, role, name);
     }
 
-    public boolean changePassword(String email,String oldPassword, String newPassword) {
-        if(checkPass(email,oldPassword)){
+    public boolean changePassword(User_Entity user ,String newPassword) {
+        // chạy được
+        String email = user.getEMAIL_ACC();
+        String oldPassword = user.getPASSWORD_ACC();
+        if(login(email,oldPassword)){
             return userDao.changePasswordByEmail(email, newPassword);
         };
         return false;
     }
 
+    // hàm dưới đây không cần tạo ở service mà cần phải tạo ở controller
+    // , có thể tham kháo code dưới đây
+    // hàm này chỉ để kiểm tra mail có tồn tại thì tạo token cho mail
 
-
-    public boolean forgotPassword(String email) {
-        if (userDao.isUserByMail(email)) {
-            CheckMailService check = new CheckMailService();
-            check.createToken(email);
-            return true;
-        }
-        return false;
-    }
-
-    //    public boolean forgotPassword(String email) {
+//    public boolean forgotPassword(String email) {
 //        if (userDao.isUserByMail(email)) {
 //            CheckMailService check = new CheckMailService();
 //            check.createToken(email);
-//            Scanner ip = new Scanner(System.in);
-//            System.out.println("Nhap token");
-//            String token = ip.nextLine();
-//            if (check.checkToken(email, token)) {
-//                System.out.println();
-//                String newPass = ip.nextLine();
-//                if (userDao.changePasswordByEmail(email, newPass)) {
-//                    check.shutdown();
-//                    UserDao.shutdown();
-//                    return true;
-//                }
-//            }
-//            return false;
+//            return true;
 //        }
-//        ;
 //        return false;
 //    }
+
 }

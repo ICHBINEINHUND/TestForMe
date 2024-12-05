@@ -17,11 +17,11 @@ public class Brand_Entity {
   @Column(name = "\"DETAIL\"")
   private String DETAIL;
 
-  public String getID_CATEGORY() {
+  public String getID_BRAND() {
     return ID_BRAND;
   }
 
-  public void setID_CATEGORY(String ID_CATEGORY) {
+  public void setID_BRAND(String ID_CATEGORY) {
     this.ID_BRAND = ID_CATEGORY;
   }
 

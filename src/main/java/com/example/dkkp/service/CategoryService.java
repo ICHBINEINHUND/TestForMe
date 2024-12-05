@@ -17,13 +17,13 @@ public class CategoryService {
   }
 
 
-  public void createNewCategory(){
-    String ID_REPORT =" 12ee22";
-    String NAME_CATEGORY ="dcm";
-    String ID_PARENT = "098748950";
-    String ID_BRAND = "dc";
+  public void createNewCategory(Category_Entity category) {
+    String ID_CATEGORY = category.getID_CATEGORY();
+    String NAME_CATEGORY = category.getNAME_CATEGORY();
+    String ID_PARENT = category.getID_PARENT();
+    String ID_BRAND = category.getID_BRAND();
     boolean IS_BASE_PRODUCT = true;
-    Category_Entity category = new Category_Entity(ID_REPORT,NAME_CATEGORY,ID_PARENT,ID_BRAND,IS_BASE_PRODUCT);
+    Category_Entity categoryC = new Category_Entity(ID_CATEGORY,NAME_CATEGORY,ID_PARENT,ID_BRAND,IS_BASE_PRODUCT);
     categoryDao.createCategory(category);
     System.out.println("da push thanh cong");
   }

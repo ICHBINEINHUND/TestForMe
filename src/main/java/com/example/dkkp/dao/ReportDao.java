@@ -1,5 +1,6 @@
 package com.example.dkkp.dao;
 
+import com.example.dkkp.model.EnumType;
 import com.example.dkkp.model.Report_Bug;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
@@ -20,12 +21,13 @@ public class ReportDao {
   }
 
   // Tạo báo cáo
-  public void createReport(Report_Bug report) {
+  public boolean createReport(Report_Bug report) {
     EntityTransaction transaction = entityManager.getTransaction();
     try {
       transaction.begin();
       entityManager.persist(report);
       transaction.commit();
+      return true;
     } catch (RuntimeException e) {
       if (transaction.isActive()) {
         transaction.rollback();
@@ -37,12 +39,11 @@ public class ReportDao {
   public List<Report_Bug> getFilteredReports(
           String userId,
           String reportId,
+          EnumType.Bug_Type status,
           LocalDateTime dateReport,
           String typeDate,
           String sortField,
-          String sortOrder,
-          Integer offset,
-          Integer setOff
+          String sortOrder
   ) {
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();
     CriteriaQuery<Report_Bug> query = cb.createQuery(Report_Bug.class);
@@ -56,6 +57,9 @@ public class ReportDao {
 
     if (reportId != null && !reportId.trim().isEmpty()) {
       conditions = cb.and(conditions, cb.equal(root.get("ID_REPORT"), reportId));
+    }
+    if (status != null) {
+      conditions = cb.and(conditions, cb.equal(root.get("TYPE_BUG"), status));
     }
 
     if (dateReport != null && typeDate != null) {
@@ -94,9 +98,6 @@ public class ReportDao {
 
 
     TypedQuery<Report_Bug> typedQuery = entityManager.createQuery(query);
-    if(offset !=null) typedQuery.setFirstResult(offset);
-    if(setOff !=null) typedQuery.setMaxResults(setOff);
-
     return typedQuery.getResultList();
   }
 
@@ -125,7 +126,7 @@ public class ReportDao {
     try {
       transaction.begin();
       String jpql = "DELETE FROM Report_Bug";
-      Integer deletedCount = entityManager.createQuery(jpql).executeUpdate();
+      int deletedCount = entityManager.createQuery(jpql).executeUpdate();
       transaction.commit();
       return deletedCount > 0;
     } catch (RuntimeException e) {

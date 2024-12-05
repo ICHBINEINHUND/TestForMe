@@ -17,37 +17,48 @@ public class ReportService {
   }
 
 
-  public void createNewReport(){
-    String ID_REPORT =" 12ee22";
-    EnumType.Bug_Type TYPE_BUG =UI;
-    String SCRIPT_BUG = "098748950";
-    LocalDateTime DATE_REPORT = LocalDateTime.now();
-    String ID_USER = "12ee2";
+  public boolean createNewReport(Report_Bug report) {
+    // chạy được
+    // add check kiểm tra các thuộc tính ở dưới
+    // đây hợp lí thì mới cho return reportDao.createReport(rp);
+    // còn không thì return false
+    String ID_REPORT =report.getID_REPORT();
+    EnumType.Bug_Type TYPE_BUG =report.getTYPE_BUG();
+    String SCRIPT_BUG = report.getSCRIPT_BUG();
+    LocalDateTime DATE_REPORT = report.getDATE_REPORT();
+    String ID_USER = report.getID_USER();
 
     Report_Bug rp = new Report_Bug(ID_REPORT,TYPE_BUG,SCRIPT_BUG,DATE_REPORT,ID_USER);
-    reportDao.createReport(rp);
-    System.out.println("da push thanh cong");
+    return reportDao.createReport(rp);
   }
 
-  public void deleteReport(String id){
+  public boolean deleteReport(String id){
+    // chạy được
     if(id == null){
-      reportDao.deleteAllReports();
+      return reportDao.deleteAllReports();
     }else{
-      reportDao.deleteReportById(id);
+      return reportDao.deleteReportById(id);
     }
   }
 
   public List<Report_Bug> getFilteredReports(
-          String userId,
-          String reportId,
-          LocalDateTime dateReport,
+          Report_Bug report,
           String typeDate,
           String sortField,
-          String sortOrder,
-          int offset,
-          int setOff
+          String sortOrder
   ) {
-    return reportDao.getFilteredReports(userId, reportId, dateReport, typeDate, sortField, sortOrder, offset, setOff);
+    // chạy được
+    // cần add check kiểm tra sortOrder phải bằng tên của các cột trong bảng thuộc tính
+    // còn sort field cần phải bằng asc hoặc desc
+    // recommed dùng equalsIgnoreCase để loại bỏ sự khác biệt giữa chữ hoa và thường
+    // không cần kiểm tra sự hợp lệ của các tham số truyền vào khác như userId,...
+    String userId = report.getID_USER();
+    String reportId = report.getID_REPORT();
+    LocalDateTime dateReport = report.getDATE_REPORT();
+    EnumType.Bug_Type bugType = report.getTYPE_BUG();
+
+
+    return reportDao.getFilteredReports(userId, reportId,bugType, dateReport, typeDate, sortField, sortOrder);
   }
 
 
