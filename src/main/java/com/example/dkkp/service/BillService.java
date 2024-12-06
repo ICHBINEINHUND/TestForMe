@@ -7,7 +7,9 @@ import jakarta.persistence.EntityTransaction;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
@@ -30,23 +32,20 @@ public class BillService {
             String sortField,
             String sortOrder,
             int setOff
-    ) {
+    ) throws Exception {
         LocalDateTime dateExport = billEntity.getDate_EXP();
         String id = billEntity.getID_BILL();
-        String phone = billEntity.getPHONE_BILL();
-        String add = billEntity.getADD_BILL();
+        String phone = SecutiryFunction.encrypt(billEntity.getPHONE_BILL());
+        String add = SecutiryFunction.encrypt(billEntity.getADD_BILL());
         String idUser = billEntity.getID_USER();
         EnumType.Status_Bill statusBill = billEntity.getBILL_STATUS();
-        ExecutorService executor = Executors.newFixedThreadPool(3);
+        ExecutorService executor = Executors.newFixedThreadPool(3); // số lượng luồng
         AtomicBoolean continueFlag = new AtomicBoolean(true);
-
         ConcurrentLinkedQueue<Integer> offsetsQueue = new ConcurrentLinkedQueue<>();
         for (int i = 0; i < Integer.MAX_VALUE; i++) {
             offsetsQueue.add(i * setOff);
         }
-
         List<CompletableFuture<List<Bill_Entity>>> futures = new ArrayList<>();
-
         for (int i = 0; i < 3; i++) {
             futures.add(CompletableFuture.supplyAsync(() -> {
                 List<Bill_Entity> results = new ArrayList<>();
@@ -54,29 +53,32 @@ public class BillService {
                     Integer offset = offsetsQueue.poll();
                     if (offset == null) {
                         continueFlag.set(false);
-                        break;
-                    }
+                        break;}
                     List<Bill_Entity> partialResult = billDao.getFilteredBills(
-                            dateExport, typeDate, id, phone, add, idUser, statusBill, add, sortField, sortOrder, offset, setOff
-                    );
-
+                            dateExport, typeDate, id, phone, add, idUser, statusBill, add, sortField, sortOrder, offset, setOff);
                     if (partialResult.isEmpty()) {
                         continueFlag.set(false);
-                        break;
-                    }
-                    results.addAll(partialResult);
-                }
+                        break;}
+                    results.addAll(partialResult);}
                 return results;
-            }, executor));
-        }
+            }, executor));}
         List<Bill_Entity> results = futures.stream()
                 .map(CompletableFuture::join)
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
+        if (Objects.equals(sortField, "PHONE_BILL")) {
+            if (sortOrder.equals("desc")) {
+                results.sort(Comparator.comparing(Bill_Entity::getPHONE_BILL).reversed());
+            } else {
+                results.sort(Comparator.comparing(Bill_Entity::getPHONE_BILL));}}
+        if (Objects.equals(sortField, "ADD_BILL")) {
+            if (sortOrder.equals("desc")) {
+                results.sort(Comparator.comparing(Bill_Entity::getADD_BILL).reversed());
+            } else {
+                results.sort(Comparator.comparing(Bill_Entity::getADD_BILL));}}
         executor.shutdown();
         return results;
     }
-
     public boolean deleteBillAndDetail(String id) {
         if (id != null) {
             EntityTransaction transaction = billDao.getEntityManager().getTransaction();
@@ -193,6 +195,38 @@ public class BillService {
                 if (transaction.isActive()) {
                     transaction.rollback();
                 }
+            }
+        }
+        return false;
+    }
+
+    public boolean registerNewBill(Bill_Entity billEntity) throws Exception {
+        //add check
+        LocalDateTime DATE_JOIN = LocalDateTime.now();
+        String idUser = billEntity.getID_USER();
+        UserService userService = new UserService();
+        String phone = userService.getUsersByID(idUser).getPHONE_ACC();
+        String add = userService.getUsersByID(idUser).getADDRESS();
+
+        billEntity.setADD_BILL(add);
+        billEntity.setPHONE_BILL(phone);
+        billEntity.setDate_EXP(DATE_JOIN);
+        return billDao.createBill(billEntity);
+    }
+
+    public boolean registerNewImportDetail(List<Bill_Detail_Entity> listBillDetail) {
+        //add check
+        if (listBillDetail != null) {
+            EntityTransaction transaction = billDetailDao.getEntityManager().getTransaction();
+            try {
+                transaction.begin();
+                billDetailDao.createBillDetail(listBillDetail);
+                return true;
+            } catch (Exception e) {
+                if (transaction.isActive()) {
+                    transaction.rollback();
+                }
+                return false;
             }
         }
         return false;

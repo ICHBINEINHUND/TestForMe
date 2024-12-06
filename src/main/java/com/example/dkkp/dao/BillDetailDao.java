@@ -20,6 +20,10 @@ public class BillDetailDao {
         this.entityManager = entityManagerFactory.createEntityManager();
     }
 
+    public EntityManager getEntityManager() {
+        return this.entityManager;
+    }
+
     public void createBillDetail(List<Bill_Detail_Entity> listBillDetail) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
