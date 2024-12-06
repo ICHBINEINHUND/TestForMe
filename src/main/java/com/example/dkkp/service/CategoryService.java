@@ -28,7 +28,6 @@ public class CategoryService {
             boolean IS_BASE_PRODUCT = true;
             Category_Entity categoryC = new Category_Entity(ID_CATEGORY, NAME_CATEGORY, ID_PARENT, ID_BRAND, IS_BASE_PRODUCT);
             categoryDao.createCategory(category);
-            System.out.println("da push thanh cong");
             return true;
         } catch (
                 RuntimeException e) {

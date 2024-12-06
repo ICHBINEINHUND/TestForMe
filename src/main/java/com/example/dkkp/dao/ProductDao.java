@@ -1,6 +1,7 @@
 package com.example.dkkp.dao;
 
 import com.example.dkkp.model.Product_Entity;
+import com.example.dkkp.model.User_Entity;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
 
@@ -39,12 +40,15 @@ public class ProductDao {
     }
 
     public Product_Entity getProductById(String id) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        var query = entityManager.createQuery("SELECT po FROM Product_Entity po WHERE po.id = :id", Product_Entity.class);
+        String jpql = "SELECT u FROM Product_Entity u WHERE u.ID_SP = :id";
+        TypedQuery<Product_Entity> query = entityManager.createQuery(jpql, Product_Entity.class);
         query.setParameter("id", id);
-//        Product_Entity product = query.getSingleResult();
+        System.out.println("trong dao");
+        System.out.println(query.getSingleResult().getNAME_SP());;
         return query.getSingleResult();
+
     }
+
 
     public List<Product_Entity> getFilteredProduct(String id,
                                                    String NAME_SP,

@@ -6,6 +6,7 @@ import com.example.dkkp.dao.ProductDao;
 import com.example.dkkp.model.*;
 import jakarta.persistence.EntityTransaction;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -193,30 +194,55 @@ public class ImportService {
 
     public boolean registerNewImport(Import_Entity importEntity) {
         //add check
-//        LocalDateTime DATE_JOIN = LocalDateTime.now();
-        Import_Entity importE = importEntity;
-        return importDao.createImport(importE);
+        LocalDateTime DATE_JOIN = LocalDateTime.now();
+        importEntity.setDATE_IMP(DATE_JOIN);
+        return importDao.createImport(importEntity);
     }
 
     public boolean registerNewImportDetail(List<Import_Detail_Entity> listImportDetail) {
         //add check
         if (listImportDetail != null) {
-            EntityTransaction transaction = importDetailDao.getEntityManager().getTransaction();
+            try {
+                importDetailDao.createImportDetail(listImportDetail);
+                for (Import_Detail_Entity importDetail : listImportDetail) {
+                    String id = importDetail.getID_IPARENT();
+                    plusProduct(id);
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return false;
+    }
+
+    public boolean plusProduct(String id) {
+        if (id != null) {
+            EntityTransaction transaction = importDao.getEntityManager().getTransaction();
             try {
                 transaction.begin();
-                for (Import_Detail_Entity importDetail : listImportDetail) {
-                    Import_Detail_Entity importD = importDetail;
-                    importDetailDao.createImportDetail(importD);
-                    //add product
-                    return true;
+                if (importDao.getFilteredImports(null, null, id, null, null, null, null, null, null) != null) {
+                    List<Import_Detail_Entity> listImportDetail = importDetailDao.getFilteredImportDetails(null, id, null, null, null, null, null);
+                    for (Import_Detail_Entity importDetail : listImportDetail) {
+                        String idSp = importDetail.getID_SP();
+                        System.out.println(idSp);
+                        Integer quantity = importDetail.getQUANTITY_SP();
+                        ProductService productService = new ProductService();
+                        Product_Entity productE = productService.getProductByIDS(idSp);
+                        if (productE == null) {
+                            throw new RuntimeException("Error");
+                        }
+                        Integer newQuantity = productE.getQUANTITY() + quantity;
+                        productE.setQUANTITY(newQuantity);
+
+                        return productService.changeProduct(productE);
+                    }
+                    transaction.commit();
                 }
 
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 if (transaction.isActive()) {
                     transaction.rollback();
                 }
-
-                return false;
             }
         }
         return false;

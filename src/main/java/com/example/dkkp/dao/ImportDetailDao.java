@@ -5,6 +5,7 @@ import com.example.dkkp.model.User_Entity;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class ImportDetailDao {
@@ -19,17 +20,24 @@ public class ImportDetailDao {
     this.entityManager = entityManagerFactory.createEntityManager();
   }
 
-  public void createImportDetail(Import_Detail_Entity importDetail) {
+  public void createImportDetail(List<Import_Detail_Entity>  listImportDetail) throws SQLException {
     EntityTransaction transaction = entityManager.getTransaction();
     try {
       transaction.begin();
-      entityManager.persist(importDetail);
+      for (Import_Detail_Entity importDetail : listImportDetail) {
+        System.out.println("service register1");
+        entityManager.persist(importDetail);
+        //add product
+        System.out.println("service register2");
+      }
       transaction.commit();
+
     } catch (RuntimeException e) {
       if (transaction.isActive()) {
         transaction.rollback();
+        System.out.println(e.getMessage() + "dcm loi ex");
       }
-      throw e;
+
     }
   }
   public EntityManager getEntityManager() {

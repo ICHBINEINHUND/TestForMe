@@ -54,12 +54,15 @@ public class ImportDao {
 
         Predicate conditions = cb.conjunction();
 
-        conditions = switch (typeDate) {
-            case "<" -> cb.and(conditions, cb.lessThan(root.get("DATE_IMP"), dateJoin));
-            case ">" -> cb.and(conditions, cb.greaterThan(root.get("DATE_IMP"), dateJoin));
-            case "=" -> cb.and(conditions, cb.equal(root.get("DATE_IMP"), dateJoin));
-            default -> conditions;
-        };
+        if (typeDate != null) {
+
+            conditions = switch (typeDate) {
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("DATE_IMP"), dateJoin));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("DATE_IMP"), dateJoin));
+                case "=" -> cb.and(conditions, cb.equal(root.get("DATE_IMP"), dateJoin));
+                default -> conditions;
+            };
+        }
 
         if (id != null) {
             conditions = cb.and(conditions, cb.equal(root.get("ID_IMP"), id));
@@ -82,8 +85,8 @@ public class ImportDao {
             }
         }
         TypedQuery<Import_Entity> typedQuery = entityManager.createQuery(query);
-        if(offset !=null) typedQuery.setFirstResult(offset);  // vị trí bắt đầu
-        if(setOff !=null) typedQuery.setMaxResults(setOff); // Số lượng bản ghi mỗi lần
+        if (offset != null) typedQuery.setFirstResult(offset);  // vị trí bắt đầu
+        if (setOff != null) typedQuery.setMaxResults(setOff); // Số lượng bản ghi mỗi lần
 
         return typedQuery.getResultList();
     }
