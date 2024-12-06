@@ -1,6 +1,7 @@
 package com.example.dkkp.dao;
 
 import com.example.dkkp.model.Category_Entity;
+import io.github.palexdev.mfxeffects.beans.Offset;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
 
@@ -40,8 +41,8 @@ public class CategoryDao {
           Boolean isBaseProduct,
           String sortField,
           String sortOrder,
-          int offset,
-          int setOff
+          Integer offset,
+          Integer setOff
   ) {
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();
     CriteriaQuery<Category_Entity> query = cb.createQuery(Category_Entity.class);
@@ -68,7 +69,7 @@ public class CategoryDao {
     query.where(conditions);
 
     if (sortField != null && sortOrder != null) {
-      Path<?> sortPath = root.get(sortField);
+      Path<?> sortPath = root.get(sortField.toUpperCase());
       if ("desc".equalsIgnoreCase(sortOrder)) {
         query.orderBy(cb.desc(sortPath));
       } else {
@@ -77,8 +78,8 @@ public class CategoryDao {
     }
 
     TypedQuery<Category_Entity> typedQuery = entityManager.createQuery(query);
-    typedQuery.setFirstResult(offset);
-    typedQuery.setMaxResults(setOff);
+    if(offset != null)typedQuery.setFirstResult(offset);
+    if(setOff != null) typedQuery.setMaxResults(setOff);
 
     return typedQuery.getResultList();
   }

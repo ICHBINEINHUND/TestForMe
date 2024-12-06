@@ -1,10 +1,8 @@
 package com.example.dkkp.controller;
 
-import com.example.dkkp.model.Brand_Entity;
-import com.example.dkkp.model.EnumType;
-import com.example.dkkp.model.Report_Bug;
-import com.example.dkkp.model.User_Entity;
+import com.example.dkkp.model.*;
 import com.example.dkkp.service.BrandService;
+import com.example.dkkp.service.CategoryService;
 import com.example.dkkp.service.ReportService;
 import com.example.dkkp.service.UserService;
 
@@ -14,16 +12,14 @@ import java.util.List;
 public class UserController {
     public static void main(String[] args) {
         LocalDateTime now = LocalDateTime.now();
-        BrandService brandService = new BrandService();
-//        Brand_Entity brantity= new Brand_Entity("TestBrand","TenBrand","chonguDes1");
-        Brand_Entity brandToUpdate = new Brand_Entity("TestBrand","TenBrandmoi","moi");
-        brandService.updateBrand(brandToUpdate);
-        Brand_Entity brandEntity = new Brand_Entity("TestBrand",null,null);
-        brandService.deleteBrand("TestBrand");
-        List<Brand_Entity> brandEntities= brandService.getBrandBy(brandEntity,"NAME_BRAND","desc");
-        for (Brand_Entity brandEntity1 : brandEntities) {
-            System.out.println(brandEntity1.getID_BRAND());
-        }
-
+        CategoryService categoryService = new CategoryService();
+        Category_Entity category_entity = new Category_Entity("CateIDcon2","CateName","CateID","TestBrand",true);
+        Category_Entity category_entityToUPdate = new Category_Entity("CateIDcon2","new name","CateIDcon1","TestBrand",false);
+        categoryService.deleteCategory("CateIDcon2");
+//        List<Category_Entity> ct = categoryService.getFilteredCategories(category_entityToQuery,null,null,null,null);
+//        for(Category_Entity c : ct) {
+//            System.out.println(c.getID_CATEGORY());
+//        }
     }
+
 }

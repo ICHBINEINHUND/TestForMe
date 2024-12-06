@@ -56,7 +56,7 @@ public class ImportDetailDao {
     query.where(conditions);
 
     if (sortField != null && sortOrder != null) {
-      Path<?> sortPath = root.get(sortField);
+      Path<?> sortPath = root.get(sortField.toUpperCase());
       if ("desc".equalsIgnoreCase(sortOrder)) {
         query.orderBy(cb.desc(sortPath));
       } else {

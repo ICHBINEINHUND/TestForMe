@@ -21,7 +21,7 @@ public class Category_Entity {
   @Column(name = "\"ID_BRAND\"")
   private String ID_BRAND;
   @Column(name = "\"IS_BASE_PRODUCT\"")
-  private boolean IS_BASE_PRODUCT;
+  private Boolean IS_BASE_PRODUCT;
 
   public String getID_CATEGORY() {
     return ID_CATEGORY;
@@ -55,15 +55,15 @@ public class Category_Entity {
     this.ID_BRAND = ID_BRAND;
   }
 
-  public boolean getIS_BASE_PRODUCT() {
+  public Boolean getIS_BASE_PRODUCT() {
     return IS_BASE_PRODUCT;
   }
 
-  public void setIS_BASE_PRODUCT(boolean IS_BASE_PRODUCT) {
+  public void setIS_BASE_PRODUCT(Boolean IS_BASE_PRODUCT) {
     this.IS_BASE_PRODUCT = IS_BASE_PRODUCT;
   }
 
-  public Category_Entity(String ID_CATEGORY, String NAME_CATEGORY, String ID_PARENT, String ID_BRAND, boolean IS_BASE_PRODUCT) {
+  public Category_Entity(String ID_CATEGORY, String NAME_CATEGORY, String ID_PARENT, String ID_BRAND, Boolean IS_BASE_PRODUCT) {
     this.ID_CATEGORY = ID_CATEGORY;
     this.NAME_CATEGORY = NAME_CATEGORY;
     this.ID_PARENT = ID_PARENT;

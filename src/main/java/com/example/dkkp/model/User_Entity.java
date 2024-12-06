@@ -26,6 +26,38 @@ public class User_Entity {
   private String NAME_USER;
   @Column(name = "\"DATE_JOIN\"")
   private LocalDateTime DATE_JOIN;
+  @Column(name = "\"SALT\"")
+  private String SALT;
+  @Column(name = "\"ADDRESS\"")
+  private String ADDRESS;
+
+  public String getSALT() {
+    return SALT;
+  }
+
+  public void setSALT(String SALT) {
+    this.SALT = SALT;
+  }
+
+  public String getADDRESS() {
+    return ADDRESS;
+  }
+
+  public void setADDRESS(String ADDRESS) {
+    this.ADDRESS = ADDRESS;
+  }
+
+  public User_Entity(String ID_USER, String EMAIL_ACC, String PHONE_ACC, String PASSWORD_ACC, String ROLE_ACC, String NAME_USER, LocalDateTime DATE_JOIN, String SALT, String ADDRESS) {
+    this.ID_USER = ID_USER;
+    this.EMAIL_ACC = EMAIL_ACC;
+    this.PHONE_ACC = PHONE_ACC;
+    this.PASSWORD_ACC = PASSWORD_ACC;
+    this.ROLE_ACC = ROLE_ACC;
+    this.NAME_USER = NAME_USER;
+    this.DATE_JOIN = DATE_JOIN;
+    this.SALT = SALT;
+    this.ADDRESS = ADDRESS;
+  }
 
   public String getID_USER() {
     return ID_USER;
@@ -80,16 +112,6 @@ public class User_Entity {
   }
 
   public void setDATE_JOIN(LocalDateTime DATE_JOIN) {
-    this.DATE_JOIN = DATE_JOIN;
-  }
-
-  public User_Entity(String ID_USER, String EMAIL_ACC, String PHONE_ACC, String PASSWORD_ACC, String ROLE_ACC, String NAME_USER, LocalDateTime DATE_JOIN) {
-    this.ID_USER = ID_USER;
-    this.EMAIL_ACC = EMAIL_ACC;
-    this.PHONE_ACC = PHONE_ACC;
-    this.PASSWORD_ACC = PASSWORD_ACC;
-    this.ROLE_ACC = ROLE_ACC;
-    this.NAME_USER = NAME_USER;
     this.DATE_JOIN = DATE_JOIN;
   }
 

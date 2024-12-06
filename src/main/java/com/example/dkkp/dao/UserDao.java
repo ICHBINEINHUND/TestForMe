@@ -1,6 +1,7 @@
 package com.example.dkkp.dao;
 
 import com.example.dkkp.model.User_Entity;
+import com.example.dkkp.service.SecutiryFunction;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.EntityManagerFactory;
@@ -34,6 +35,9 @@ public class UserDao {
       }
       throw e;
     }
+  }
+  public EntityManager getEntityManager() {
+    return this.entityManager;
   }
 
   public List<User_Entity> getAllUsers() {
@@ -71,7 +75,7 @@ public class UserDao {
     return !users.isEmpty();
   }
 
-  public boolean updateUser(String id, String email, String phone, String role, String name) {
+  public boolean updateUser(String id,String add, String email, String phone, String role, String name) {
     EntityTransaction transaction = entityManager.getTransaction();
     try {
       transaction.begin();
@@ -80,6 +84,7 @@ public class UserDao {
         return false;
       }
       if (email != null) user.setEMAIL_ACC(email);
+      if (add != null) user.setADDRESS(add);
       if (phone != null) user.setPHONE_ACC(phone);
       if (role != null) user.setROLE_ACC(role);
       if (name != null) user.setNAME_USER(name);
@@ -106,10 +111,11 @@ public class UserDao {
       if (user == null) {
         return false;
       }
-
-      user.setPASSWORD_ACC(newPassword);
+      String newSalt = SecutiryFunction.generateSalt();
+      user.setSALT(newSalt);
+      String newPass = SecutiryFunction.hashString(newPassword+newSalt);
+      user.setPASSWORD_ACC(newPass);
       entityManager.merge(user);
-
       transaction.commit();
       return true;
     } catch (RuntimeException e) {
