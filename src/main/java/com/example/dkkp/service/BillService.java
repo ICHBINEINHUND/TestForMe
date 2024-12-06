@@ -53,15 +53,31 @@ public class BillService {
                     Integer offset = offsetsQueue.poll();
                     if (offset == null) {
                         continueFlag.set(false);
-                        break;}
+                        break;
+                    }
                     List<Bill_Entity> partialResult = billDao.getFilteredBills(
                             dateExport, typeDate, id, phone, add, idUser, statusBill, add, sortField, sortOrder, offset, setOff);
                     if (partialResult.isEmpty()) {
                         continueFlag.set(false);
-                        break;}
-                    results.addAll(partialResult);}
+                        break;
+                    }
+                    results.addAll(partialResult);
+                    // giải mã
+                    for (Bill_Entity bill : results) {
+                        try {
+                            String phoneDe = SecutiryFunction.decrypt(bill.getPHONE_BILL());
+                            String addDe =SecutiryFunction.decrypt(bill.getADD_BILL()) ;
+                            bill.setPHONE_BILL(phoneDe);
+                            bill.setADD_BILL(addDe);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+
+                    }
+                }
                 return results;
-            }, executor));}
+            }, executor));
+        }
         List<Bill_Entity> results = futures.stream()
                 .map(CompletableFuture::join)
                 .flatMap(List::stream)
@@ -70,15 +86,20 @@ public class BillService {
             if (sortOrder.equals("desc")) {
                 results.sort(Comparator.comparing(Bill_Entity::getPHONE_BILL).reversed());
             } else {
-                results.sort(Comparator.comparing(Bill_Entity::getPHONE_BILL));}}
+                results.sort(Comparator.comparing(Bill_Entity::getPHONE_BILL));
+            }
+        }
         if (Objects.equals(sortField, "ADD_BILL")) {
             if (sortOrder.equals("desc")) {
                 results.sort(Comparator.comparing(Bill_Entity::getADD_BILL).reversed());
             } else {
-                results.sort(Comparator.comparing(Bill_Entity::getADD_BILL));}}
+                results.sort(Comparator.comparing(Bill_Entity::getADD_BILL));
+            }
+        }
         executor.shutdown();
         return results;
     }
+
     public boolean deleteBillAndDetail(String id) {
         if (id != null) {
             EntityTransaction transaction = billDao.getEntityManager().getTransaction();
