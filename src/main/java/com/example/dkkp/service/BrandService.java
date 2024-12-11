@@ -19,6 +19,7 @@ public class BrandService {
 
     public BrandService() {
         this.brandDao = new BrandDao();
+        this.entityManager = entityManagerFactory.createEntityManager();
     }
 
 
