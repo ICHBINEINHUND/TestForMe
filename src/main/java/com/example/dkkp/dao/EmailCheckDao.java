@@ -28,7 +28,7 @@ public class EmailCheckDao {
         transaction.rollback();
         return false;
       }
-      throw e;
+      throw new RuntimeException("Error creating token", e);
     }
   }
 
@@ -53,7 +53,7 @@ public class EmailCheckDao {
       if (transaction.isActive()) {
         transaction.rollback();
       }
-      throw e;
+      throw new RuntimeException("Error deleting token", e);
     }
   }
 

@@ -36,7 +36,7 @@ public class ProductDao {
                 transaction.rollback();
                 return false;
             }
-            throw e;
+            throw new RuntimeException("Error creating product", e);
         }
     }
 
@@ -119,17 +119,12 @@ public class ProductDao {
     }
 
     public boolean deleteProduct(String id) {
-
-        System.out.println("dao");
         Product_Entity product = entityManager.find(Product_Entity.class, id);
-        System.out.println("dao2");
         if (product != null) {
-            System.out.println("dao31");
             entityManager.remove(product);
             return true;
         }
-        System.out.println("dao32");
-        throw new RuntimeException("Error occurred while deleting Option Value");
+        throw new RuntimeException("Cant find id to delete");
 
     }
 
@@ -166,7 +161,7 @@ public class ProductDao {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            throw e;
+            throw new RuntimeException("Error occurred while updating product", e);
         }
     }
 

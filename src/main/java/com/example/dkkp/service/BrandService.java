@@ -26,15 +26,10 @@ public class BrandService {
     public boolean createNewBrand(Brand_Entity brand) {
         // chạy được
         //add check thông tin trước khi tạo brand mới
-        try {
             String ID_BRAND = brand.getID_BRAND();
             String NAME_BRAND = brand.getNAME_BRAND();
             String DETAIl = brand.getDETAIL();
             return brandDao.createBrand(brand);
-        } catch (
-                RuntimeException e) {
-            throw e;
-        }
     }
 
     public List<Brand_Entity> getBrandBy(
@@ -51,24 +46,19 @@ public class BrandService {
                 return brandDao.getFilteredBrand(ID_BRAND, NAME_BRAND, sortField, sortOrder);
             }
             return null;
-        } catch (
-                RuntimeException e) {
-            throw e;
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Failed to get brand with filter", e);
         }
     }
 
     public boolean deleteBrand(String id) {
         // chạy được
         // không cần add check
-        try {
             if (id != null) {
                 return brandDao.deleteBrandById(id);
+            }else{
+                throw new RuntimeException("id is null");
             }
-            return false;
-        } catch (
-                RuntimeException e) {
-            throw e;
-        }
     }
 
 
@@ -76,18 +66,12 @@ public class BrandService {
         // add check
         // chạy được
         // không cần add check
-        try {
             String id = brand.getID_BRAND();
             String name = brand.getNAME_BRAND();
             String detail = brand.getDETAIL();
             if (id == null || (name == null && detail == null)) {
-
-                return false;
+                throw new RuntimeException("id or detail is null");
             }
             return brandDao.updateBrand(id, name, detail);
-        } catch (
-                RuntimeException e) {
-            throw e;
-        }
     }
 }

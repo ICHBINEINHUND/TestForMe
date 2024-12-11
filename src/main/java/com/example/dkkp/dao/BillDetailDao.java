@@ -44,7 +44,7 @@ public class BillDetailDao {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            throw e;
+            throw new RuntimeException("Error creating bill detail", e);
         }
     }
 

@@ -32,7 +32,7 @@ public class BrandDao {
       if (transaction.isActive()) {
         transaction.rollback();
       }
-      throw e;
+      throw new RuntimeException("Error creating Brand", e);
     }
   }
 
@@ -123,7 +123,7 @@ public class BrandDao {
       if (transaction.isActive()) {
         transaction.rollback();
       }
-      throw e;
+      throw new RuntimeException("Error for delete brand");
     }
   }
 

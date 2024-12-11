@@ -43,73 +43,78 @@ public class BillService {
             String sortOrder,
             int setOff
     ) throws Exception {
-        LocalDateTime dateExport = billEntity.getDate_EXP();
-        String id = billEntity.getID_BILL();
-        String phone = SecutiryFunction.encrypt(billEntity.getPHONE_BILL());
-        String add = SecutiryFunction.encrypt(billEntity.getADD_BILL());
-        String idUser = billEntity.getID_USER();
-        String idParent = billEntity.getID_PARENT();
-        Double sumPrice = billEntity.getSUM_PRICE();
-        EnumType.Status_Bill statusBill = billEntity.getBILL_STATUS();
-        ExecutorService executor = Executors.newFixedThreadPool(3); // số lượng luồng
-        AtomicBoolean continueFlag = new AtomicBoolean(true);
-        ConcurrentLinkedQueue<Integer> offsetsQueue = new ConcurrentLinkedQueue<>();
-        for (int i = 0; i < Integer.MAX_VALUE; i++) {
-            offsetsQueue.add(i * setOff);
-        }
-        List<CompletableFuture<List<Bill_Entity>>> futures = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            futures.add(CompletableFuture.supplyAsync(() -> {
-                List<Bill_Entity> results = new ArrayList<>();
-                while (continueFlag.get()) {
-                    Integer offset = offsetsQueue.poll();
-                    if (offset == null) {
-                        continueFlag.set(false);
-                        break;
-                    }
-                    List<Bill_Entity> partialResult = billDao.getFilteredBills(
-                            dateExport, typeDate, id, phone, idUser, statusBill, add,sumPrice,idParent, sortField, sortOrder, offset, setOff);
-                    if (partialResult.isEmpty()) {
-                        continueFlag.set(false);
-                        break;
-                    }
-                    results.addAll(partialResult);
-                    //  mã hóa
-                    for (Bill_Entity bill : results) {
-                        try {
-                            String phoneDe = SecutiryFunction.decrypt(bill.getPHONE_BILL());
-                            String addDe = SecutiryFunction.decrypt(bill.getADD_BILL());
-                            bill.setPHONE_BILL(phoneDe);
-                            bill.setADD_BILL(addDe);
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
+        try {
+            LocalDateTime dateExport = billEntity.getDate_EXP();
+            String id = billEntity.getID_BILL();
+            String phone = SecutiryFunction.encrypt(billEntity.getPHONE_BILL());
+            String add = SecutiryFunction.encrypt(billEntity.getADD_BILL());
+            String idUser = billEntity.getID_USER();
+            String idParent = billEntity.getID_PARENT();
+            Double sumPrice = billEntity.getSUM_PRICE();
+            EnumType.Status_Bill statusBill = billEntity.getBILL_STATUS();
+            ExecutorService executor = Executors.newFixedThreadPool(3); // số lượng luồng
+            AtomicBoolean continueFlag = new AtomicBoolean(true);
+            ConcurrentLinkedQueue<Integer> offsetsQueue = new ConcurrentLinkedQueue<>();
+            for (int i = 0; i < Integer.MAX_VALUE; i++) {
+                offsetsQueue.add(i * setOff);
+            }
+            List<CompletableFuture<List<Bill_Entity>>> futures = new ArrayList<>();
+            for (int i = 0; i < 3; i++) {
+                futures.add(CompletableFuture.supplyAsync(() -> {
+                    List<Bill_Entity> results = new ArrayList<>();
+                    while (continueFlag.get()) {
+                        Integer offset = offsetsQueue.poll();
+                        if (offset == null) {
+                            continueFlag.set(false);
+                            break;
                         }
+                        List<Bill_Entity> partialResult = billDao.getFilteredBills(
+                                dateExport, typeDate, id, phone, idUser, statusBill, add, sumPrice, idParent, sortField, sortOrder, offset, setOff);
+                        if (partialResult.isEmpty()) {
+                            continueFlag.set(false);
+                            break;
+                        }
+                        results.addAll(partialResult);
+                        //  mã hóa
+                        for (Bill_Entity bill : results) {
+                            try {
+                                String phoneDe = SecutiryFunction.decrypt(bill.getPHONE_BILL());
+                                String addDe = SecutiryFunction.decrypt(bill.getADD_BILL());
+                                bill.setPHONE_BILL(phoneDe);
+                                bill.setADD_BILL(addDe);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e + "Error decoding information in bill");
+                            }
 
+                        }
                     }
+                    return results;
+                }, executor));
+            }
+            List<Bill_Entity> results = futures.stream()
+                    .map(CompletableFuture::join)
+                    .flatMap(List::stream)
+                    .collect(Collectors.toList());
+            if (Objects.equals(sortField, "PHONE_BILL")) {
+                if (sortOrder.equals("desc")) {
+                    results.sort(Comparator.comparing(Bill_Entity::getPHONE_BILL).reversed());
+                } else {
+                    results.sort(Comparator.comparing(Bill_Entity::getPHONE_BILL));
                 }
-                return results;
-            }, executor));
-        }
-        List<Bill_Entity> results = futures.stream()
-                .map(CompletableFuture::join)
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
-        if (Objects.equals(sortField, "PHONE_BILL")) {
-            if (sortOrder.equals("desc")) {
-                results.sort(Comparator.comparing(Bill_Entity::getPHONE_BILL).reversed());
-            } else {
-                results.sort(Comparator.comparing(Bill_Entity::getPHONE_BILL));
             }
-        }
-        if (Objects.equals(sortField, "ADD_BILL")) {
-            if (sortOrder.equals("desc")) {
-                results.sort(Comparator.comparing(Bill_Entity::getADD_BILL).reversed());
-            } else {
-                results.sort(Comparator.comparing(Bill_Entity::getADD_BILL));
+            if (Objects.equals(sortField, "ADD_BILL")) {
+                if (sortOrder.equals("desc")) {
+                    results.sort(Comparator.comparing(Bill_Entity::getADD_BILL).reversed());
+                } else {
+                    results.sort(Comparator.comparing(Bill_Entity::getADD_BILL));
+                }
             }
+            executor.shutdown();
+            return results;
+        } catch (RuntimeException e) {
+            throw e;
         }
-        executor.shutdown();
-        return results;
+
     }
 
     public boolean deleteBillAndDetail(String id) {
@@ -122,7 +127,7 @@ public class BillService {
             }
             boolean delBillDetail = billDetailDao.cancelBillDetail(id);
             if (!delBillDetail) {
-                throw new RuntimeException("Bill is not pending");
+                throw new RuntimeException("Failed to change bill detail to deleted");
             }
             transaction.commit();
             return true;
@@ -130,7 +135,7 @@ public class BillService {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            throw new RuntimeException("Error occurred:Failed to change bill status to deleted");
+            throw e;
         }
     }
 
@@ -154,7 +159,7 @@ public class BillService {
             } catch (RuntimeException e) {
                 if (transaction.isActive()) {
                     transaction.rollback();
-                    return false;
+                    throw e;
                 }
             }
         }
@@ -166,7 +171,7 @@ public class BillService {
             EntityTransaction transaction = billDao.getEntityManager().getTransaction();
             try {
                 transaction.begin();
-                if (billDao.getFilteredBills(null, null, id, null, null, null,null, null, null, null, null, null, null) != null) {
+                if (billDao.getFilteredBills(null, null, id, null, null, null, null, null, null, null, null, null, null) != null) {
                     List<Bill_Detail_Entity> listBillDetail = billDetailDao.getFilteredBillDetails(null, null, null, null, id, null, null, null, null, null);
                     for (Bill_Detail_Entity billDetail : listBillDetail) {
                         String idSp = billDetail.getID_SP();
@@ -174,17 +179,16 @@ public class BillService {
                         ProductService productService = new ProductService();
                         Product_Entity productE = productService.getProductByIDS(idSp);
                         if (productE == null) {
-                            throw new RuntimeException("Error");
+                            throw new RuntimeException("Cant find product by id: " + idSp);
                         }
                         if (productE.getQUANTITY() < quantity) {
-                            throw new RuntimeException("Error");
+                            throw new RuntimeException("Error the quantity in warehouse is lower than the quantity to minus");
                         }
                         Integer newQuantity = productE.getQUANTITY() - quantity;
 
                         Product_Entity productEntity = new Product_Entity(id, null, null, null, null, null, null, newQuantity, null, null);
-                        if (!productService.changeProduct(productEntity)) {
-                            throw new RuntimeException("Error");
-                        }
+                        productService.changeProduct(productEntity);
+
                     }
                     transaction.commit();
                 }
@@ -192,6 +196,7 @@ public class BillService {
             } catch (RuntimeException e) {
                 if (transaction.isActive()) {
                     transaction.rollback();
+                    throw e;
                 }
             }
         }
@@ -203,7 +208,7 @@ public class BillService {
             EntityTransaction transaction = billDao.getEntityManager().getTransaction();
             try {
                 transaction.begin();
-                if (billDao.getFilteredBills(null, null, id, null,null, null, null, null, null, null, null, null, null) != null) {
+                if (billDao.getFilteredBills(null, null, id, null, null, null, null, null, null, null, null, null, null) != null) {
                     List<Bill_Detail_Entity> listBillDetail = billDetailDao.getFilteredBillDetails(null, null, null, null, id, null, null, null, null, null);
                     for (Bill_Detail_Entity billDetail : listBillDetail) {
                         String idSp = billDetail.getID_SP();
@@ -211,21 +216,19 @@ public class BillService {
                         ProductService productService = new ProductService();
                         Product_Entity productE = productService.getProductByIDS(idSp);
                         if (productE == null) {
-                            throw new RuntimeException("Error");
+                            throw new RuntimeException("Cant find product by id: " + idSp);
                         }
                         Integer newQuantity = productE.getQUANTITY() + quantity;
 
                         Product_Entity productEntity = new Product_Entity(id, null, null, null, null, null, null, newQuantity, null, null);
-                        if (!productService.changeProduct(productEntity)) {
-                            throw new RuntimeException("Error");
-                        }
+                        productService.changeProduct(productEntity);
                     }
                     transaction.commit();
                 }
-
             } catch (RuntimeException e) {
                 if (transaction.isActive()) {
                     transaction.rollback();
+                    throw e;
                 }
             }
         }
@@ -253,6 +256,7 @@ public class BillService {
         } catch (RuntimeException e) {
             if (transaction.isActive()) {
                 transaction.rollback();
+                throw e;
             }
             return false;
         }
@@ -271,14 +275,14 @@ public class BillService {
                     id = billDetail.getID_PARENT();
                     sumPrice += billDetail.getPRICE_BUY();
                 }
-                if(id == null) throw new RuntimeException("Loi khong thay id");
-                billDao.addSumPrice(id,sumPrice);
+                if (id == null) throw new RuntimeException("Error cant find bill general to create bill detail");
+                billDao.addSumPrice(id, sumPrice);
                 return true;
             } catch (Exception e) {
                 if (transaction.isActive()) {
                     transaction.rollback();
+                    throw e;
                 }
-                return false;
             }
         }
         return false;

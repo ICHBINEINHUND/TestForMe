@@ -23,8 +23,6 @@ import java.util.stream.Collectors;
 public class ImportService {
     private final ImportDao importDao;
     private final ImportDetailDao importDetailDao;
-    private final ProductDao productDao;
-    private final EntityManager entityManager;
     private static final EntityManagerFactory entityManagerFactory;
 
     static {
@@ -34,8 +32,8 @@ public class ImportService {
     public ImportService() {
         this.importDao = new ImportDao();
         this.importDetailDao = new ImportDetailDao();
-        this.productDao = new ProductDao();
-        this.entityManager = entityManagerFactory.createEntityManager();
+        ProductDao productDao = new ProductDao();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
     }
 
     public List<Import_Entity> getImportByCombinedCondition(
@@ -51,45 +49,48 @@ public class ImportService {
         String idReplace = import_entity.getID_REPLACE();
         ExecutorService executor = Executors.newFixedThreadPool(3);
         AtomicBoolean continueFlag = new AtomicBoolean(true);
+        try {
 
-        ConcurrentLinkedQueue<Integer> offsetsQueue = new ConcurrentLinkedQueue<>();
-        for (int i = 0; i < Integer.MAX_VALUE; i++) {
-            offsetsQueue.add(i * setOff);
-        }
+            ConcurrentLinkedQueue<Integer> offsetsQueue = new ConcurrentLinkedQueue<>();
+            for (int i = 0; i < Integer.MAX_VALUE; i++) {
+                offsetsQueue.add(i * setOff);
+            }
 
-        List<CompletableFuture<List<Import_Entity>>> futures = new ArrayList<>();
+            List<CompletableFuture<List<Import_Entity>>> futures = new ArrayList<>();
 
-        for (int i = 0; i < 3; i++) {
-            futures.add(CompletableFuture.supplyAsync(() -> {
-                List<Import_Entity> results = new ArrayList<>();
-                while (continueFlag.get()) {
-                    Integer offset = offsetsQueue.poll();
-                    if (offset == null) {
-                        continueFlag.set(false);
-                        break;
+            for (int i = 0; i < 3; i++) {
+                futures.add(CompletableFuture.supplyAsync(() -> {
+                    List<Import_Entity> results = new ArrayList<>();
+                    while (continueFlag.get()) {
+                        Integer offset = offsetsQueue.poll();
+                        if (offset == null) {
+                            continueFlag.set(false);
+                            break;
+                        }
+                        List<Import_Entity> partialResult = importDao.getFilteredImports(
+                                dateJoin, typeDate, id, status, idReplace, sortField, sortOrder, offset, setOff
+                        );
+
+                        if (partialResult.isEmpty()) {
+                            continueFlag.set(false);
+                            break;
+                        }
+                        results.addAll(partialResult);
                     }
-                    List<Import_Entity> partialResult = importDao.getFilteredImports(
-                            dateJoin, typeDate, id, status, idReplace, sortField, sortOrder, offset, setOff
-                    );
+                    return results;
+                }, executor));
+            }
 
-                    if (partialResult.isEmpty()) {
-                        continueFlag.set(false);
-                        break;
-                    }
-                    results.addAll(partialResult);
-                }
-                return results;
-            }, executor));
+            List<Import_Entity> results = futures.stream()
+                    .map(CompletableFuture::join)
+                    .flatMap(List::stream)
+                    .collect(Collectors.toList());
+
+            executor.shutdown();
+            return results;
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Error when get import with filter");
         }
-
-
-        List<Import_Entity> results = futures.stream()
-                .map(CompletableFuture::join)
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
-
-        executor.shutdown();
-        return results;
     }
 
     public List<Import_Detail_Entity> getImportDetailByCombinedCondition(
@@ -98,47 +99,51 @@ public class ImportService {
             String sortOrder,
             int setOff // Số bản ghi mỗi luồng xử lý
     ) {
-        String id = importQuery.getID_IMPD();
-        String idParent = importQuery.getID_IPARENT();
-        String idSP = importQuery.getID_SP();
-        ExecutorService executor = Executors.newFixedThreadPool(3);
-        AtomicBoolean continueFlag = new AtomicBoolean(true);
+        try {
+            String id = importQuery.getID_IMPD();
+            String idParent = importQuery.getID_IPARENT();
+            String idSP = importQuery.getID_SP();
+            ExecutorService executor = Executors.newFixedThreadPool(3);
+            AtomicBoolean continueFlag = new AtomicBoolean(true);
 
-        ConcurrentLinkedQueue<Integer> offsetsQueue = new ConcurrentLinkedQueue<>();
-        for (int i = 0; i < Integer.MAX_VALUE; i++) {
-            offsetsQueue.add(i * setOff);
-        }
-        List<CompletableFuture<List<Import_Detail_Entity>>> futures = new ArrayList<>();
+            ConcurrentLinkedQueue<Integer> offsetsQueue = new ConcurrentLinkedQueue<>();
+            for (int i = 0; i < Integer.MAX_VALUE; i++) {
+                offsetsQueue.add(i * setOff);
+            }
+            List<CompletableFuture<List<Import_Detail_Entity>>> futures = new ArrayList<>();
 
-        for (int i = 0; i < 3; i++) {
-            futures.add(CompletableFuture.supplyAsync(() -> {
-                List<Import_Detail_Entity> results = new ArrayList<>();
-                while (continueFlag.get()) {
-                    Integer offset = offsetsQueue.poll();
-                    if (offset == null) {
-                        continueFlag.set(false);
-                        break;
+            for (int i = 0; i < 3; i++) {
+                futures.add(CompletableFuture.supplyAsync(() -> {
+                    List<Import_Detail_Entity> results = new ArrayList<>();
+                    while (continueFlag.get()) {
+                        Integer offset = offsetsQueue.poll();
+                        if (offset == null) {
+                            continueFlag.set(false);
+                            break;
+                        }
+                        List<Import_Detail_Entity> partialResult = importDetailDao.getFilteredImportDetails(
+                                id, idParent, idSP, sortField, sortOrder, offset, setOff
+                        );
+
+                        if (partialResult.isEmpty()) {
+                            continueFlag.set(false);
+                            break;
+                        }
+                        results.addAll(partialResult);
                     }
-                    List<Import_Detail_Entity> partialResult = importDetailDao.getFilteredImportDetails(
-                            id, idParent, idSP, sortField, sortOrder, offset, setOff
-                    );
+                    return results;
+                }, executor));
+            }
+            List<Import_Detail_Entity> results = futures.stream()
+                    .map(CompletableFuture::join)
+                    .flatMap(List::stream)
+                    .collect(Collectors.toList());
 
-                    if (partialResult.isEmpty()) {
-                        continueFlag.set(false);
-                        break;
-                    }
-                    results.addAll(partialResult);
-                }
-                return results;
-            }, executor));
+            executor.shutdown();
+            return results;
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Error when get import detail with filter");
         }
-        List<Import_Detail_Entity> results = futures.stream()
-                .map(CompletableFuture::join)
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
-
-        executor.shutdown();
-        return results;
     }
 
     public boolean confirmImportAddProduct(String id) {
@@ -154,12 +159,12 @@ public class ImportService {
                         ProductService productService = new ProductService();
                         Product_Entity productE = productService.getProductByIDS(idSp);
                         if (productE == null) {
-                            throw new RuntimeException("Error");
+                            throw new RuntimeException("Error cant not find product to add");
                         }
                         Integer newQuantity = productE.getQUANTITY() + quantity;
                         Product_Entity productEntity = new Product_Entity(id, null, null, null, null, null, null, newQuantity, null, null);
                         if (!productService.changeProduct(productEntity)) {
-                            throw new RuntimeException("Error");
+                            throw new RuntimeException("Error when change product in add product from import process");
                         }
                     }
                     transaction.commit();
@@ -168,6 +173,7 @@ public class ImportService {
             } catch (RuntimeException e) {
                 if (transaction.isActive()) {
                     transaction.rollback();
+                    throw e;
                 }
             }
         }
@@ -199,53 +205,43 @@ public class ImportService {
                 if (transaction.isActive()) {
                     transaction.rollback();
                 }
-                return false;
+                throw e;
             }
         }
         return false;
     }
 
-    public boolean registerNewImport(Import_Entity importEntity, List<Import_Detail_Entity> listImportDetail) {
+    public void registerNewImport(Import_Entity importEntity, List<Import_Detail_Entity> listImportDetail) throws SQLException {
         //add check
         EntityTransaction transaction = importDao.getEntityManager().getTransaction();
         try {
             transaction.begin();
             LocalDateTime DATE_JOIN = LocalDateTime.now();
             importEntity.setDATE_IMP(DATE_JOIN);
-            if (!importDao.createImport(importEntity)) throw new RuntimeException("Failed to creat import general");
-            if (!registerNewImportDetail(listImportDetail))
-                throw new RuntimeException("Failed to register new import detail.");
+            importDao.createImport(importEntity);
+            registerNewImportDetail(listImportDetail);
             String id = importEntity.getID_IMP();
-            if (!plusImportProduct(id)) throw new RuntimeException("Failed to plus product.");
-            return true;
+            plusImportProduct(id);
+
         } catch (Exception e) {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            return false;
+            throw e;
         }
     }
 
-    private boolean registerNewImportDetail(List<Import_Detail_Entity> listImportDetail) {
+    private void registerNewImportDetail(List<Import_Detail_Entity> listImportDetail) throws SQLException {
         //add check
-        if (listImportDetail != null) {
-            try {
-                boolean isCreated = importDetailDao.createImportDetail(listImportDetail);
-                if (isCreated) {
-                    Double sumPrice = 0.0;
-                    String id = null;
-                    for (Import_Detail_Entity importDetail : listImportDetail) {
-                        sumPrice += importDetail.getPRICE_IMP_SP();
-                        id = importDetail.getID_IPARENT();
-                    }
-                    if (importDao.addSumPrice(id, sumPrice)) throw new RuntimeException("Failed to add sum price.");
-                    return true;
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+        importDetailDao.createImportDetail(listImportDetail);
+
+            Double sumPrice = 0.0;
+            String id = null;
+            for (Import_Detail_Entity importDetail : listImportDetail) {
+                sumPrice += importDetail.getPRICE_IMP_SP();
+                id = importDetail.getID_IPARENT();
+            if (importDao.addSumPrice(id, sumPrice)) throw new RuntimeException("Failed to add sum price.");
         }
-        return false;
     }
 
     public boolean plusImportProduct(String id) {
@@ -262,11 +258,10 @@ public class ImportService {
                         ProductService productService = new ProductService();
                         Product_Entity productE = productService.getProductByIDS(idSp);
                         if (productE == null) {
-                            throw new RuntimeException("Error");
+                            throw new RuntimeException("Error cant find product to plus quantity in plus product form import process");
                         }
                         Integer newQuantity = productE.getQUANTITY() + quantity;
                         productE.setQUANTITY(newQuantity);
-
                         return productService.changeProduct(productE);
                     }
                     transaction.commit();
@@ -275,6 +270,7 @@ public class ImportService {
             } catch (RuntimeException e) {
                 if (transaction.isActive()) {
                     transaction.rollback();
+                    throw e;
                 }
             }
         }

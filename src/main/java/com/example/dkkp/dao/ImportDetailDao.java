@@ -20,7 +20,7 @@ public class ImportDetailDao {
     this.entityManager = entityManagerFactory.createEntityManager();
   }
 
-  public boolean createImportDetail(List<Import_Detail_Entity>  listImportDetail) throws SQLException {
+  public void createImportDetail(List<Import_Detail_Entity>  listImportDetail) throws SQLException {
     EntityTransaction transaction = entityManager.getTransaction();
     try {
       transaction.begin();
@@ -31,14 +31,11 @@ public class ImportDetailDao {
         System.out.println("service register2");
       }
       transaction.commit();
-      return true;
-
     } catch (RuntimeException e) {
       if (transaction.isActive()) {
         transaction.rollback();
-        System.out.println(e.getMessage() + "dcm loi ex");
+        throw new RuntimeException("Error create import detail", e);
       }
-      return false;
     }
   }
   public EntityManager getEntityManager() {
@@ -98,7 +95,7 @@ public class ImportDetailDao {
         transaction.rollback();
         return false;
       }
-      throw e;
+      throw new RuntimeException("Error delete import detail", e);
     }
   }
 

@@ -27,10 +27,9 @@ public class CategoryService {
     }
 
 
-    public boolean createNewCategory(Category_Entity category) {
+    public void createNewCategory(Category_Entity category) {
         // chạy được
         // cần add kiểm tra hợp lệ cho các thuộc tính
-        try {
             String ID_CATEGORY = category.getID_CATEGORY();
             String NAME_CATEGORY = category.getNAME_CATEGORY();
             String ID_PARENT = category.getID_PARENT();
@@ -38,11 +37,6 @@ public class CategoryService {
             boolean IS_BASE_PRODUCT = true;
             Category_Entity categoryC = new Category_Entity(ID_CATEGORY, NAME_CATEGORY, ID_PARENT, ID_BRAND, IS_BASE_PRODUCT);
             categoryDao.createCategory(category);
-            return true;
-        } catch (
-                RuntimeException e) {
-            throw e;
-        }
     }
 
     public List<Category_Entity> getFilteredCategories(
@@ -54,7 +48,6 @@ public class CategoryService {
     ) {
         // chạy được
         // không cần thêm check
-        try {
             if (reflectField.isPropertyNameMatched(category, sortField) || sortField == null) {
                 String id = category.getID_CATEGORY();
                 String name = category.getNAME_CATEGORY();
@@ -64,27 +57,25 @@ public class CategoryService {
                 return categoryDao.getFilteredCategories(
                         id, name, idParent, idBrand, isBaseProduct, sortField, sortOrder, offset, setOff
                 );
+            }else{
+                throw new RuntimeException("Error with sort field category");
             }
-            return null;
-        } catch (
-                RuntimeException e) {
-            throw e;
-        }
+
     }
 
     public boolean deleteCategory(String id) {
         if (id != null) {
             categoryDao.deleteCategoryById(id);
             return true;
+        }else{
+            throw new RuntimeException("Id category is null");
         }
-        return false;
     }
 
 
     public boolean updateCategory(Category_Entity category) {
         // add check
         // chạy được
-        try {
             String id = category.getID_CATEGORY();
             String name = category.getNAME_CATEGORY();
             String id_parent = category.getID_PARENT();
@@ -92,11 +83,8 @@ public class CategoryService {
             boolean is_product = category.getIS_BASE_PRODUCT();
             if (id != null) {
                 return categoryDao.updateCategory(id, name, id_parent, id_brand, is_product);
+            }else{
+                throw new RuntimeException("Id category is null");
             }
-            return false;
-        } catch (
-                RuntimeException e) {
-            throw e;
-        }
     }
 }

@@ -37,7 +37,7 @@ public class ImportDao {
                 transaction.rollback();
                 return false;
             }
-            throw e;
+            throw new RuntimeException("Error creating import", e);
         }
     }
 
@@ -102,7 +102,7 @@ public class ImportDao {
             entityManager.merge(importToAddSumPrice);
             return true;
         } catch (RuntimeException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error add total price", e);
         }
     }
 
@@ -132,7 +132,7 @@ public class ImportDao {
                 return true;
             }
         } catch (RuntimeException e) {
-            throw e;
+            throw new RuntimeException("Error deleting import", e);
         }
         return false;
     }
@@ -154,7 +154,7 @@ public class ImportDao {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            throw e;
+            throw new RuntimeException("Error updating description", e);
         }
     }
 

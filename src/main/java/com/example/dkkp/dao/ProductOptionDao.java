@@ -137,7 +137,7 @@ public class ProductOptionDao {
       transaction.begin();
       Product_Option_Entity productOption = entityManager.find(Product_Option_Entity.class, id);
       if (productOption == null) {
-        return false;
+        throw new RuntimeException("Cant not find Product Option to update with ID: " + id);
       }
       if (name != null) productOption.setNAME_OPTION(name);
       if (type != null) productOption.setTYPE(type);
@@ -149,7 +149,7 @@ public class ProductOptionDao {
       if (transaction.isActive()) {
         transaction.rollback();
       }
-      throw e;
+      throw new RuntimeException("Error occurred while updating Product Option with ID_BASEPRODUCT: " + idBaseProduct, e);
     }
   }
 

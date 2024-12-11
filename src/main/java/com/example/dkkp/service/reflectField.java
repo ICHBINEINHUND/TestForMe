@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class reflectField {
-    public Field[] fields;
 
     public static List<String> getAllNameColumn(Object object){
         if (object == null) {
-            throw new IllegalArgumentException("Object không được null");
+            throw new IllegalArgumentException("Object should not be null");
         }
         Class<?> clazz = object.getClass();
         List<String> columnName = new ArrayList<>();

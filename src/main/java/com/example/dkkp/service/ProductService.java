@@ -104,27 +104,24 @@ public class ProductService {
         return null;
     }
 
-    public boolean deleteProduct(String id) {
-        if (id != null) {
-            EntityTransaction transaction = entityManager.getTransaction();
-            transaction.begin();
-            try {
-                boolean delProduct = productDao.deleteProduct(id);
-                if (!delProduct) {
-                    throw new RuntimeException("Error");
-                }
-                transaction.commit();
-                return true;
-            } catch (RuntimeException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return false;
-    }
-
-    public boolean changeProduct(Product_Entity product_entity) {
+    public void deleteProduct(String id) {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
+        try {
+            boolean delProduct = productDao.deleteProduct(id);
+            if (!delProduct) {
+                throw new RuntimeException("Error ");
+            }
+            transaction.commit();
+        } catch (RuntimeException e) {
+            if(transaction.isActive()) {
+                transaction.rollback();
+            }
+            throw e;
+        }
+    }
+
+    public void changeProduct(Product_Entity product_entity) {
         String id = product_entity.getID_SP();
         String NAME_SP = product_entity.getNAME_SP();
         String DES_SP = product_entity.getDES_SP();
@@ -136,17 +133,13 @@ public class ProductService {
         Double DISCOUNT = product_entity.getDISCOUNT();
         List<Integer> IDS_OPTION_VALUES = product_entity.getIDS_OPTION_VALUES();
         //add check
-        try {
-            if (checkIDS_OPTION_VALUES(IDS_OPTION_VALUES)) {
-                transaction.commit();
-                return productDao.updateProduct(id, NAME_SP, DES_SP, ID_CATEGORY, PRICE_SP, IMAGE_SP, VIEW_COUNT, QUANTITY, DISCOUNT, IDS_OPTION_VALUES);
-            }
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
+        if (checkIDS_OPTION_VALUES(IDS_OPTION_VALUES)) {
+            productDao.updateProduct(id, NAME_SP, DES_SP, ID_CATEGORY, PRICE_SP, IMAGE_SP, VIEW_COUNT, QUANTITY, DISCOUNT, IDS_OPTION_VALUES);
         }
-        return false;
+
     }
-    public boolean changeProductOption(Product_Option_Entity productOptionEntity) {
+
+    public void changeProductOption(Product_Option_Entity productOptionEntity) {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         String id = productOptionEntity.getID_OPTION();
@@ -154,23 +147,16 @@ public class ProductService {
         String type = productOptionEntity.getTYPE();
         String idBaseproduct = productOptionEntity.getID_BASEPRODUCT();
         //add check
-        try {
-            if (productOptionDao.updateProductOption(id, nameOption, type, idBaseproduct)) {
-                transaction.commit();
-                return true;
-            }
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
-        }
-        return false;
+         productOptionDao.updateProductOption(id, nameOption, type, idBaseproduct) ;
     }
+
     public boolean changeOptionValue(Option_Values_Entity option_values_entity) {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         Integer id_value = option_values_entity.getID_VALUE();
         String value = option_values_entity.getVALUE();
         String idparent = option_values_entity.getID_PARENT();
-        String idOption  = option_values_entity.getID_OPTION();
+        String idOption = option_values_entity.getID_OPTION();
         //add check
         try {
             if (optionValuesDao.existsOptionValueById(id_value)) {
@@ -235,7 +221,6 @@ public class ProductService {
             if (!optionValuesDao.existsOptionValueById(i)) {
                 return false;
             }
-            ;
         }
         return true;
     }

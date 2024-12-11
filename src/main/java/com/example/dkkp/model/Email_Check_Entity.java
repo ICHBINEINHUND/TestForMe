@@ -56,8 +56,7 @@ public class Email_Check_Entity {
   public Email_Check_Entity() {
   }
 
-  public Email_Check_Entity(String ID_CHECK, String EMAIL, String TOKEN, LocalDateTime DATE_END) {
-    this.ID_CHECK = ID_CHECK;
+  public Email_Check_Entity( String EMAIL, String TOKEN, LocalDateTime DATE_END) {
     this.EMAIL = EMAIL;
     this.TOKEN = TOKEN;
     this.DATE_END = DATE_END;

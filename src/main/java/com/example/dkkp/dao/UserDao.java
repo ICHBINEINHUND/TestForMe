@@ -33,7 +33,7 @@ public class UserDao {
       if (transaction.isActive()) {
         transaction.rollback();
       }
-      throw e;
+      throw new RuntimeException("Error creating user", e);
     }
   }
   public EntityManager getEntityManager() {
@@ -95,7 +95,7 @@ public class UserDao {
       if (transaction.isActive()) {
         transaction.rollback();
       }
-      throw e;
+      throw new RuntimeException("Error updating user", e);
     }
   }
 
@@ -103,7 +103,6 @@ public class UserDao {
     EntityTransaction transaction = entityManager.getTransaction();
     try {
       transaction.begin();
-
       String jpql = "SELECT u FROM User_Entity u WHERE u.EMAIL_ACC = :email";
       TypedQuery<User_Entity> query = entityManager.createQuery(jpql, User_Entity.class);
       query.setParameter("email", email);
@@ -123,7 +122,7 @@ public class UserDao {
         transaction.rollback();
         return false;
       }
-      throw e;
+      throw new RuntimeException("Error changing password", e);
     }
   }
 

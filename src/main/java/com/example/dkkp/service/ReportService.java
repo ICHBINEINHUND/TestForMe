@@ -69,7 +69,6 @@ public class ReportService {
     ) {
         // chạy được
         // không cần kiểm tra sự hợp lệ của các tham số truyền vào khác như userId,...
-        try {
             if (reflectField.isPropertyNameMatched(report, sortField) || sortField == null) {
                 String userId = report.getID_USER();
                 String reportId = report.getID_REPORT();
@@ -78,10 +77,6 @@ public class ReportService {
                 return reportDao.getFilteredReports(userId, reportId, bugType, dateReport, typeDate, sortField, sortOrder);
             }
             return null;
-        } catch (
-                RuntimeException e) {
-            throw e;
-        }
     }
 
 

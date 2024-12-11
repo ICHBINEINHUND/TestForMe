@@ -36,7 +36,7 @@ public class OptionValuesDao {
         transaction.rollback();
         return false;
       }
-      throw e;
+      throw new RuntimeException("Error creating option values", e);
     }
   }
   public boolean existsOptionValueById(Integer id) {
@@ -156,6 +156,7 @@ public class OptionValuesDao {
     } catch (RuntimeException e) {
       if (transaction.isActive()) {
         transaction.rollback();
+        throw new RuntimeException("Error occurred while deleting Option Value", e);
       }
       throw e;
     }
@@ -183,7 +184,7 @@ public class OptionValuesDao {
       if (transaction.isActive()) {
         transaction.rollback();
       }
-      throw e;
+      throw new RuntimeException("Error occurred while updating Option Value", e);
     }
   }
 

@@ -29,7 +29,7 @@ public class CategoryDao {
       if (transaction.isActive()) {
         transaction.rollback();
       }
-      throw e;
+      throw new RuntimeException("Error creating category", e);
     }
   }
 
@@ -103,7 +103,7 @@ public class CategoryDao {
       if (transaction.isActive()) {
         transaction.rollback();
       }
-      throw e;
+      throw new RuntimeException("Error updating category", e);
     }
   }
 
@@ -123,7 +123,7 @@ public class CategoryDao {
       if (transaction.isActive()) {
         transaction.rollback();
       }
-      throw e;
+      throw new RuntimeException("Error deleting category", e);
     }
   }
 

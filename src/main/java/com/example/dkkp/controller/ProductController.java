@@ -81,11 +81,13 @@ public class ProductController {
     public void onUpdate() {
         try {
             Product_Entity product = createProductFromInput();
-            if (productService.changeProduct(product)) {
+            try {
+                productService.changeProduct(product);
                 showAlert(Alert.AlertType.INFORMATION, "Product updated successfully!");
                 loadProducts();
-            } else {
+            } catch (RuntimeException e) {
                 showAlert(Alert.AlertType.ERROR, "Failed to update product.");
+                throw e;
             }
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Invalid input: " + e.getMessage());
@@ -96,11 +98,12 @@ public class ProductController {
     public void onDelete() {
         Product_Entity selectedProduct = tblProducts.getSelectionModel().getSelectedItem();
         if (selectedProduct != null) {
-            if (productService.deleteProduct(selectedProduct.getID_SP())) {
+            try {
+                productService.deleteProduct(selectedProduct.getID_SP());
                 showAlert(Alert.AlertType.INFORMATION, "Product deleted successfully!");
                 loadProducts();
-            } else {
-                showAlert(Alert.AlertType.ERROR, "Failed to delete product.");
+            } catch (RuntimeException e) {
+                showAlert(Alert.AlertType.ERROR, "Failed to delete product." + e);
             }
         } else {
             showAlert(Alert.AlertType.WARNING, "Please select a product to delete.");

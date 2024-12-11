@@ -32,8 +32,7 @@ public class CheckMailService {
     LocalDateTime DATE_END = LocalDateTime.now().plusMinutes(30);
     int randomNumber = 100000 + random.nextInt(900000);
     String token = String.valueOf(randomNumber);
-    String id = "dfk";
-    Email_Check_Entity check = new Email_Check_Entity(id, email, token, DATE_END);
+    Email_Check_Entity check = new Email_Check_Entity( email, token, DATE_END);
     checkmail.createToken(check);
   }
 
@@ -45,9 +44,9 @@ public class CheckMailService {
         return true;
       }
       return false;
-
+    }else{
+      throw new RuntimeException("Id token is null");
     }
-    return false;
   }
 
   public void shutdown() {

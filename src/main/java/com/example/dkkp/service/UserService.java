@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 
 public class UserService {
     private final UserDao userDao;
-    private final EntityManager entityManager;
     private static final EntityManagerFactory entityManagerFactory;
 
     static {
@@ -20,7 +19,7 @@ public class UserService {
 
     public UserService() {
         this.userDao = new UserDao();
-        this.entityManager = entityManagerFactory.createEntityManager();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
     }
 
     public User_Entity getUsersByID(String id) throws Exception {

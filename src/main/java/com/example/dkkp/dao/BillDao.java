@@ -2,7 +2,6 @@ package com.example.dkkp.dao;
 
 import com.example.dkkp.model.Bill_Entity;
 import com.example.dkkp.model.EnumType;
-import com.example.dkkp.model.Import_Entity;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
 
@@ -38,29 +37,17 @@ public class BillDao {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            throw e;
+            throw new RuntimeException("Error creating bill", e);
         }
     }
 
     public Bill_Entity getBillByID(String id) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
             Bill_Entity importToCheck = entityManager.find(Bill_Entity.class, id);
-            transaction.commit();
             return importToCheck;
-        } catch (RuntimeException e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-                return null;
-            }
-            return null;
-        }
     }
 
     public boolean addSumPrice(String id, Double sumPrice) {
         try {
-
             Bill_Entity billToAddSumPrice = entityManager.find(Bill_Entity.class, id);
             if (billToAddSumPrice == null) {
                 return false;
@@ -69,7 +56,7 @@ public class BillDao {
             entityManager.merge(billToAddSumPrice);
             return true;
         } catch (RuntimeException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error adding sum price", e);
         }
     }
 
@@ -151,7 +138,7 @@ public class BillDao {
                 return true;
             }
         } catch (RuntimeException e) {
-            throw e;
+            throw new RuntimeException("Error deleting bill", e);
         }
     }
 
@@ -172,7 +159,7 @@ public class BillDao {
                 transaction.rollback();
                 return false;
             }
-            throw e;
+            throw new RuntimeException("Error changing bill status", e);
         }
         return false;
     }

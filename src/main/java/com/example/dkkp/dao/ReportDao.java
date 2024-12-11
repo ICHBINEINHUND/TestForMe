@@ -32,7 +32,7 @@ public class ReportDao {
       if (transaction.isActive()) {
         transaction.rollback();
       }
-      throw e;
+      throw new RuntimeException("Error creating report", e);
     }
   }
 
@@ -95,8 +95,6 @@ public class ReportDao {
         query.orderBy(cb.asc(sortPath));
       }
     }
-
-
     TypedQuery<Report_Bug> typedQuery = entityManager.createQuery(query);
     return typedQuery.getResultList();
   }
@@ -117,7 +115,7 @@ public class ReportDao {
       if (transaction.isActive()) {
         transaction.rollback();
       }
-      throw e;
+      throw new RuntimeException("Failed to delete report: " + reportId, e);
     }
   }
 
@@ -133,7 +131,7 @@ public class ReportDao {
       if (transaction.isActive()) {
         transaction.rollback();
       }
-      throw e;
+      throw new RuntimeException("Failed to delete all reports", e);
     }
   }
 
