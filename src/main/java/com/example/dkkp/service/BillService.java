@@ -3,7 +3,10 @@ package com.example.dkkp.service;
 import com.example.dkkp.dao.BillDao;
 import com.example.dkkp.dao.BillDetailDao;
 import com.example.dkkp.model.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Persistence;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,10 +23,17 @@ import java.util.stream.Collectors;
 public class BillService {
     private final BillDao billDao;
     private final BillDetailDao billDetailDao;
+    private final EntityManager entityManager;
+    private static final EntityManagerFactory entityManagerFactory;
+
+    static {
+        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
+    }
 
     public BillService() {
         this.billDao = new BillDao();
         this.billDetailDao = new BillDetailDao();
+        this.entityManager = entityManagerFactory.createEntityManager();
     }
 
     public List<Bill_Entity> getBillByCombinedCondition(
@@ -38,6 +48,8 @@ public class BillService {
         String phone = SecutiryFunction.encrypt(billEntity.getPHONE_BILL());
         String add = SecutiryFunction.encrypt(billEntity.getADD_BILL());
         String idUser = billEntity.getID_USER();
+        String idParent = billEntity.getID_PARENT();
+        Double sumPrice = billEntity.getSUM_PRICE();
         EnumType.Status_Bill statusBill = billEntity.getBILL_STATUS();
         ExecutorService executor = Executors.newFixedThreadPool(3); // số lượng luồng
         AtomicBoolean continueFlag = new AtomicBoolean(true);
@@ -56,17 +68,17 @@ public class BillService {
                         break;
                     }
                     List<Bill_Entity> partialResult = billDao.getFilteredBills(
-                            dateExport, typeDate, id, phone, add, idUser, statusBill, add, sortField, sortOrder, offset, setOff);
+                            dateExport, typeDate, id, phone, idUser, statusBill, add,sumPrice,idParent, sortField, sortOrder, offset, setOff);
                     if (partialResult.isEmpty()) {
                         continueFlag.set(false);
                         break;
                     }
                     results.addAll(partialResult);
-                    // giải mã
+                    //  mã hóa
                     for (Bill_Entity bill : results) {
                         try {
                             String phoneDe = SecutiryFunction.decrypt(bill.getPHONE_BILL());
-                            String addDe =SecutiryFunction.decrypt(bill.getADD_BILL()) ;
+                            String addDe = SecutiryFunction.decrypt(bill.getADD_BILL());
                             bill.setPHONE_BILL(phoneDe);
                             bill.setADD_BILL(addDe);
                         } catch (Exception e) {
@@ -101,26 +113,25 @@ public class BillService {
     }
 
     public boolean deleteBillAndDetail(String id) {
-        if (id != null) {
-            EntityTransaction transaction = billDao.getEntityManager().getTransaction();
-            try {
-                transaction.begin();
-                boolean delBill = billDao.deleteBill(id);
-                if (!delBill) {
-                    throw new RuntimeException("Error");
-                }
-
-                boolean delBillDetail = billDetailDao.cancelBillDetail(id);
-                if (!delBillDetail) {
-                    throw new RuntimeException("Error");
-                }
-                transaction.commit();
-                return true;
-            } catch (RuntimeException e) {
-                throw new RuntimeException(e);
+        EntityTransaction transaction = billDao.getEntityManager().getTransaction();
+        try {
+            transaction.begin();
+            boolean delBill = billDao.deleteBill(id);
+            if (!delBill) {
+                throw new RuntimeException("Failed to change bill status to deleted");
             }
+            boolean delBillDetail = billDetailDao.cancelBillDetail(id);
+            if (!delBillDetail) {
+                throw new RuntimeException("Bill is not pending");
+            }
+            transaction.commit();
+            return true;
+        } catch (RuntimeException e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            throw new RuntimeException("Error occurred:Failed to change bill status to deleted");
         }
-        return false;
     }
 
     public boolean changeBillStatus(String id, EnumType.Status_Bill statusBill) {
@@ -131,7 +142,7 @@ public class BillService {
                 if (statusBill == EnumType.Status_Bill.CANC) {
                     billDao.changeBillStatus(id, statusBill);
                     transaction.commit();
-                    return plusProduct(id);
+                    return plusBillProduct(id);
                 }
                 if (billDao.getBillByID(id).getBILL_STATUS() == EnumType.Status_Bill.PEN) {
                     billDao.changeBillStatus(id, statusBill);
@@ -155,7 +166,7 @@ public class BillService {
             EntityTransaction transaction = billDao.getEntityManager().getTransaction();
             try {
                 transaction.begin();
-                if (billDao.getFilteredBills(null, null, id, null, null, null, null, null, null, null, null, null) != null) {
+                if (billDao.getFilteredBills(null, null, id, null, null, null,null, null, null, null, null, null, null) != null) {
                     List<Bill_Detail_Entity> listBillDetail = billDetailDao.getFilteredBillDetails(null, null, null, null, id, null, null, null, null, null);
                     for (Bill_Detail_Entity billDetail : listBillDetail) {
                         String idSp = billDetail.getID_SP();
@@ -187,12 +198,12 @@ public class BillService {
         return false;
     }
 
-    public boolean plusProduct(String id) {
+    public boolean plusBillProduct(String id) {
         if (id != null) {
             EntityTransaction transaction = billDao.getEntityManager().getTransaction();
             try {
                 transaction.begin();
-                if (billDao.getFilteredBills(null, null, id, null, null, null, null, null, null, null, null, null) != null) {
+                if (billDao.getFilteredBills(null, null, id, null,null, null, null, null, null, null, null, null, null) != null) {
                     List<Bill_Detail_Entity> listBillDetail = billDetailDao.getFilteredBillDetails(null, null, null, null, id, null, null, null, null, null);
                     for (Bill_Detail_Entity billDetail : listBillDetail) {
                         String idSp = billDetail.getID_SP();
@@ -221,27 +232,47 @@ public class BillService {
         return false;
     }
 
-    public boolean registerNewBill(Bill_Entity billEntity) throws Exception {
+    public boolean registerNewBill(Bill_Entity billEntity, List<Bill_Detail_Entity> listBillDetail) throws Exception {
         //add check
-        LocalDateTime DATE_JOIN = LocalDateTime.now();
-        String idUser = billEntity.getID_USER();
-        UserService userService = new UserService();
-        String phone = userService.getUsersByID(idUser).getPHONE_ACC();
-        String add = userService.getUsersByID(idUser).getADDRESS();
+        EntityTransaction transaction = billDao.getEntityManager().getTransaction();
+        try {
+            transaction.begin();
+            LocalDateTime DATE_JOIN = LocalDateTime.now();
+            String idUser = billEntity.getID_USER();
+            UserService userService = new UserService();
+            String phone = userService.getUsersByID(idUser).getPHONE_ACC();
+            String add = userService.getUsersByID(idUser).getADDRESS();
 
-        billEntity.setADD_BILL(add);
-        billEntity.setPHONE_BILL(phone);
-        billEntity.setDate_EXP(DATE_JOIN);
-        return billDao.createBill(billEntity);
+            billEntity.setADD_BILL(add);
+            billEntity.setPHONE_BILL(phone);
+            billEntity.setDate_EXP(DATE_JOIN);
+
+            if (billDao.createBill(billEntity)) throw new RuntimeException("Failed to create bill general");
+            if (registerNewBillDetail(listBillDetail)) throw new RuntimeException("Failed to create bill detail");
+            return true;
+        } catch (RuntimeException e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            return false;
+        }
     }
 
-    public boolean registerNewImportDetail(List<Bill_Detail_Entity> listBillDetail) {
+    private boolean registerNewBillDetail(List<Bill_Detail_Entity> listBillDetail) {
         //add check
         if (listBillDetail != null) {
             EntityTransaction transaction = billDetailDao.getEntityManager().getTransaction();
             try {
                 transaction.begin();
                 billDetailDao.createBillDetail(listBillDetail);
+                Double sumPrice = 0.0;
+                String id = null;
+                for (Bill_Detail_Entity billDetail : listBillDetail) {
+                    id = billDetail.getID_PARENT();
+                    sumPrice += billDetail.getPRICE_BUY();
+                }
+                if(id == null) throw new RuntimeException("Loi khong thay id");
+                billDao.addSumPrice(id,sumPrice);
                 return true;
             } catch (Exception e) {
                 if (transaction.isActive()) {

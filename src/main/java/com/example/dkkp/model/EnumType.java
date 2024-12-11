@@ -21,7 +21,7 @@ public class EnumType {
     }
     public enum Status_Bill{
         PEN("pending"),
-        CONF("confirmed"),
+        CONF("payed"),
         SHIP("shipped"),
         DELI("delivered"),
         CANC("cancel");

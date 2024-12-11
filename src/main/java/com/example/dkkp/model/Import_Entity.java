@@ -22,6 +22,8 @@ public class Import_Entity {
   private Boolean STATUS;
   @Column(name = "\"ID_REPLACE\"")
   private String ID_REPLACE;
+  @Column(name = "\"SUM_PRICE\"")
+  private Double SUM_PRICE;
 
 
 
@@ -66,12 +68,21 @@ public class Import_Entity {
     this.ID_REPLACE = ID_REPLACE;
   }
 
-  public Import_Entity(String ID_IMP, LocalDateTime DATE_IMP, String DESCRIPTION, Boolean STATUS, String ID_REPLACE) {
+  public Import_Entity(String ID_IMP, LocalDateTime DATE_IMP, String DESCRIPTION, Boolean STATUS, String ID_REPLACE, Double SUM_PRICE) {
     this.ID_IMP = ID_IMP;
     this.DATE_IMP = DATE_IMP;
     this.DESCRIPTION = DESCRIPTION;
     this.STATUS = STATUS;
     this.ID_REPLACE = ID_REPLACE;
+    this.SUM_PRICE = SUM_PRICE;
+  }
+
+  public Double getSUM_PRICE() {
+    return SUM_PRICE;
+  }
+
+  public void setSUM_PRICE(Double SUM_PRICE) {
+    this.SUM_PRICE = SUM_PRICE;
   }
 
   public Import_Entity() {

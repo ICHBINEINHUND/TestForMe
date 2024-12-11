@@ -91,6 +91,21 @@ public class ImportDao {
         return typedQuery.getResultList();
     }
 
+    public boolean addSumPrice(String id, Double sumPrice) {
+        try {
+
+            Import_Entity importToAddSumPrice = entityManager.find(Import_Entity.class, id);
+            if (importToAddSumPrice == null) {
+                return false;
+            }
+            importToAddSumPrice.setSUM_PRICE(sumPrice);
+            entityManager.merge(importToAddSumPrice);
+            return true;
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public boolean checkImport(String id) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
@@ -110,19 +125,13 @@ public class ImportDao {
     public boolean deleteImport(String id) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
-            transaction.begin();
             Import_Entity importToDelete = entityManager.find(Import_Entity.class, id);
             if (importToDelete != null) {
                 importToDelete.setSTATUS(false);
                 entityManager.merge(importToDelete);
-                transaction.commit();
                 return true;
             }
-            transaction.commit();
         } catch (RuntimeException e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
             throw e;
         }
         return false;

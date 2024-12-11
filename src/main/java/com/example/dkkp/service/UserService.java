@@ -2,15 +2,25 @@ package com.example.dkkp.service;
 
 import com.example.dkkp.dao.UserDao;
 import com.example.dkkp.model.User_Entity;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Persistence;
 
 import java.time.LocalDateTime;
 
 public class UserService {
     private final UserDao userDao;
+    private final EntityManager entityManager;
+    private static final EntityManagerFactory entityManagerFactory;
+
+    static {
+        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
+    }
 
     public UserService() {
         this.userDao = new UserDao();
+        this.entityManager = entityManagerFactory.createEntityManager();
     }
 
     public User_Entity getUsersByID(String id) throws Exception {

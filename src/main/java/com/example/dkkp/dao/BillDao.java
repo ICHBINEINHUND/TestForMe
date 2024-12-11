@@ -26,6 +26,7 @@ public class BillDao {
         return this.entityManager;
     }
 
+
     public boolean createBill(Bill_Entity billE) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
@@ -57,7 +58,22 @@ public class BillDao {
         }
     }
 
-    public List<Bill_Entity> getFilteredBills(LocalDateTime dateExport, String typeDate, String id, String phone, String add, String idUser, EnumType.Status_Bill Status, String addBill, String sortField, String sortOrder, Integer offset, Integer setOff) {
+    public boolean addSumPrice(String id, Double sumPrice) {
+        try {
+
+            Bill_Entity billToAddSumPrice = entityManager.find(Bill_Entity.class, id);
+            if (billToAddSumPrice == null) {
+                return false;
+            }
+            billToAddSumPrice.setSUM_PRICE(sumPrice);
+            entityManager.merge(billToAddSumPrice);
+            return true;
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Bill_Entity> getFilteredBills(LocalDateTime dateExport, String typeDate, String id, String phone, String idUser, EnumType.Status_Bill Status, String addBill,Double sumPrice,String idParent, String sortField, String sortOrder, Integer offset, Integer setOff) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Bill_Entity> query = cb.createQuery(Bill_Entity.class);
         Root<Bill_Entity> root = query.from(Bill_Entity.class);
@@ -90,8 +106,14 @@ public class BillDao {
         if (phone != null) {
             conditions = cb.and(conditions, cb.equal(root.get("PHONE_BILL"), phone));
         }
-        if (add != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("ADD_BILL"), add));
+        if (addBill != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ADD_BILL"), addBill));
+        }
+        if (sumPrice != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("SUM_PRICE"), sumPrice));
+        }
+        if (idParent != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_PARENT"), idParent));
         }
 
 
@@ -114,25 +136,23 @@ public class BillDao {
         return typedQuery.getResultList();
     }
 
+    public Bill_Entity findBill(String id) {
+        return entityManager.find(Bill_Entity.class, id);
+    }
+
     public boolean deleteBill(String id) {
-        EntityTransaction transaction = entityManager.getTransaction();
         try {
-            transaction.begin();
             Bill_Entity billToDelete = entityManager.find(Bill_Entity.class, id);
             if (billToDelete != null && billToDelete.getBILL_STATUS() == EnumType.Status_Bill.PEN) {
                 billToDelete.setBILL_STATUS(EnumType.Status_Bill.CANC);
                 entityManager.merge(billToDelete);
-                transaction.commit();
+                return true;
+            }else{
                 return true;
             }
-            transaction.commit();
         } catch (RuntimeException e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
             throw e;
         }
-        return false;
     }
 
     public boolean changeBillStatus(String id, EnumType.Status_Bill Status) {

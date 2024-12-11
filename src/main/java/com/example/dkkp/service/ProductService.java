@@ -8,7 +8,10 @@ import com.example.dkkp.model.Option_Values_Entity;
 import com.example.dkkp.model.Product_Entity;
 import com.example.dkkp.model.EnumType;
 import com.example.dkkp.model.Product_Option_Entity;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Persistence;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,11 +27,18 @@ public class ProductService {
     private final ProductDao productDao;
     private final ProductOptionDao productOptionDao;
     private final OptionValuesDao optionValuesDao;
+    private final EntityManager entityManager;
+    private static final EntityManagerFactory entityManagerFactory;
+
+    static {
+        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
+    }
 
     public ProductService() {
         this.productDao = new ProductDao();
         this.productOptionDao = new ProductOptionDao();
         this.optionValuesDao = new OptionValuesDao();
+        this.entityManager = entityManagerFactory.createEntityManager();
     }
 
     public List<Product_Entity> getBillByCombinedCondition(
@@ -88,7 +98,7 @@ public class ProductService {
     }
 
     public Product_Entity getProductByIDS(String id) {
-        if(id != null) {
+        if (id != null) {
             return productDao.getProductById(id);
         }
         return null;
@@ -96,11 +106,11 @@ public class ProductService {
 
     public boolean deleteProduct(String id) {
         if (id != null) {
-            EntityTransaction transaction = productDao.getEntityManager().getTransaction();
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
             try {
-                transaction.begin();
-                boolean delBill = productDao.deleteProduct(id);
-                if (!delBill) {
+                boolean delProduct = productDao.deleteProduct(id);
+                if (!delProduct) {
                     throw new RuntimeException("Error");
                 }
                 transaction.commit();
@@ -113,6 +123,8 @@ public class ProductService {
     }
 
     public boolean changeProduct(Product_Entity product_entity) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
         String id = product_entity.getID_SP();
         String NAME_SP = product_entity.getNAME_SP();
         String DES_SP = product_entity.getDES_SP();
@@ -123,16 +135,61 @@ public class ProductService {
         Integer QUANTITY = product_entity.getQUANTITY();
         Double DISCOUNT = product_entity.getDISCOUNT();
         List<Integer> IDS_OPTION_VALUES = product_entity.getIDS_OPTION_VALUES();
-    //add check
-        if(checkIDS_OPTION_VALUES(IDS_OPTION_VALUES)){
-        return productDao.updateProduct(id,NAME_SP,DES_SP,ID_CATEGORY,PRICE_SP,IMAGE_SP,VIEW_COUNT,QUANTITY,DISCOUNT,IDS_OPTION_VALUES);
+        //add check
+        try {
+            if (checkIDS_OPTION_VALUES(IDS_OPTION_VALUES)) {
+                transaction.commit();
+                return productDao.updateProduct(id, NAME_SP, DES_SP, ID_CATEGORY, PRICE_SP, IMAGE_SP, VIEW_COUNT, QUANTITY, DISCOUNT, IDS_OPTION_VALUES);
+            }
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
         }
         return false;
-
+    }
+    public boolean changeProductOption(Product_Option_Entity productOptionEntity) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+        String id = productOptionEntity.getID_OPTION();
+        String nameOption = productOptionEntity.getNAME_OPTION();
+        String type = productOptionEntity.getTYPE();
+        String idBaseproduct = productOptionEntity.getID_BASEPRODUCT();
+        //add check
+        try {
+            if (productOptionDao.updateProductOption(id, nameOption, type, idBaseproduct)) {
+                transaction.commit();
+                return true;
+            }
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
+    public boolean changeOptionValue(Option_Values_Entity option_values_entity) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+        Integer id_value = option_values_entity.getID_VALUE();
+        String value = option_values_entity.getVALUE();
+        String idparent = option_values_entity.getID_PARENT();
+        String idOption  = option_values_entity.getID_OPTION();
+        //add check
+        try {
+            if (optionValuesDao.existsOptionValueById(id_value)) {
+                boolean isUpdated = optionValuesDao.updateOptionValue(id_value, value, idparent, idOption);
+                if (isUpdated) {
+                    transaction.commit();
+                    return true;
+                }
+            }
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
     }
 
 
     public boolean createProduct(Product_Entity product_entity) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
         String id = product_entity.getID_SP();
         String NAME_SP = product_entity.getNAME_SP();
         String DES_SP = product_entity.getDES_SP();
@@ -144,33 +201,41 @@ public class ProductService {
         Double DISCOUNT = product_entity.getDISCOUNT();
         List<Integer> IDS_OPTION_VALUES = product_entity.getIDS_OPTION_VALUES();
         //add check ở phía dưới
-        if(checkIDS_OPTION_VALUES(IDS_OPTION_VALUES)){
-            return productDao.createProdcut(product_entity);
+        try {
+            if (checkIDS_OPTION_VALUES(IDS_OPTION_VALUES)) {
+                transaction.commit();
+                return productDao.createProdcut(product_entity);
+            }
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
         }
         return false;
     }
+
     public boolean createProductOption(Product_Option_Entity product_option_entity) {
         String id = product_option_entity.getID_OPTION();
         String NAME_OPTION = product_option_entity.getNAME_OPTION();
         String TYPE = product_option_entity.getTYPE();
         String ID_BASEPRODUCT = product_option_entity.getID_BASEPRODUCT();
         //acdd check
-            return productOptionDao.createProductOption(product_option_entity);
+        return productOptionDao.createProductOption(product_option_entity);
     }
+
     public boolean createOptionValue(Option_Values_Entity option_values_entity) {
         String ID_VALUE = option_values_entity.getID_OPTION();
         String ID_PARENT = option_values_entity.getID_PARENT();
         String ID_OPTION = option_values_entity.getID_OPTION();
         String VALUE = option_values_entity.getVALUE();
         //acdd check
-            return optionValuesDao.createOptionValues(option_values_entity);
+        return optionValuesDao.createOptionValues(option_values_entity);
     }
 
-    public boolean checkIDS_OPTION_VALUES(List<Integer> IDS_OPTION_VALUES){
-        for(Integer i : IDS_OPTION_VALUES){
-            if(!optionValuesDao.existsOptionValueById(i)){
+    public boolean checkIDS_OPTION_VALUES(List<Integer> IDS_OPTION_VALUES) {
+        for (Integer i : IDS_OPTION_VALUES) {
+            if (!optionValuesDao.existsOptionValueById(i)) {
                 return false;
-            };
+            }
+            ;
         }
         return true;
     }

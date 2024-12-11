@@ -4,7 +4,10 @@ import com.example.dkkp.dao.ImportDao;
 import com.example.dkkp.dao.ImportDetailDao;
 import com.example.dkkp.dao.ProductDao;
 import com.example.dkkp.model.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Persistence;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -21,11 +24,18 @@ public class ImportService {
     private final ImportDao importDao;
     private final ImportDetailDao importDetailDao;
     private final ProductDao productDao;
+    private final EntityManager entityManager;
+    private static final EntityManagerFactory entityManagerFactory;
+
+    static {
+        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
+    }
 
     public ImportService() {
         this.importDao = new ImportDao();
         this.importDetailDao = new ImportDetailDao();
         this.productDao = new ProductDao();
+        this.entityManager = entityManagerFactory.createEntityManager();
     }
 
     public List<Import_Entity> getImportByCombinedCondition(
@@ -179,34 +189,57 @@ public class ImportService {
                 if (!isUpdated) {
                     throw new RuntimeException("Failed to delete import general.");
                 }
+                boolean isMinus = minusImportProduct(idParent);
+                if (!isMinus) {
+                    throw new RuntimeException("Failed to minus import product.");
+                }
                 transaction.commit();
                 return true;
             } catch (Exception e) {
                 if (transaction.isActive()) {
                     transaction.rollback();
                 }
-                e.printStackTrace();
                 return false;
             }
         }
         return false;
     }
 
-    public boolean registerNewImport(Import_Entity importEntity) {
+    public boolean registerNewImport(Import_Entity importEntity, List<Import_Detail_Entity> listImportDetail) {
         //add check
-        LocalDateTime DATE_JOIN = LocalDateTime.now();
-        importEntity.setDATE_IMP(DATE_JOIN);
-        return importDao.createImport(importEntity);
+        EntityTransaction transaction = importDao.getEntityManager().getTransaction();
+        try {
+            transaction.begin();
+            LocalDateTime DATE_JOIN = LocalDateTime.now();
+            importEntity.setDATE_IMP(DATE_JOIN);
+            if (!importDao.createImport(importEntity)) throw new RuntimeException("Failed to creat import general");
+            if (!registerNewImportDetail(listImportDetail))
+                throw new RuntimeException("Failed to register new import detail.");
+            String id = importEntity.getID_IMP();
+            if (!plusImportProduct(id)) throw new RuntimeException("Failed to plus product.");
+            return true;
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            return false;
+        }
     }
 
-    public boolean registerNewImportDetail(List<Import_Detail_Entity> listImportDetail) {
+    private boolean registerNewImportDetail(List<Import_Detail_Entity> listImportDetail) {
         //add check
         if (listImportDetail != null) {
             try {
-                importDetailDao.createImportDetail(listImportDetail);
-                for (Import_Detail_Entity importDetail : listImportDetail) {
-                    String id = importDetail.getID_IPARENT();
-                    plusProduct(id);
+                boolean isCreated = importDetailDao.createImportDetail(listImportDetail);
+                if (isCreated) {
+                    Double sumPrice = 0.0;
+                    String id = null;
+                    for (Import_Detail_Entity importDetail : listImportDetail) {
+                        sumPrice += importDetail.getPRICE_IMP_SP();
+                        id = importDetail.getID_IPARENT();
+                    }
+                    if (importDao.addSumPrice(id, sumPrice)) throw new RuntimeException("Failed to add sum price.");
+                    return true;
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -215,7 +248,7 @@ public class ImportService {
         return false;
     }
 
-    public boolean plusProduct(String id) {
+    public boolean plusImportProduct(String id) {
         if (id != null) {
             EntityTransaction transaction = importDao.getEntityManager().getTransaction();
             try {
@@ -232,6 +265,39 @@ public class ImportService {
                             throw new RuntimeException("Error");
                         }
                         Integer newQuantity = productE.getQUANTITY() + quantity;
+                        productE.setQUANTITY(newQuantity);
+
+                        return productService.changeProduct(productE);
+                    }
+                    transaction.commit();
+                }
+
+            } catch (RuntimeException e) {
+                if (transaction.isActive()) {
+                    transaction.rollback();
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean minusImportProduct(String id) {
+        if (id != null) {
+            EntityTransaction transaction = importDao.getEntityManager().getTransaction();
+            try {
+                transaction.begin();
+                if (importDao.getFilteredImports(null, null, id, null, null, null, null, null, null) != null) {
+                    List<Import_Detail_Entity> listImportDetail = importDetailDao.getFilteredImportDetails(null, id, null, null, null, null, null);
+                    for (Import_Detail_Entity importDetail : listImportDetail) {
+                        String idSp = importDetail.getID_SP();
+                        System.out.println(idSp);
+                        Integer quantity = importDetail.getQUANTITY_SP();
+                        ProductService productService = new ProductService();
+                        Product_Entity productE = productService.getProductByIDS(idSp);
+                        if (productE == null) {
+                            throw new RuntimeException("Error");
+                        }
+                        Integer newQuantity = productE.getQUANTITY() - quantity;
                         productE.setQUANTITY(newQuantity);
 
                         return productService.changeProduct(productE);

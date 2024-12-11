@@ -20,7 +20,7 @@ public class ImportDetailDao {
     this.entityManager = entityManagerFactory.createEntityManager();
   }
 
-  public void createImportDetail(List<Import_Detail_Entity>  listImportDetail) throws SQLException {
+  public boolean createImportDetail(List<Import_Detail_Entity>  listImportDetail) throws SQLException {
     EntityTransaction transaction = entityManager.getTransaction();
     try {
       transaction.begin();
@@ -31,13 +31,14 @@ public class ImportDetailDao {
         System.out.println("service register2");
       }
       transaction.commit();
+      return true;
 
     } catch (RuntimeException e) {
       if (transaction.isActive()) {
         transaction.rollback();
         System.out.println(e.getMessage() + "dcm loi ex");
       }
-
+      return false;
     }
   }
   public EntityManager getEntityManager() {

@@ -131,7 +131,7 @@ public class ProductOptionDao {
     return false;
   }
 
-  public boolean updateCategory(String id, String name, String type, String idBaseProduct) {
+  public boolean updateProductOption(String id, String name, String type, String idBaseProduct) {
     EntityTransaction transaction = entityManager.getTransaction();
     try {
       transaction.begin();

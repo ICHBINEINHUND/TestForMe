@@ -19,6 +19,7 @@ public class ProductDao {
         this.entityManager = entityManagerFactory.createEntityManager();
     }
 
+
     public EntityManager getEntityManager() {
         return this.entityManager;
     }
@@ -43,8 +44,8 @@ public class ProductDao {
         String jpql = "SELECT u FROM Product_Entity u WHERE u.ID_SP = :id";
         TypedQuery<Product_Entity> query = entityManager.createQuery(jpql, Product_Entity.class);
         query.setParameter("id", id);
-        System.out.println("trong dao");
-        System.out.println(query.getSingleResult().getNAME_SP());;
+        System.out.println(query.getSingleResult().getNAME_SP());
+        ;
         return query.getSingleResult();
 
     }
@@ -112,32 +113,23 @@ public class ProductDao {
             }
         }
         TypedQuery<Product_Entity> typedQuery = entityManager.createQuery(query);
-        if(offset !=null) typedQuery.setFirstResult(offset);
-        if(setOff !=null) typedQuery.setMaxResults(setOff);
+        if (offset != null) typedQuery.setFirstResult(offset);
+        if (setOff != null) typedQuery.setMaxResults(setOff);
         return typedQuery.getResultList();
     }
 
     public boolean deleteProduct(String id) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
-            var query = entityManager.createQuery("SELECT po FROM Product_Entity po WHERE po.id = :id", Product_Entity.class);
-            query.setParameter("id", id);
-            Product_Entity product = query.getSingleResult();
 
-            if (product != null) {
-                entityManager.remove(product);
-                transaction.commit();
-                return true;
-            }
-            throw new RuntimeException("Error occurred while deleting Option Value");
-        } catch (RuntimeException e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-                return false;
-            }
-            throw e;
+        System.out.println("dao");
+        Product_Entity product = entityManager.find(Product_Entity.class, id);
+        System.out.println("dao2");
+        if (product != null) {
+            System.out.println("dao31");
+            entityManager.remove(product);
+            return true;
         }
+        System.out.println("dao32");
+        throw new RuntimeException("Error occurred while deleting Option Value");
 
     }
 

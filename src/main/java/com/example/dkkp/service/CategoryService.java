@@ -3,6 +3,9 @@ package com.example.dkkp.service;
 import com.example.dkkp.dao.CategoryDao;
 import com.example.dkkp.model.EnumType;
 import com.example.dkkp.model.Category_Entity;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,9 +14,16 @@ import static com.example.dkkp.model.EnumType.Bug_Type.UI;
 
 public class CategoryService {
     private final CategoryDao categoryDao;
+    private final EntityManager entityManager;
+    private static final EntityManagerFactory entityManagerFactory;
+
+    static {
+        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
+    }
 
     public CategoryService() {
         this.categoryDao = new CategoryDao();
+        this.entityManager = entityManagerFactory.createEntityManager();
     }
 
 

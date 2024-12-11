@@ -20,6 +20,10 @@ public class Bill_Entity {
   private String ADD_BILL;
   @Column(name = "\"ID_USER\"")
   private String ID_USER;
+  @Column(name = "\"SUM_PRICE\"")
+  private Double SUM_PRICE;
+  @Column(name = "\"ID_PARENT\"")
+  private String ID_PARENT;
   @Column(name = "\"BILL_STATUS\"")
   @Enumerated(EnumType.ORDINAL)
   private Status_Bill BILL_STATUS;
@@ -40,12 +44,30 @@ public class Bill_Entity {
     this.ADD_BILL = ADD_BILL;
   }
 
-  public Bill_Entity(String ID_BILL, LocalDateTime date_EXP, String PHONE_BILL, String ADD_BILL, String ID_USER, Status_Bill BILL_STATUS) {
+  public Double getSUM_PRICE() {
+    return SUM_PRICE;
+  }
+
+  public void setSUM_PRICE(Double SUM_PRICE) {
+    this.SUM_PRICE = SUM_PRICE;
+  }
+
+  public String getID_PARENT() {
+    return ID_PARENT;
+  }
+
+  public void setID_PARENT(String ID_PARENT) {
+    this.ID_PARENT = ID_PARENT;
+  }
+
+  public Bill_Entity(String ID_BILL, LocalDateTime date_EXP, String PHONE_BILL, String ADD_BILL, String ID_USER, Double SUM_PRICE, String ID_PARENT, Status_Bill BILL_STATUS) {
     this.ID_BILL = ID_BILL;
     Date_EXP = date_EXP;
     this.PHONE_BILL = PHONE_BILL;
     this.ADD_BILL = ADD_BILL;
     this.ID_USER = ID_USER;
+    this.SUM_PRICE = SUM_PRICE;
+    this.ID_PARENT = ID_PARENT;
     this.BILL_STATUS = BILL_STATUS;
   }
 

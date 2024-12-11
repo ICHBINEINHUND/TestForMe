@@ -2,6 +2,7 @@ package com.example.dkkp.dao;
 
 import com.example.dkkp.model.Option_Values_Entity;
 import com.example.dkkp.model.Option_Values_Entity;
+import com.example.dkkp.model.Option_Values_Entity;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
 
@@ -44,6 +45,31 @@ public class OptionValuesDao {
       return optionValue != null;
     } catch (RuntimeException e) {
       throw new RuntimeException("Error checking existence of Option Value", e);
+    }
+  }
+
+  public boolean updateOptionValue(Integer id,
+                               String value,
+                               String parent_id,
+                               String option_id) {
+    EntityTransaction transaction = entityManager.getTransaction();
+    try {
+      transaction.begin();
+      Option_Values_Entity option_values_entity = entityManager.find(Option_Values_Entity.class, id);
+      if (option_values_entity == null) {
+        return false;
+      }
+      if (value != null) option_values_entity.setVALUE(value);
+      if (parent_id != null) option_values_entity.setID_PARENT(parent_id);
+      if (option_id != null) option_values_entity.setID_OPTION(option_id);
+      entityManager.merge(option_values_entity);
+      transaction.commit();
+      return true;
+    } catch (RuntimeException e) {
+      if (transaction.isActive()) {
+        transaction.rollback();
+      }
+      throw e;
     }
   }
 

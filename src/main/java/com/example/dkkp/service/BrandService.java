@@ -2,11 +2,20 @@ package com.example.dkkp.service;
 
 import com.example.dkkp.dao.BrandDao;
 import com.example.dkkp.model.Brand_Entity;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 
 import java.util.List;
 
 public class BrandService {
     private final BrandDao brandDao;
+    private final EntityManager entityManager;
+    private static final EntityManagerFactory entityManagerFactory;
+
+    static {
+        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
+    }
 
     public BrandService() {
         this.brandDao = new BrandDao();

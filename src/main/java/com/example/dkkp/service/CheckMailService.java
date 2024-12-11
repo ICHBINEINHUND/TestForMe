@@ -4,6 +4,9 @@ import com.example.dkkp.dao.EmailCheckDao;
 import com.example.dkkp.dao.UserDao;
 import com.example.dkkp.model.Email_Check_Entity;
 import com.example.dkkp.model.User_Entity;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,9 +14,16 @@ import java.util.Random;
 
 public class CheckMailService {
   private final EmailCheckDao checkmail;
+  private final EntityManager entityManager;
+  private static final EntityManagerFactory entityManagerFactory;
+
+  static {
+    entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
+  }
 
   public CheckMailService() {
     this.checkmail = new EmailCheckDao();
+    this.entityManager = entityManagerFactory.createEntityManager();
   }
 
   public void createToken(String email) {

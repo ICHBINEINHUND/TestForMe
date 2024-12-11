@@ -20,6 +20,7 @@ public class BrandDao {
     this.entityManager = entityManagerFactory.createEntityManager();
   }
 
+
   public boolean createBrand(Brand_Entity brand) {
     EntityTransaction transaction = entityManager.getTransaction();
     try {
