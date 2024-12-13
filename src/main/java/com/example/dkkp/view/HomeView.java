@@ -13,7 +13,6 @@ import com.example.dkkp.util.ViewUtil;
 public class HomeView {
   private static final Logger logger = LoggerFactory.getLogger(HomeView.class);
   private BorderPane homePane;
-
   public HomeView() {
     try {
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dkkp/HomeView.fxml"));
@@ -22,7 +21,6 @@ public class HomeView {
       logger.error("Loading HomeView FXML Failed!", e);
     }
   }
-
   public void showHomeView(Stage stage) {
     ViewUtil.showView(stage, homePane);
   }

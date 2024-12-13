@@ -13,7 +13,6 @@ public class Main extends Application {
     LoginView loginView = new LoginView();
     loginView.showLoginView(stage);
     UserAgentBuilder.builder().themes(JavaFXThemes.MODENA).themes(MaterialFXStylesheets.forAssemble(true)).setDeploy(true).setResolveAssets(true).build().setGlobal();
-    System.out.println("dcm");
   }
   public static void main(String[] args) {
     launch(args);

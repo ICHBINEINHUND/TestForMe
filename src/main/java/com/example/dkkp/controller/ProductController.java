@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public class ProductController {
     @FXML
@@ -109,7 +110,6 @@ public class ProductController {
             showAlert(Alert.AlertType.WARNING, "Please select a product to delete.");
         }
     }
-
     private Product_Entity createProductFromInput() {
         String id = txtID.getText();
         String name = txtName.getText();
@@ -127,7 +127,7 @@ public class ProductController {
     private List<Integer> parseOptionValues(String text) {
         try {
             String[] values = text.split(",");
-            return List.of(values).stream().map(Integer::parseInt).toList();
+            return Stream.of(values).map(Integer::parseInt).toList();
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid option values format. Use comma-separated integers.");
         }

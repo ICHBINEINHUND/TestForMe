@@ -163,9 +163,7 @@ public class ImportService {
                         }
                         Integer newQuantity = productE.getQUANTITY() + quantity;
                         Product_Entity productEntity = new Product_Entity(id, null, null, null, null, null, null, newQuantity, null, null);
-                        if (!productService.changeProduct(productEntity)) {
-                            throw new RuntimeException("Error when change product in add product from import process");
-                        }
+                        productService.changeProduct(productEntity);
                     }
                     transaction.commit();
                 }
@@ -235,11 +233,11 @@ public class ImportService {
         //add check
         importDetailDao.createImportDetail(listImportDetail);
 
-            Double sumPrice = 0.0;
-            String id = null;
-            for (Import_Detail_Entity importDetail : listImportDetail) {
-                sumPrice += importDetail.getPRICE_IMP_SP();
-                id = importDetail.getID_IPARENT();
+        Double sumPrice = 0.0;
+        String id = null;
+        for (Import_Detail_Entity importDetail : listImportDetail) {
+            sumPrice += importDetail.getPRICE_IMP_SP();
+            id = importDetail.getID_IPARENT();
             if (importDao.addSumPrice(id, sumPrice)) throw new RuntimeException("Failed to add sum price.");
         }
     }
@@ -262,7 +260,8 @@ public class ImportService {
                         }
                         Integer newQuantity = productE.getQUANTITY() + quantity;
                         productE.setQUANTITY(newQuantity);
-                        return productService.changeProduct(productE);
+                         productService.changeProduct(productE);
+                         return true;
                     }
                     transaction.commit();
                 }
@@ -296,7 +295,8 @@ public class ImportService {
                         Integer newQuantity = productE.getQUANTITY() - quantity;
                         productE.setQUANTITY(newQuantity);
 
-                        return productService.changeProduct(productE);
+                        productService.changeProduct(productE);
+                        return true;
                     }
                     transaction.commit();
                 }
