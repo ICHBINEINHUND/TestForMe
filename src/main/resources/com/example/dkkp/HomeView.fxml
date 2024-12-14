@@ -3,6 +3,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
@@ -17,16 +18,21 @@
         </ImageView>
       </HBox>
       <VBox alignment="CENTER" prefWidth="200" spacing="5">
-        <MFXButton buttonType="RAISED" mnemonicParsing="false" text="Dashboard" prefWidth="190" prefHeight="80"
+        <MFXButton buttonType="RAISED" mnemonicParsing="false" text="모 Dashboard" prefWidth="190" prefHeight="40"
                    styleClass="dashboardBtn" onAction="#loadDashboardView" fx:id="dashboardTab"/>
-        <MFXButton buttonType="RAISED" mnemonicParsing="false" text="Product" prefWidth="190" prefHeight="80"
+        <MFXButton buttonType="RAISED" mnemonicParsing="false" text="☰ Product" prefWidth="190" prefHeight="40"
                    styleClass="productBtn" onAction="#loadProductView" fx:id="productTab"/>
-        <MFXButton buttonType="RAISED" mnemonicParsing="false" text="Import" prefWidth="190" prefHeight="80"
+        <MFXButton buttonType="RAISED" mnemonicParsing="false" text="⮞ Import" prefWidth="190" prefHeight="40"
                    styleClass="importBtn" onAction="#loadImportView" fx:id="importTab"/>
-        <MFXButton buttonType="RAISED" mnemonicParsing="false" text="Export" prefWidth="190" prefHeight="80"
+        <MFXButton buttonType="RAISED" mnemonicParsing="false" text="⮜ Export" prefWidth="190" prefHeight="40"
                    styleClass="exportBtn" onAction="#loadExportView" fx:id="exportTab"/>
-        <MFXButton buttonType="RAISED" mnemonicParsing="false" text="Report" prefWidth="190" prefHeight="80"
+        <MFXButton buttonType="RAISED" mnemonicParsing="false" text="🗒 Report" prefWidth="190" prefHeight="40"
                    styleClass="exportBtn" onAction="#loadReportView" fx:id="reportTab"/>
+      </VBox>
+      <Region VBox.vgrow="ALWAYS"/>
+      <VBox alignment="CENTER" prefWidth="200" prefHeight="60">
+        <MFXButton buttonType="RAISED" mnemonicParsing="false" text="Log Out" prefWidth="90" prefHeight="40"
+                   styleClass="exportBtn" onAction="#logOut"/>
       </VBox>
     </VBox>
   </left>

@@ -3,5 +3,5 @@
 <?import javafx.scene.control.Label?>
 
 <StackPane>
-  <Label text="Report View" />
+  <Label text="Report View"/>
 </StackPane>

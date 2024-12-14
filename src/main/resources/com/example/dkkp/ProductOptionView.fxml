@@ -3,5 +3,5 @@
 <?import javafx.scene.control.Label?>
 
 <StackPane>
-  <Label text="Export View"/>
+  <Label text="Product Option"/>
 </StackPane>

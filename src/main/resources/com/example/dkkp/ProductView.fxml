@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.control.Label?>
-
-<StackPane>
-  <Label text="Product View"/>
-</StackPane>
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.dkkp.controller.ProductController" spacing="20">
+  <HBox spacing="10" styleClass="productNav">
+    <VBox alignment="CENTER">
+      <MFXButton fx:id="productBaseFinal" buttonType="RAISED" mnemonicParsing="false" text="Product Base | Final"
+                 onAction="#loadProductBaseFinal" styleClass="productNavBtn"/>
+    </VBox>
+    <VBox alignment="CENTER">
+      <MFXButton fx:id="productOption" buttonType="RAISED" mnemonicParsing="false" text="Product Option"
+                 onAction="#loadProductOption" styleClass="productNavBtn"/>
+    </VBox>
+  </HBox>
+  <StackPane fx:id="main"/>
+</VBox>

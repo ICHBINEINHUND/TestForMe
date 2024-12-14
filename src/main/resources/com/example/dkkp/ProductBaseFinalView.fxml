@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import io.github.palexdev.materialfx.controls.MFXPaginatedTableView?>
+<?import io.github.palexdev.materialfx.controls.MFXTableColumn?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.dkkp.controller.ProductBaseFinalView"
+            styleClass="productAP">
+  <MFXPaginatedTableView fx:id="paginatedTable" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+                         AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" rowsPerPage="5" pagesToShow="3">
+    <tableColumns>
+      <MFXTableColumn fx:id="ID_SP" text="ID" styleClass="productBF"/>
+      <MFXTableColumn fx:id="NAME_SP" text="NAME" styleClass="productBF"/>
+      <MFXTableColumn fx:id="PRICE_SP" text="PRICE" styleClass="productBF"/>
+      <MFXTableColumn fx:id="ID_CATEGORY" text="CATEGORY" styleClass="productBF"/>
+      <MFXTableColumn fx:id="QUANTITY" text="QUANTITY" styleClass="productBF"/>
+      <MFXTableColumn fx:id="VIEW_COUNT" text="VIEW COUNT" styleClass="productBF"/>
+      <MFXTableColumn fx:id="DISCOUNT" text="DISCOUNT" styleClass="productBF"/>
+    </tableColumns>
+  </MFXPaginatedTableView>
+</AnchorPane>

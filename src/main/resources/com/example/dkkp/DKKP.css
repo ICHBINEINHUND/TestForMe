@@ -7,7 +7,13 @@
 .loginVB {
   -fx-border-radius: 10px;
   -fx-border-width: 2px;
-  -fx-border-color: black;
+  -fx-border-color: #8e44ad;
+}
+
+.loginBtn {
+  -fx-border-width: 2px;
+  -fx-border-color: #8e44ad;
+  -fx-text-fill: #8e44ad;
 }
 
 .logoHB {
@@ -15,7 +21,6 @@
 }
 
 .homeVB {
-  -fx-background-color: #1e1e2e;
   -fx-border-width: 2px;
   -fx-border-color: transparent #8e44ad transparent transparent;
 }
@@ -24,22 +29,60 @@
 .productBtn,
 .importBtn,
 .exportBtn {
-  -fx-background-color: #1e1e2e;
   -fx-cursor: hand;
-  -fx-font-size: 18px;
-  -fx-text-fill: #8e44ad;
+  -fx-font-size: 14px;
 }
 
 .dashboardBtn:hover,
 .productBtn:hover,
 .importBtn:hover,
 .exportBtn:hover {
-  -fx-text-fill: white;
+  -fx-text-fill: #8e44ad;
+}
+
+.activeBtn {
+  -fx-text-fill: #8e44ad;
   -fx-border-width: 4px;
   -fx-border-color: transparent transparent transparent #8e44ad;
 }
 
-.activeBtn {
+.dashboardTT {
+  -fx-text-fill: #8e44ad;
+  -fx-font-size: 16px;
+  -fx-border-width: 2px;
+  -fx-border-color: #8e44ad;
+  -fx-padding: 10px;
+}
+
+.dashboardTXT {
+  -fx-font-size: 14px;
+  -fx-border-width: 2px;
+  -fx-border-color: transparent transparent #8e44ad transparent;
+  -fx-padding: 4px;
+}
+
+.productNav {
+  -fx-border-width: 2px;
+  -fx-border-color: transparent transparent #8e44ad transparent;
+  -fx-padding: 4px;
+}
+
+.productNavBtn {
+  -fx-font-size: 14px;
+  -fx-border-width: 2px;
+  -fx-border-color: #8e44ad;
+  -fx-padding: 4px;
+}
+
+.activeBtn2 {
   -fx-background-color: #8e44ad;
   -fx-text-fill: white;
+}
+
+.productAP {
+  -fx-padding: 10px;
+}
+
+.productBF {
+  -fx-text-fill: #8e44ad;
 }
