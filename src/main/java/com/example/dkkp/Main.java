@@ -14,6 +14,7 @@ public class Main extends Application {
     loginView.showLoginView(stage);
     UserAgentBuilder.builder().themes(JavaFXThemes.MODENA).themes(MaterialFXStylesheets.forAssemble(true)).setDeploy(true).setResolveAssets(true).build().setGlobal();
   }
+
   public static void main(String[] args) {
     launch(args);
   }
