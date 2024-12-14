@@ -1,41 +1,141 @@
 package com.example.dkkp.controller;
+
 import com.example.dkkp.model.Product_Entity;
-import io.github.palexdev.materialfx.controls.MFXPaginatedTableView;
-import io.github.palexdev.materialfx.controls.MFXTableColumn;
-import io.github.palexdev.materialfx.controls.cell.MFXTableRowCell;
+import com.example.dkkp.service.ProductService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-public class ProductBaseFinalView {
-  @FXML
-  private MFXPaginatedTableView<Product_Entity> paginatedTable;
-  @FXML
-  private MFXTableColumn<Product_Entity> ID_SP;
-  @FXML
-  private MFXTableColumn<Product_Entity> NAME_SP;
-  @FXML
-  private MFXTableColumn<Product_Entity> PRICE_SP;
-  @FXML
-  private MFXTableColumn<Product_Entity> ID_CATEGORY;
-  @FXML
-  private MFXTableColumn<Product_Entity> QUANTITY;
-  @FXML
-  private MFXTableColumn<Product_Entity> VIEW_COUNT;
-  @FXML
-  private MFXTableColumn<Product_Entity> DISCOUNT;
-  @FXML
-  public void initialize() {
-    ObservableList<Product_Entity> productList = getHardcodedProducts();
-    paginatedTable.setItems(productList);
-    ID_SP.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Entity::getID_SP));
-    NAME_SP.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Entity::getNAME_SP));
-    ID_CATEGORY.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Entity::getID_CATEGORY));
-    PRICE_SP.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Entity::getPRICE_SP));
-    VIEW_COUNT.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Entity::getVIEW_COUNT));
-    QUANTITY.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Entity::getQUANTITY));
-    DISCOUNT.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Entity::getDISCOUNT));
-  }
-  private ObservableList<Product_Entity> getHardcodedProducts() {
-    return FXCollections.observableArrayList(new Product_Entity("APTX-4869", "NVIDIA GeForce RTX 4090", null, "GPU", 2500.0, null, 10000, 5, 2.5, null), new Product_Entity("BG2022", "AMD Ryzen 9 7950X", null, "CPU", 799.0, null, 2000, 15, 10.0, null), new Product_Entity("DS501", "Samsung 980 Pro SSD", null, "Storage", 200.0, null, 5000, 25, 5.0, null));
-  }
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+
+import java.util.List;
+import java.util.stream.Stream;
+
+public class ProductController {
+    @FXML
+    private TextField txtID, txtName, txtDescription, txtCategory, txtPrice, txtViewCount, txtQuantity, txtDiscount, txtOptionValues;
+    @FXML
+    private TextField txtSearch;
+    @FXML
+    private ImageView imgProduct;
+    @FXML
+    private TableView<Product_Entity> tblProducts;
+    @FXML
+    private TableColumn<Product_Entity, String> colID, colName, colCategory;
+    @FXML
+    private TableColumn<Product_Entity, Double> colPrice;
+    @FXML
+    private TableColumn<Product_Entity, Integer> colViewCount, colQuantity;
+
+    private final ProductService productService = new ProductService();
+    private final ObservableList<Product_Entity> productList = FXCollections.observableArrayList();
+
+    @FXML
+    public void initialize() {
+        // Bind table columns
+        colID.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getID_SP()));
+        colName.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getNAME_SP()));
+        colCategory.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getID_CATEGORY()));
+        colPrice.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getPRICE_SP()));
+        colViewCount.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getVIEW_COUNT()));
+        colQuantity.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getQUANTITY()));
+
+        tblProducts.setItems(productList);
+
+        loadProducts();
+    }
+
+    private void loadProducts() {
+        productList.clear();
+        List<Product_Entity> products = productService.getBillByCombinedCondition(new Product_Entity(), "ID_SP", "asc", 10);
+        productList.addAll(products);
+    }
+
+    @FXML
+    public void onSearch() {
+        String keyword = txtSearch.getText();
+        Product_Entity filter = new Product_Entity();
+        filter.setNAME_SP(keyword);
+        filter.setID_CATEGORY(keyword);
+
+        productList.clear();
+        List<Product_Entity> products = productService.getBillByCombinedCondition(filter, "ID_SP", "asc", 10);
+        productList.addAll(products);
+    }
+
+    @FXML
+    public void onAdd() {
+        try {
+            Product_Entity product = createProductFromInput();
+            if (productService.createProduct(product)) {
+                showAlert(Alert.AlertType.INFORMATION, "Product added successfully!");
+                loadProducts();
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Failed to add product.");
+            }
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Invalid input: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    public void onUpdate() {
+        try {
+            Product_Entity product = createProductFromInput();
+            try {
+                productService.changeProduct(product);
+                showAlert(Alert.AlertType.INFORMATION, "Product updated successfully!");
+                loadProducts();
+            } catch (RuntimeException e) {
+                showAlert(Alert.AlertType.ERROR, "Failed to update product.");
+                throw e;
+            }
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Invalid input: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    public void onDelete() {
+        Product_Entity selectedProduct = tblProducts.getSelectionModel().getSelectedItem();
+        if (selectedProduct != null) {
+            try {
+                productService.deleteProduct(selectedProduct.getID_SP());
+                showAlert(Alert.AlertType.INFORMATION, "Product deleted successfully!");
+                loadProducts();
+            } catch (RuntimeException e) {
+                showAlert(Alert.AlertType.ERROR, "Failed to delete product." + e);
+            }
+        } else {
+            showAlert(Alert.AlertType.WARNING, "Please select a product to delete.");
+        }
+    }
+    private Product_Entity createProductFromInput() {
+        String id = txtID.getText();
+        String name = txtName.getText();
+        String description = txtDescription.getText();
+        String category = txtCategory.getText();
+        double price = Double.parseDouble(txtPrice.getText());
+        int viewCount = Integer.parseInt(txtViewCount.getText());
+        int quantity = Integer.parseInt(txtQuantity.getText());
+        double discount = Double.parseDouble(txtDiscount.getText());
+        List<Integer> optionValues = parseOptionValues(txtOptionValues.getText());
+
+        return new Product_Entity(id, name, description, category, price, null, viewCount, quantity, discount, optionValues);
+    }
+
+    private List<Integer> parseOptionValues(String text) {
+        try {
+            String[] values = text.split(",");
+            return Stream.of(values).map(Integer::parseInt).toList();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid option values format. Use comma-separated integers.");
+        }
+    }
+
+    private void showAlert(Alert.AlertType type, String message) {
+        Alert alert = new Alert(type);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }
