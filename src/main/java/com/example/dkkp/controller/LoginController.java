@@ -1,16 +1,17 @@
 package com.example.dkkp.controller;
 
 import com.example.dkkp.util.ViewUtil;
+import com.example.dkkp.view.HomeView;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import io.github.palexdev.materialfx.controls.MFXTextField;
-import com.example.dkkp.view.HomeView;
 
 import java.util.Objects;
+
+import io.github.palexdev.materialfx.controls.MFXTextField;
 
 public class LoginController {
   @FXML
@@ -34,4 +35,4 @@ public class LoginController {
       alert.showAndWait();
     }
   }
-  }
+}

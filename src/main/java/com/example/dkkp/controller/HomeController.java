@@ -1,9 +1,13 @@
 package com.example.dkkp.controller;
 
+import com.example.dkkp.view.LoginView;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 
@@ -28,7 +32,6 @@ public class HomeController {
   @FXML
   public void initialize() {
     loadDashboardView();
-    setActiveTab(dashboardTab);
   }
 
   @FXML
@@ -59,6 +62,12 @@ public class HomeController {
   public void loadReportView() {
     setMainView("/com/example/dkkp/ReportView.fxml");
     setActiveTab(reportTab);
+  }
+
+  public void logOut(ActionEvent event) {
+    LoginView loginView = new LoginView();
+    Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+    loginView.showLoginView(currentStage);
   }
 
   private void setMainView(String fxmlPath) {
