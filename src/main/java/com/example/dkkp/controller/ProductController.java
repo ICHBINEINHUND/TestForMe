@@ -47,8 +47,8 @@ public class ProductController {
   }
 
   private void setActiveTab(Button activeTab) {
-    productBaseFinal.getStyleClass().remove("activeBtn2");
-    productOption.getStyleClass().remove("activeBtn2");
-    activeTab.getStyleClass().add("activeBtn2");
+    productBaseFinal.getStyleClass().remove("activeProductBtn");
+    productOption.getStyleClass().remove("activeProductBtn");
+    activeTab.getStyleClass().add("activeProductBtn");
   }
 }

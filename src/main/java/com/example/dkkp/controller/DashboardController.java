@@ -1,21 +1,18 @@
 package com.example.dkkp.controller;
 
-import io.github.palexdev.materialfx.beans.NumberRange;
-import io.github.palexdev.materialfx.controls.MFXDatePicker;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.util.StringConverter;
 
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class DashboardController {
   @FXML
-  private MFXDatePicker datePicker;
+  private DatePicker datePicker;
   @FXML
   private Label totalRevenueMonth;
   @FXML
@@ -32,28 +29,6 @@ public class DashboardController {
 
   @FXML
   public void initialize() {
-    configDatePicker();
-    onUpdate();
-  }
-
-  private void configDatePicker() {
-    datePicker.setConverterSupplier(() -> new StringConverter<>() {
-      @Override
-      public String toString(LocalDate date) {
-        return date != null ? date.format(DTF) : "";
-      }
-
-      @Override
-      public LocalDate fromString(String string) {
-        return string != null && !string.isEmpty() ? LocalDate.parse(string, DTF) : null;
-      }
-    });
-    datePicker.setValue(LocalDate.now());
-    datePicker.setYearsRange(new NumberRange<>(2024, 2050));
-  }
-
-  @FXML
-  public void onUpdate() {
     updateStatistics();
     updateLineChart();
     updatePieChart();
