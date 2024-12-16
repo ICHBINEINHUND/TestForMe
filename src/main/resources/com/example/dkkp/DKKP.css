@@ -10,7 +10,7 @@
   -fx-border-color: #8e44ad;
 }
 
-.loginBtn {
+.Btn {
   -fx-border-width: 2px;
   -fx-border-color: #8e44ad;
   -fx-text-fill: #8e44ad;
@@ -74,7 +74,7 @@
   -fx-padding: 4px;
 }
 
-.activeBtn2 {
+.activeProductBtn {
   -fx-background-color: #8e44ad;
   -fx-text-fill: white;
 }
@@ -85,4 +85,35 @@
 
 .productBF {
   -fx-text-fill: #8e44ad;
+}
+
+.date-picker,
+.date-picker-popup {
+  -fx-background-color: #8e44ad;
+  -fx-border-color: #8e44ad;
+  -fx-focus-color: #8e44ad;
+}
+
+.date-picker .arrow-button {
+  -fx-background-color: #8e44ad;
+}
+
+.date-picker .arrow-button .arrow {
+  -fx-background-color: white;
+}
+
+.date-picker .cell:hover,
+.date-picker .cell:focused {
+  -fx-background-color: #d1d1d1;
+}
+
+.date-picker-popup .label,
+.date-cell {
+  -fx-text-fill: #8e44ad;
+}
+
+.date-picker .selected,
+.date-picker .selected:focused {
+  -fx-background-color: #8e44ad;
+  -fx-text-fill: white;
 }

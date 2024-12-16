@@ -17,6 +17,6 @@
     <MFXTextField fx:id="username" floatingText="Username" floatMode="BORDER" prefWidth="200" prefHeight="40"/>
     <MFXPasswordField fx:id="password" floatingText="Password" floatMode="BORDER" prefWidth="200" prefHeight="40"/>
     <MFXButton buttonType="RAISED" mnemonicParsing="false" text="Login" prefWidth="100" prefHeight="40"
-               onAction="#handleLogin" styleClass="loginBtn"/>
+               onAction="#handleLogin" styleClass="Btn"/>
   </VBox>
 </StackPane>
