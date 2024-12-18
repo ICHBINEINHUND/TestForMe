@@ -11,7 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
 
@@ -41,7 +41,7 @@ public class ProductBaseFinalController {
   @FXML
   private Button delBtn;
   @FXML
-  private HBox main;
+  private StackPane main;
   private ObservableList<Product_Entity> observableList;
   private FilteredList<Product_Entity> filteredList;
 
@@ -90,7 +90,7 @@ public class ProductBaseFinalController {
 
   private void crt() {
     crtBtn.setOnAction(_ -> {
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dkkp/ImportView.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dkkp/ProductCrtView.fxml"));
       main.getChildren().clear();
       try {
         main.getChildren().add(loader.load());
@@ -102,7 +102,7 @@ public class ProductBaseFinalController {
 
   private void upd() {
     updBtn.setOnAction(_ -> {
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dkkp/ExportView.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dkkp/ProductUpdView.fxml"));
       main.getChildren().clear();
       try {
         main.getChildren().add(loader.load());
