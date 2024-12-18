@@ -108,7 +108,8 @@
 }
 
 .date-picker-popup .label,
-.date-cell {
+.date-cell,
+.pdLabel {
   -fx-text-fill: #8e44ad;
 }
 

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<StackPane xmlns:fx="http://javafx.com/fxml">
+  <VBox spacing="20">
+    <MFXButton buttonType="RAISED" mnemonicParsing="false" text="Back" prefWidth="50" prefHeight="25" styleClass="Btn"/>
+    <HBox alignment="TOP_CENTER">
+      <VBox spacing="10" alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
+        <StackPane maxWidth="200" styleClass="Btn">
+          <ImageView fitWidth="200" fitHeight="200" preserveRatio="true">
+            <Image url="@DKKP.png"/>
+          </ImageView>
+        </StackPane>
+      </VBox>
+      <VBox spacing="10" alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
+        <Label styleClass="pdLabel">PRODUCT</Label>
+        <MFXButton buttonType="RAISED" mnemonicParsing="false" text="IMAGE" prefWidth="100" prefHeight="25"
+                   styleClass="Btn"/>
+        <MFXTextField floatingText="ID" floatMode="BORDER" prefWidth="200" prefHeight="40"/>
+        <MFXTextField floatingText="NAME" floatMode="BORDER" prefWidth="200" prefHeight="40"/>
+        <MFXTextField floatingText="DESCRIPTION" floatMode="BORDER" prefWidth="200" prefHeight="40"/>
+        <MFXTextField floatingText="CATEGORY" floatMode="BORDER" prefWidth="200" prefHeight="40"/>
+        <MFXTextField floatingText="PRICE" floatMode="BORDER" prefWidth="200" prefHeight="40"/>
+        <MFXTextField floatingText="VIEW" floatMode="BORDER" prefWidth="200" prefHeight="40"/>
+        <MFXTextField floatingText="QUANTITY" floatMode="BORDER" prefWidth="200" prefHeight="40"/>
+        <MFXTextField floatingText="DISCOUNT" floatMode="BORDER" prefWidth="200" prefHeight="40"/>
+        <MFXTextField floatingText="OPTION" floatMode="BORDER" prefWidth="200" prefHeight="40"/>
+      </VBox>
+      <VBox spacing="10" alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
+        <Label styleClass="pdLabel">BRAND</Label>
+        <MFXTextField floatingText="ID" floatMode="BORDER" prefWidth="200" prefHeight="40"/>
+        <MFXTextField floatingText="NAME" floatMode="BORDER" prefWidth="200" prefHeight="40"/>
+        <MFXTextField floatingText="DETAIL" floatMode="BORDER" prefWidth="200" prefHeight="40"/>
+        <Label styleClass="pdLabel">CATEGORY</Label>
+        <MFXTextField floatingText="ID" floatMode="BORDER" prefWidth="200" prefHeight="40"/>
+        <MFXTextField floatingText="NAME" floatMode="BORDER" prefWidth="200" prefHeight="40"/>
+        <MFXTextField floatingText="PARENT ID" floatMode="BORDER" prefWidth="200" prefHeight="40"/>
+        <MFXTextField floatingText="BRAND ID" floatMode="BORDER" prefWidth="200" prefHeight="40"/>
+        <MFXComboBox floatingText="BASE PRODUCT" floatMode="BORDER" prefWidth="200" prefHeight="40">
+          <items>
+            <FXCollections fx:factory="observableArrayList">
+              <String fx:value="True"/>
+              <String fx:value="False"/>
+            </FXCollections>
+          </items>
+        </MFXComboBox>
+      </VBox>
+    </HBox>
+    <HBox alignment="TOP_CENTER" spacing="10">
+      <MFXButton buttonType="RAISED" mnemonicParsing="false" text="Update" prefWidth="80" prefHeight="40"
+                 styleClass="Btn"/>
+    </HBox>
+  </VBox>
+</StackPane>

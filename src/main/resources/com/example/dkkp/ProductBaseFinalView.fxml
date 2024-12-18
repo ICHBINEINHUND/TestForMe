@@ -2,28 +2,31 @@
 <?import io.github.palexdev.materialfx.controls.*?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<HBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.dkkp.controller.ProductBaseFinalController"
-      fx:id="main" spacing="5" styleClass="productAP">
-  <VBox HBox.hgrow="ALWAYS" alignment="TOP_CENTER" spacing="5">
-    <MFXTextField fx:id="searchFld" floatingText="Search" floatMode="BORDER" prefWidth="250"/>
-    <MFXPaginatedTableView fx:id="productTable" rowsPerPage="5" pagesToShow="3">
-      <tableColumns>
-        <MFXTableColumn fx:id="ID_SP" text="ID" styleClass="productBF"/>
-        <MFXTableColumn fx:id="NAME_SP" text="NAME" styleClass="productBF"/>
-        <MFXTableColumn fx:id="PRICE_SP" text="PRICE" styleClass="productBF"/>
-        <MFXTableColumn fx:id="ID_CATEGORY" text="CATEGORY" styleClass="productBF"/>
-        <MFXTableColumn fx:id="QUANTITY" text="QUANTITY" styleClass="productBF"/>
-        <MFXTableColumn fx:id="VIEW_COUNT" text="VIEW COUNT" styleClass="productBF"/>
-        <MFXTableColumn fx:id="DISCOUNT" text="DISCOUNT" styleClass="productBF"/>
-      </tableColumns>
-    </MFXPaginatedTableView>
-  </VBox>
-  <VBox prefWidth="65" spacing="5">
-    <MFXButton fx:id="crtBtn" buttonType="RAISED" mnemonicParsing="false" text="Create" prefWidth="60"
-               styleClass="Btn"/>
-    <MFXButton fx:id="updBtn" buttonType="RAISED" mnemonicParsing="false" text="Update" prefWidth="60"
-               styleClass="Btn"/>
-    <MFXButton fx:id="delBtn" buttonType="RAISED" mnemonicParsing="false" text="Delete" prefWidth="60"
-               styleClass="Btn"/>
-  </VBox>
-</HBox>
+<?import javafx.scene.layout.StackPane?>
+<StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.dkkp.controller.ProductBaseFinalController"
+           fx:id="main" styleClass="productAP">
+  <HBox spacing="5">
+    <VBox HBox.hgrow="ALWAYS" alignment="TOP_CENTER" spacing="5">
+      <MFXTextField fx:id="searchFld" floatingText="Search" floatMode="BORDER" prefWidth="250"/>
+      <MFXPaginatedTableView fx:id="productTable" rowsPerPage="5" pagesToShow="3">
+        <tableColumns>
+          <MFXTableColumn fx:id="ID_SP" text="ID" styleClass="productBF"/>
+          <MFXTableColumn fx:id="NAME_SP" text="NAME" styleClass="productBF"/>
+          <MFXTableColumn fx:id="PRICE_SP" text="PRICE" styleClass="productBF"/>
+          <MFXTableColumn fx:id="ID_CATEGORY" text="CATEGORY" styleClass="productBF"/>
+          <MFXTableColumn fx:id="QUANTITY" text="QUANTITY" styleClass="productBF"/>
+          <MFXTableColumn fx:id="VIEW_COUNT" text="VIEW COUNT" styleClass="productBF"/>
+          <MFXTableColumn fx:id="DISCOUNT" text="DISCOUNT" styleClass="productBF"/>
+        </tableColumns>
+      </MFXPaginatedTableView>
+    </VBox>
+    <VBox prefWidth="65" spacing="5">
+      <MFXButton fx:id="crtBtn" buttonType="RAISED" mnemonicParsing="false" text="Create" prefWidth="60"
+                 styleClass="Btn"/>
+      <MFXButton fx:id="updBtn" buttonType="RAISED" mnemonicParsing="false" text="Update" prefWidth="60"
+                 styleClass="Btn"/>
+      <MFXButton fx:id="delBtn" buttonType="RAISED" mnemonicParsing="false" text="Delete" prefWidth="60"
+                 styleClass="Btn"/>
+    </VBox>
+  </HBox>
+</StackPane>
