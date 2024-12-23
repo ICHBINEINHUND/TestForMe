@@ -10,50 +10,86 @@ import jakarta.persistence.Table;
 public class Import_Detail_Entity {
   @Id
   @Column(name = "\"ID_IMPD\"")//
-  private String ID_IMPD;
-  @Column(name = "\"ID_IPARENT\"")//
-  private String ID_IPARENT;
-  @Column(name = "\"QUANTITY_SP\"")//
-  private Integer QUANTITY_SP;
-  @Column(name = "\"ID_SP\"")//
-  private String ID_SP;
+  private Integer ID_IMPD;
+  @Column(name = "\"ID_IMPORT\"")//
+  private Integer ID_IMPORT;
+  @Column(name = "\"IS_AVAILABLE\"")//
+  private boolean IS_AVAILABLE;
+  @Column(name = "\"ID_BASE_PRODUCT\"")//
+  private Integer ID_BASE_PRODUCT;
+  @Column(name = "\"ID_FINAL_PRODUCT\"")//
+  private Integer ID_FINAL_PRODUCT;
+  @Column(name = "\"QUANTITY\"")//
+  private Integer QUANTITY;
+  @Column(name = "\"UNIT_PRICE\"")//
+  private Double UNIT_PRICE;
+  @Column(name = "\"TOTAL_PRICE\"")//
+  private Double TOTAL_PRICE;
   @Column(name = "\"DESCRIPTION\"")//
   private String DESCRIPTION;
-  @Column(name = "\"PRICE_IMP_SP\"")//
-  private Double PRICE_IMP_SP;
-  @Column(name = "\"AVAILABLE\"")//
-  private boolean AVAILABLE;
 
-  public String getID_IMPD() {
+  public Integer getID_IMPD() {
     return ID_IMPD;
   }
 
-  public void setID_IMPD(String ID_IMPD) {
+  public void setID_IMPD(Integer ID_IMPD) {
     this.ID_IMPD = ID_IMPD;
   }
 
-  public String getID_IPARENT() {
-    return ID_IPARENT;
+  public Integer getID_IMPORT() {
+    return ID_IMPORT;
   }
 
-  public void setID_IPARENT(String ID_IPARENT) {
-    this.ID_IPARENT = ID_IPARENT;
+  public void setID_IMPORT(Integer ID_IMPORT) {
+    this.ID_IMPORT = ID_IMPORT;
   }
 
-  public Integer getQUANTITY_SP() {
-    return QUANTITY_SP;
+  public boolean getIS_AVAILABLE() {
+    return IS_AVAILABLE;
   }
 
-  public void setQUANTITY_SP(Integer QUANTITY_SP) {
-    this.QUANTITY_SP = QUANTITY_SP;
+  public void setIS_AVAILABLE(boolean IS_AVAILABLE) {
+    this.IS_AVAILABLE = IS_AVAILABLE;
   }
 
-  public String getID_SP() {
-    return ID_SP;
+  public Integer getID_BASE_PRODUCT() {
+    return ID_BASE_PRODUCT;
   }
 
-  public void setID_SP(String ID_SP) {
-    this.ID_SP = ID_SP;
+  public void setID_BASE_PRODUCT(Integer ID_BASE_PRODUCT) {
+    this.ID_BASE_PRODUCT = ID_BASE_PRODUCT;
+  }
+
+  public Integer getID_FINAL_PRODUCT() {
+    return ID_FINAL_PRODUCT;
+  }
+
+  public void setID_FINAL_PRODUCT(Integer ID_FINAL_PRODUCT) {
+    this.ID_FINAL_PRODUCT = ID_FINAL_PRODUCT;
+  }
+
+  public Integer getQUANTITY() {
+    return QUANTITY;
+  }
+
+  public void setQUANTITY(Integer QUANTITY) {
+    this.QUANTITY = QUANTITY;
+  }
+
+  public Double getUNIT_PRICE() {
+    return UNIT_PRICE;
+  }
+
+  public void setUNIT_PRICE(Double UNIT_PRICE) {
+    this.UNIT_PRICE = UNIT_PRICE;
+  }
+
+  public Double getTOTAL_PRICE() {
+    return TOTAL_PRICE;
+  }
+
+  public void setTOTAL_PRICE(Double TOTAL_PRICE) {
+    this.TOTAL_PRICE = TOTAL_PRICE;
   }
 
   public String getDESCRIPTION() {
@@ -64,31 +100,16 @@ public class Import_Detail_Entity {
     this.DESCRIPTION = DESCRIPTION;
   }
 
-  public Double getPRICE_IMP_SP() {
-    return PRICE_IMP_SP;
-  }
-
-  public void setPRICE_IMP_SP(Double PRICE_IMP_SP) {
-    this.PRICE_IMP_SP = PRICE_IMP_SP;
-  }
-
-  public boolean isAVAILABLE() {
-    return AVAILABLE;
-  }
-
-  public void setAVAILABLE(boolean AVAILABLE) {
-    this.AVAILABLE = AVAILABLE;
-  }
-
-  public Import_Detail_Entity(String ID_IMPD, String ID_IPARENT, Integer QUANTITY_SP, String ID_SP, String DESCRIPTION, Double PRICE_IMP_SP, boolean AVAILABLE) {
-
+  public Import_Detail_Entity(Integer ID_IMPD, Integer ID_IMPORT, boolean IS_AVAILABLE, Integer ID_BASE_PRODUCT, Integer ID_FINAL_PRODUCT, Integer QUANTITY, Double UNIT_PRICE, Double TOTAL_PRICE, String DESCRIPTION) {
     this.ID_IMPD = ID_IMPD;
-    this.ID_IPARENT = ID_IPARENT;
-    this.QUANTITY_SP = QUANTITY_SP;
-    this.ID_SP = ID_SP;
+    this.ID_IMPORT = ID_IMPORT;
+    this.IS_AVAILABLE = IS_AVAILABLE;
+    this.ID_BASE_PRODUCT = ID_BASE_PRODUCT;
+    this.ID_FINAL_PRODUCT = ID_FINAL_PRODUCT;
+    this.QUANTITY = QUANTITY;
+    this.UNIT_PRICE = UNIT_PRICE;
+    this.TOTAL_PRICE = TOTAL_PRICE;
     this.DESCRIPTION = DESCRIPTION;
-    this.PRICE_IMP_SP = PRICE_IMP_SP;
-    this.AVAILABLE = AVAILABLE;
   }
 
   public Import_Detail_Entity() {

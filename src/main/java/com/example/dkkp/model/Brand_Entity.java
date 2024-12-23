@@ -11,17 +11,17 @@ import jakarta.persistence.Table;
 public class Brand_Entity {
   @Id
   @Column(name = "\"ID_BRAND\"")
-  private String ID_BRAND;
+  private Integer ID_BRAND;
   @Column(name = "\"NAME_BRAND\"")
   private String NAME_BRAND;
   @Column(name = "\"DETAIL\"")
   private String DETAIL;
 
-  public String getID_BRAND() {
+  public Integer getID_BRAND() {
     return ID_BRAND;
   }
 
-  public void setID_BRAND(String ID_CATEGORY) {
+  public void setID_BRAND(Integer ID_CATEGORY) {
     this.ID_BRAND = ID_CATEGORY;
   }
 
@@ -41,8 +41,13 @@ public class Brand_Entity {
     this.DETAIL = DETAIL;
   }
 
-  public Brand_Entity(String ID_BRAND, String NAME_BRAND, String DETAIL) {
+  public Brand_Entity(Integer ID_BRAND, String NAME_BRAND, String DETAIL) {
     this.ID_BRAND = ID_BRAND;
+    this.NAME_BRAND = NAME_BRAND;
+    this.DETAIL = DETAIL;
+  }
+
+  public Brand_Entity(String NAME_BRAND, String DETAIL) {
     this.NAME_BRAND = NAME_BRAND;
     this.DETAIL = DETAIL;
   }

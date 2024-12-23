@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class Email_Check_Entity {
   @Id
   @Column(name = "\"ID_CHECK\"")
-  private String ID_CHECK;
+  private Integer ID_CHECK;
   @Column(name = "\"EMAIL\"")
   private String EMAIL;
   @Column(name = "\"TOKEN\"")
@@ -21,11 +21,11 @@ public class Email_Check_Entity {
   @Column(name = "\"DATE_END\"")
   private LocalDateTime DATE_END;
 
-  public String getID_CHECK() {
+  public Integer getID_CHECK() {
     return ID_CHECK;
   }
 
-  public void setID_CHECK(String ID_CHECK) {
+  public void setID_CHECK(Integer ID_CHECK) {
     this.ID_CHECK = ID_CHECK;
   }
 

@@ -1,0 +1,110 @@
+package com.example.dkkp.model;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+import java.time.LocalDateTime;
+
+
+@Entity
+@Table(name = "product_final")
+public class Product_Final_Entity {
+
+    @Id
+    @Column(name = "\"ID_FINAL_PRODUCT\"")
+    private Integer ID_SP;
+    @Column(name = "\"ID_BASE_PRODUCT\"")
+    private Integer ID_BASE_PRODUCT;
+    @Column(name = "\"NAME_PRODUCT\"")
+    private String NAME_PRODUCT;
+    @Column(name = "\"QUANTITY\"")
+    private Integer QUANTITY;
+    @Column(name = "\"DES_PRODUCT\"")
+    private String DES_PRODUCT;
+    @Column(name = "\"PRICE_SP\"")
+    private Double PRICE_SP;
+    @Column(name = "\"DISCOUNT\"")
+    private Double DISCOUNT;
+    @Column(name = "\"IMAGE_SP\"")
+    private String IMAGE_SP;
+
+    public Integer getID_SP() {
+        return ID_SP;
+    }
+
+    public void setID_SP(Integer ID_SP) {
+        this.ID_SP = ID_SP;
+    }
+
+    public String getNAME_PRODUCT() {
+        return NAME_PRODUCT;
+    }
+
+    public void setNAME_PRODUCT(String NAME_PRODUCT) {
+        this.NAME_PRODUCT = NAME_PRODUCT;
+    }
+
+    public Integer getQUANTITY() {
+        return QUANTITY;
+    }
+
+    public void setQUANTITY(Integer QUANTITY) {
+        this.QUANTITY = QUANTITY;
+    }
+
+    public Integer getID_BASE_PRODUCT() {
+        return ID_BASE_PRODUCT;
+    }
+
+    public void setID_BASE_PRODUCT(Integer ID_BASE_PRODUCT) {
+        this.ID_BASE_PRODUCT = ID_BASE_PRODUCT;
+    }
+
+    public String getDES_PRODUCT() {
+        return DES_PRODUCT;
+    }
+
+    public void setDES_PRODUCT(String DES_PRODUCT) {
+        this.DES_PRODUCT = DES_PRODUCT;
+    }
+
+    public Double getPRICE_SP() {
+        return PRICE_SP;
+    }
+
+    public void setPRICE_SP(Double PRICE_SP) {
+        this.PRICE_SP = PRICE_SP;
+    }
+
+    public Double getDISCOUNT() {
+        return DISCOUNT;
+    }
+
+    public void setDISCOUNT(Double DISCOUNT) {
+        this.DISCOUNT = DISCOUNT;
+    }
+
+    public String getIMAGE_SP() {
+        return IMAGE_SP;
+    }
+
+    public void setIMAGE_SP(String IMAGE_SP) {
+        this.IMAGE_SP = IMAGE_SP;
+    }
+
+    public Product_Final_Entity(Integer ID_SP, Integer ID_BASE_PRODUCT, String NAME_PRODUCT, Integer QUANTITY, String DES_PRODUCT, Double PRICE_SP, Double DISCOUNT, String IMAGE_SP) {
+        this.ID_SP = ID_SP;
+        this.ID_BASE_PRODUCT = ID_BASE_PRODUCT;
+        this.NAME_PRODUCT = NAME_PRODUCT;
+        this.QUANTITY = QUANTITY;
+        this.DES_PRODUCT = DES_PRODUCT;
+        this.PRICE_SP = PRICE_SP;
+        this.DISCOUNT = DISCOUNT;
+        this.IMAGE_SP = IMAGE_SP;
+    }
+
+    public Product_Final_Entity() {
+    }
+}

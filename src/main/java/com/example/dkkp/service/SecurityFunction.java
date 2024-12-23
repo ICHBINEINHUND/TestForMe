@@ -8,10 +8,11 @@ import java.security.SecureRandom;
 import java.util.Base64;
 
 
-public class SecutiryFunction {
+public class SecurityFunction {
     // không được l"ưu SECRET_KEY trong mã nguồn, mà cần lưu trong biến môi trường
     // nếu chưa tạo biến môi trường thì dùng tạm cái dưới:
 //    private static final String SECRET_KEY = "1234567887654321; // 16 bytes = 128-bit key
+
     //nếu tạo rồi thì dùng cái sau :
     private static final String SECRET_KEY = System.getenv("SECRET_KEY");
 
@@ -40,7 +41,7 @@ public class SecutiryFunction {
             }
             return hexString.toString();
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Lỗi băm mật khẩu", e);
+            throw new RuntimeException("Password hash error", e);
         }
     }
 
@@ -48,7 +49,7 @@ public class SecutiryFunction {
     public static String encrypt(String data) throws Exception {
         SecretKeySpec keySpec = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
         Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.ENCRYPT_MODE, keySpec);
+        cipher.init(Cipher.ENCRYPT_MODE, keySpec);  // Chế độ mã hóa (ENCRYPT_MODE)
         byte[] encryptedData = cipher.doFinal(data.getBytes());
         return Base64.getEncoder().encodeToString(encryptedData);
     }
@@ -57,9 +58,9 @@ public class SecutiryFunction {
     public static String decrypt(String encryptedData) throws Exception {
         SecretKeySpec keySpec = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
         Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.DECRYPT_MODE, keySpec);
-        byte[] decodedData = Base64.getDecoder().decode(encryptedData);
-        byte[] decryptedData = cipher.doFinal(decodedData);
+        cipher.init(Cipher.DECRYPT_MODE, keySpec);  // Chế độ giải mã (DECRYPT_MODE)
+        byte[] decodedData = Base64.getDecoder().decode(encryptedData);  // Giải mã Base64 về byte[]
+        byte[] decryptedData = cipher.doFinal(decodedData);  // Giải mã dữ liệu
         return new String(decryptedData);
     }
 

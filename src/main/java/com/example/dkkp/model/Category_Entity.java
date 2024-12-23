@@ -13,21 +13,15 @@ import java.time.LocalDateTime;
 public class Category_Entity {
   @Id
   @Column(name = "\"ID_CATEGORY\"")
-  private String ID_CATEGORY;
+  private Integer ID_CATEGORY;
   @Column(name = "\"NAME_CATEGORY\"")
   private String NAME_CATEGORY;
-  @Column(name = "\"ID_PARENT\"")
-  private String ID_PARENT;
-  @Column(name = "\"ID_BRAND\"")
-  private String ID_BRAND;
-  @Column(name = "\"IS_BASE_PRODUCT\"")
-  private Boolean IS_BASE_PRODUCT;
 
-  public String getID_CATEGORY() {
+  public Integer getID_CATEGORY() {
     return ID_CATEGORY;
   }
 
-  public void setID_CATEGORY(String ID_CATEGORY) {
+  public void setID_CATEGORY(Integer ID_CATEGORY) {
     this.ID_CATEGORY = ID_CATEGORY;
   }
 
@@ -39,36 +33,13 @@ public class Category_Entity {
     this.NAME_CATEGORY = NAME_CATEGORY;
   }
 
-  public String getID_PARENT() {
-    return ID_PARENT;
+  public Category_Entity( String NAME_CATEGORY) {
+    this.NAME_CATEGORY = NAME_CATEGORY;
   }
 
-  public void setID_PARENT(String ID_PARENT) {
-    this.ID_PARENT = ID_PARENT;
-  }
-
-  public String getID_BRAND() {
-    return ID_BRAND;
-  }
-
-  public void setID_BRAND(String ID_BRAND) {
-    this.ID_BRAND = ID_BRAND;
-  }
-
-  public Boolean getIS_BASE_PRODUCT() {
-    return IS_BASE_PRODUCT;
-  }
-
-  public void setIS_BASE_PRODUCT(Boolean IS_BASE_PRODUCT) {
-    this.IS_BASE_PRODUCT = IS_BASE_PRODUCT;
-  }
-
-  public Category_Entity(String ID_CATEGORY, String NAME_CATEGORY, String ID_PARENT, String ID_BRAND, Boolean IS_BASE_PRODUCT) {
+  public Category_Entity(Integer ID_CATEGORY, String NAME_CATEGORY) {
     this.ID_CATEGORY = ID_CATEGORY;
     this.NAME_CATEGORY = NAME_CATEGORY;
-    this.ID_PARENT = ID_PARENT;
-    this.ID_BRAND = ID_BRAND;
-    this.IS_BASE_PRODUCT = IS_BASE_PRODUCT;
   }
 
   public Category_Entity() {

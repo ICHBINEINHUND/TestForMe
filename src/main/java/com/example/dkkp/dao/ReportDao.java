@@ -4,7 +4,6 @@ import com.example.dkkp.model.EnumType;
 import com.example.dkkp.model.Report_Bug;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,29 +15,19 @@ public class ReportDao {
     entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
   }
 
-  public ReportDao() {
-    this.entityManager = entityManagerFactory.createEntityManager();
+  public ReportDao( EntityManager entityManager) {
+    this.entityManager = entityManager;
   }
 
   // Tạo báo cáo
   public boolean createReport(Report_Bug report) {
-    EntityTransaction transaction = entityManager.getTransaction();
-    try {
-      transaction.begin();
       entityManager.persist(report);
-      transaction.commit();
       return true;
-    } catch (RuntimeException e) {
-      if (transaction.isActive()) {
-        transaction.rollback();
-      }
-      throw new RuntimeException("Error creating report", e);
-    }
   }
 
   public List<Report_Bug> getFilteredReports(
           String userId,
-          String reportId,
+          Integer reportId,
           EnumType.Bug_Type status,
           LocalDateTime dateReport,
           String typeDate,
@@ -51,41 +40,40 @@ public class ReportDao {
 
     Predicate conditions = cb.conjunction();
 
-    if (userId != null && !userId.trim().isEmpty()) {
+    boolean hasConditions = false;
+
+    if (userId != null) {
       conditions = cb.and(conditions, cb.equal(root.get("ID_USER"), userId));
+      hasConditions = true;
     }
 
-    if (reportId != null && !reportId.trim().isEmpty()) {
+    if (reportId != null) {
       conditions = cb.and(conditions, cb.equal(root.get("ID_REPORT"), reportId));
+      hasConditions = true;
     }
+
     if (status != null) {
       conditions = cb.and(conditions, cb.equal(root.get("TYPE_BUG"), status));
+      hasConditions = true;
     }
 
     if (dateReport != null && typeDate != null) {
-      switch (typeDate) {
-        case "<":
-          conditions = cb.and(conditions, cb.lessThan(root.get("DATE_REPORT"), dateReport));
-          break;
-        case "<=":
-          conditions = cb.and(conditions, cb.lessThanOrEqualTo(root.get("DATE_REPORT"), dateReport));
-          break;
-        case "=":
-          conditions = cb.and(conditions, cb.equal(root.get("DATE_REPORT"), dateReport));
-          break;
-        case ">=":
-          conditions = cb.and(conditions, cb.greaterThanOrEqualTo(root.get("DATE_REPORT"), dateReport));
-          break;
-        case ">":
-          conditions = cb.and(conditions, cb.greaterThan(root.get("DATE_REPORT"), dateReport));
-          break;
-        default:
-          throw new IllegalArgumentException("Invalid typeDate: " + typeDate);
-      }
+        conditions = switch (typeDate) {
+            case "<" -> cb.and(conditions, cb.lessThan(root.get("DATE_REPORT"), dateReport));
+            case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("DATE_REPORT"), dateReport));
+            case "=" -> cb.and(conditions, cb.equal(root.get("DATE_REPORT"), dateReport));
+            case ">=" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("DATE_REPORT"), dateReport));
+            case ">" -> cb.and(conditions, cb.greaterThan(root.get("DATE_REPORT"), dateReport));
+            default -> throw new IllegalArgumentException("Invalid typeDate: " + typeDate);
+        };
+      hasConditions = true;
     }
 
-    query.where(conditions);
-
+    if (!hasConditions) {
+      query.select(root);
+    } else {
+      query.where(conditions);
+    }
 
     if (sortField != null && sortOrder != null) {
       Path<?> sortPath = root.get(sortField.toUpperCase());
@@ -95,44 +83,28 @@ public class ReportDao {
         query.orderBy(cb.asc(sortPath));
       }
     }
+
     TypedQuery<Report_Bug> typedQuery = entityManager.createQuery(query);
     return typedQuery.getResultList();
   }
 
 
-  public boolean deleteReportById(String reportId) {
-    EntityTransaction transaction = entityManager.getTransaction();
-    try {
-      transaction.begin();
+
+  public void deleteReportById(Integer reportId) {
+
       Report_Bug reportToDelete = entityManager.find(Report_Bug.class, reportId);
-      if (reportToDelete == null) {
-        return false;
-      }
+      if (reportToDelete != null) {
       entityManager.remove(reportToDelete);
-      transaction.commit();
-      return true;
-    } catch (RuntimeException e) {
-      if (transaction.isActive()) {
-        transaction.rollback();
+        return ;
       }
-      throw new RuntimeException("Failed to delete report: " + reportId, e);
-    }
+      throw new RuntimeException("Can not find Report to delete");
+
   }
 
   public boolean deleteAllReports() {
-    EntityTransaction transaction = entityManager.getTransaction();
-    try {
-      transaction.begin();
       String jpql = "DELETE FROM Report_Bug";
       int deletedCount = entityManager.createQuery(jpql).executeUpdate();
-      transaction.commit();
       return deletedCount > 0;
-    } catch (RuntimeException e) {
-      if (transaction.isActive()) {
-        transaction.rollback();
-      }
-      throw new RuntimeException("Failed to delete all reports", e);
-    }
   }
 
   public static void shutdown() {

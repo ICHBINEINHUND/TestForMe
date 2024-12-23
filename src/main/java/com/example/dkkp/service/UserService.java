@@ -4,7 +4,6 @@ import com.example.dkkp.dao.UserDao;
 import com.example.dkkp.model.User_Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 
 import java.time.LocalDateTime;
@@ -17,49 +16,44 @@ public class UserService {
         entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
     }
 
-    public UserService() {
-        this.userDao = new UserDao();
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
+    public UserService(EntityManager entityManager) {
+        this.userDao = new UserDao(entityManager);
     }
 
     public User_Entity getUsersByID(String id) throws Exception {
-        if (id == null || id.trim().isEmpty()) {
-            throw new IllegalArgumentException("ID cannot be null or empty.");
-        }
         User_Entity user = userDao.getUsersByID(id);
         if (user == null) {
-            throw new IllegalArgumentException("User with ID " + id + " not found.");
+            return null;
         }
         decryptUserSensitiveData(user);
         return user;
     }
 
+    public User_Entity getUsersByEmail(String Email) throws Exception {
+        // chạy được
+        User_Entity user = userDao.getUsersByMail(SecurityFunction.encrypt(Email));
+        decryptUserSensitiveData(user);
+        return user;
+    }
 
-    public boolean registerNewUser(User_Entity user) {
+
+    public boolean registerNewUser(User_Entity user) throws Exception {
         //chạy được
         // add check ( từ user lấy các property để kiểm tra nếu đạt
         // thì gọi return userDao.createUser(userC);
-        EntityTransaction transaction = userDao.getEntityManager().getTransaction();
-        try {
-            transaction.begin();
-            //mã hóa mật khẩu
-            String salt = SecutiryFunction.generateSalt();
-            user.setSALT(salt);
-            String pass = user.getPASSWORD_ACC() + salt;
-            pass = SecutiryFunction.hashString(pass);
-            user.setPASSWORD_ACC(pass);
-//            LocalDateTime DATE_JOIN = LocalDateTime.now();
-            // mã hóa thông tin cá nhân
-            encryptUserSensitiveData(user);
-            return userDao.createUser(user);
-        } catch (RuntimeException e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+
+        //mã hóa mật khẩu
+        String salt = SecurityFunction.generateSalt();
+        user.setSALT(salt);
+        String pass = user.getPASSWORD_ACC() + salt;
+        pass = SecurityFunction.hashString(pass);
+        user.setPASSWORD_ACC(pass);
+        user.setID_USER(SecurityFunction.hashString(user.getEMAIL_ACC()));
+        LocalDateTime DATE_JOIN = LocalDateTime.now();
+        user.setDATE_JOIN(DATE_JOIN);
+        // mã hóa thông tin cá nhân
+        encryptUserSensitiveData(user);
+        return userDao.createUser(user);
     }
 
 
@@ -67,77 +61,56 @@ public class UserService {
         //add check
         // chạy được
         // sửa lại các điều kiện kiểm tra định dạng email và pass
-        if (EMAIL_ACC != null || !EMAIL_ACC.trim().isEmpty()) {
-            if (PASSWORD_ACC != null || !PASSWORD_ACC.trim().isEmpty()) {
-                String mail = SecutiryFunction.encrypt(EMAIL_ACC);
-                PASSWORD_ACC += userDao.getUsersByMail(mail).getSALT();
-                PASSWORD_ACC = SecutiryFunction.hashString(PASSWORD_ACC);
-                return userDao.loginValidate(mail, PASSWORD_ACC);
-            }
+        String mail = SecurityFunction.encrypt(EMAIL_ACC);
+        if (userDao.isUserByMail(mail)) {
+            PASSWORD_ACC += userDao.getUsersByMail(mail).getSALT();
+            PASSWORD_ACC = SecurityFunction.hashString(PASSWORD_ACC);
+        return userDao.loginValidate(mail, PASSWORD_ACC);
         }
         return false;
     }
 
-    public boolean updateUserInfo(User_Entity user) {
+    public void updateUserInfo(User_Entity user) throws Exception {
         // add check nếu cần
         // chạy được
-        try {
-            encryptUserSensitiveData(user);
-            String id = user.getID_USER();
-            String email = user.getEMAIL_ACC();
-            String phone = user.getPHONE_ACC();
-            String role = user.getROLE_ACC();
-            String name = user.getNAME_USER();
-            String add = user.getADDRESS();
-            return userDao.updateUser(id,add, email, phone, role, name);
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        encryptUserSensitiveData(user);
+        String id = user.getID_USER();
+        String email = user.getEMAIL_ACC();
+        String phone = user.getPHONE_ACC();
+        String role = user.getROLE_ACC();
+        String name = user.getNAME_USER();
+        String add = user.getADDRESS();
+         userDao.updateUser(id, add, email, phone, role, name);
     }
 
-    public boolean changePassword(User_Entity user, String newPassword) {
+    public void changePassword(String mail, String newPassword) throws Exception {
         // chạy được
-        try {
-            String email = user.getEMAIL_ACC();
-            String oldPassword = user.getPASSWORD_ACC();
-            if (login(email, oldPassword)) {
-                return userDao.changePasswordByEmail(email, newPassword);
-            }
-            return false;
-        }catch (Exception e) {
-            throw new RuntimeException(e);
+        // controller sẽ gọi login để check mk và tk trước
+
+         userDao.changePasswordByEmail(SecurityFunction.encrypt(mail), newPassword);
+    }
+
+    public void decryptUserSensitiveData(User_Entity user) throws Exception {
+        if (user.getADDRESS() != null) {
+            user.setADDRESS(SecurityFunction.decrypt(user.getADDRESS()));
+        }
+        if (user.getPHONE_ACC() != null) {
+            user.setPHONE_ACC(SecurityFunction.decrypt(user.getPHONE_ACC()));
+        }
+        if (user.getEMAIL_ACC() != null) {
+            user.setEMAIL_ACC(SecurityFunction.decrypt(user.getEMAIL_ACC()));
         }
     }
 
-    private void decryptUserSensitiveData(User_Entity user) throws Exception {
+    public void encryptUserSensitiveData(User_Entity user) throws Exception {
         if (user.getADDRESS() != null) {
-            user.setADDRESS(SecutiryFunction.decrypt(user.getADDRESS()));
+            user.setADDRESS(SecurityFunction.encrypt(user.getADDRESS()));
         }
         if (user.getPHONE_ACC() != null) {
-            user.setPHONE_ACC(SecutiryFunction.decrypt(user.getPHONE_ACC()));
+            user.setPHONE_ACC(SecurityFunction.encrypt(user.getPHONE_ACC()));
         }
         if (user.getEMAIL_ACC() != null) {
-            user.setEMAIL_ACC(SecutiryFunction.decrypt(user.getEMAIL_ACC()));
-        }
-        if (user.getNAME_USER() != null) {
-            user.setNAME_USER(SecutiryFunction.decrypt(user.getNAME_USER()));
-        }
-    }
-
-    private void encryptUserSensitiveData(User_Entity user) throws Exception {
-        if (user.getADDRESS() != null) {
-            user.setADDRESS(SecutiryFunction.encrypt(user.getADDRESS()));
-        }
-        if (user.getPHONE_ACC() != null) {
-            user.setPHONE_ACC(SecutiryFunction.encrypt(user.getPHONE_ACC()));
-        }
-        if (user.getEMAIL_ACC() != null) {
-            user.setEMAIL_ACC(SecutiryFunction.encrypt(user.getEMAIL_ACC()));
-        }
-        if (user.getNAME_USER() != null) {
-            user.setNAME_USER(SecutiryFunction.encrypt(user.getNAME_USER()));
+            user.setEMAIL_ACC(SecurityFunction.encrypt(user.getEMAIL_ACC()));
         }
     }
 

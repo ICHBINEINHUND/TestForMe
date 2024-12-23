@@ -8,11 +8,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.fxml.FXML;
-
 import java.util.Objects;
 
 import io.github.palexdev.materialfx.controls.MFXTextField;
-
 public class LoginController {
   @FXML
   private MFXTextField username;

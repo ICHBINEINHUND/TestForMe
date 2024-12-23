@@ -1,7 +1,6 @@
 package com.example.dkkp.dao;
 
 import com.example.dkkp.model.Import_Detail_Entity;
-import com.example.dkkp.model.User_Entity;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
 
@@ -9,100 +8,119 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class ImportDetailDao {
-  private final EntityManager entityManager;
-  private static final EntityManagerFactory entityManagerFactory;
+    private final EntityManager entityManager;
+    private static final EntityManagerFactory entityManagerFactory;
 
-  static {
-    entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
-  }
-
-  public ImportDetailDao() {
-    this.entityManager = entityManagerFactory.createEntityManager();
-  }
-
-  public void createImportDetail(List<Import_Detail_Entity>  listImportDetail) throws SQLException {
-    EntityTransaction transaction = entityManager.getTransaction();
-    try {
-      transaction.begin();
-      for (Import_Detail_Entity importDetail : listImportDetail) {
-        System.out.println("service register1");
-        entityManager.persist(importDetail);
-        //add product
-        System.out.println("service register2");
-      }
-      transaction.commit();
-    } catch (RuntimeException e) {
-      if (transaction.isActive()) {
-        transaction.rollback();
-        throw new RuntimeException("Error create import detail", e);
-      }
-    }
-  }
-  public EntityManager getEntityManager() {
-    return this.entityManager;
-  }
-
-  public List<Import_Detail_Entity> getFilteredImportDetails(String id,String idParent,String idSP, String sortField, String sortOrder, Integer offset, Integer setOff) {
-    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-    CriteriaQuery<Import_Detail_Entity> query = cb.createQuery(Import_Detail_Entity.class);
-    Root<Import_Detail_Entity> root = query.from(Import_Detail_Entity.class);
-
-    Predicate conditions = cb.conjunction();
-
-    if (id != null && !id.trim().isEmpty()) {
-      conditions = cb.and(conditions, cb.equal(root.get("ID_IMPD"), id));
-    }
-    if (idParent != null && !idParent.trim().isEmpty()) {
-      conditions = cb.and(conditions, cb.equal(root.get("ID_IPARENT"), idParent));
-    }
-    if (idSP != null && !idSP.trim().isEmpty()) {
-      conditions = cb.and(conditions, cb.equal(root.get("ID_SP"), idSP));
+    static {
+        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
     }
 
-    query.where(conditions);
-
-    if (sortField != null && sortOrder != null) {
-      Path<?> sortPath = root.get(sortField.toUpperCase());
-      if ("desc".equalsIgnoreCase(sortOrder)) {
-        query.orderBy(cb.desc(sortPath));
-      } else {
-        query.orderBy(cb.asc(sortPath));
-      }
+    public ImportDetailDao(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 
-    TypedQuery<Import_Detail_Entity> typedQuery = entityManager.createQuery(query);
-    if(offset !=null) typedQuery.setFirstResult(offset);
-    if(setOff !=null) typedQuery.setMaxResults(setOff);
-
-    return typedQuery.getResultList();
-  }
-
-
-
-  public boolean deleteImportDetail(String idParent) {
-    EntityTransaction transaction = entityManager.getTransaction();
-    try {
-      transaction.begin();
-      Query query = entityManager.createQuery(
-              "UPDATE Import_Detail_Entity e SET e.AVAILABLE = false WHERE e.ID_IPARENT = :idParent"
-      );
-      query.setParameter("idParent", idParent);
-      int rowsUpdated = query.executeUpdate();
-      transaction.commit();
-      return rowsUpdated > 0;
-    } catch (RuntimeException e) {
-      if (transaction.isActive()) {
-        transaction.rollback();
-        return false;
-      }
-      throw new RuntimeException("Error delete import detail", e);
+    public void createImportDetail(List<Import_Detail_Entity> listImportDetail) throws SQLException {
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            int batchSize = 10;
+            for (int i = 0; i < listImportDetail.size(); i++) {
+                Import_Detail_Entity importDetail = listImportDetail.get(i);
+                entityManager.persist(importDetail);
+                if (i % batchSize == 0 && i > 0) {
+                    entityManager.flush();
+                    entityManager.clear();
+                }
+            }
+            transaction.commit();
+        } catch (RuntimeException e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+                throw new RuntimeException("Error create import detail", e);
+            }
+        }
     }
-  }
 
-
-  public static void shutdown() {
-    if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
-      entityManagerFactory.close();
+    public EntityManager getEntityManager() {
+        return this.entityManager;
     }
-  }
+
+    public List<Import_Detail_Entity> getFilteredImportDetails(Integer ID_IMPD, Integer ID_IMPORT, Integer ID_FINAL_PRODUCT,Boolean IS_AVAILABLE,Integer ID_BASE_PRODUCT,Integer QUANTITY,Double UNIT_PRICE,Double TOTAL_PRICE, String sortField, String sortOrder, Integer offset, Integer setOff) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Import_Detail_Entity> query = cb.createQuery(Import_Detail_Entity.class);
+        Root<Import_Detail_Entity> root = query.from(Import_Detail_Entity.class);
+
+        Predicate conditions = cb.conjunction();
+        boolean hasConditions = false;
+        if (ID_IMPD != null ) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_IMPD"), ID_IMPD));
+            hasConditions = true;
+        }
+        if (ID_IMPORT != null ) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_IMPORT"), ID_IMPORT));
+            hasConditions = true;
+        }
+        if (ID_FINAL_PRODUCT != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_FINAL_PRODUCT"), ID_FINAL_PRODUCT));
+            hasConditions = true;
+        }
+        if (ID_BASE_PRODUCT != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_BASE_PRODUCT"), ID_BASE_PRODUCT));
+            hasConditions = true;
+        }
+        if (QUANTITY != null ) {
+            conditions = cb.and(conditions, cb.equal(root.get("QUANTITY"), QUANTITY));
+            hasConditions = true;
+        }
+        if (IS_AVAILABLE != null ) {
+            conditions = cb.and(conditions, cb.equal(root.get("IS_AVAILABLE"), IS_AVAILABLE));
+            hasConditions = true;
+        }
+        if (UNIT_PRICE != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("UNIT_PRICE"), UNIT_PRICE));
+            hasConditions = true;
+        }
+        if (TOTAL_PRICE != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("TOTAL_PRICE"), TOTAL_PRICE));
+            hasConditions = true;
+        }
+
+        if (hasConditions) {
+            query.where(conditions);
+        } else {
+            query.select(root);
+        }
+
+        if (sortField != null && sortOrder != null) {
+            Path<?> sortPath = root.get(sortField.toUpperCase());
+            if ("desc".equalsIgnoreCase(sortOrder)) {
+                query.orderBy(cb.desc(sortPath));
+            } else {
+                query.orderBy(cb.asc(sortPath));
+            }
+        }
+
+        TypedQuery<Import_Detail_Entity> typedQuery = entityManager.createQuery(query);
+        if (offset != null) typedQuery.setFirstResult(offset);
+        if (setOff != null) typedQuery.setMaxResults(setOff);
+
+        return typedQuery.getResultList();
+    }
+
+
+    public boolean deleteImportDetail(Integer ID_IMPORT) {
+            Query query = entityManager.createQuery(
+                    "UPDATE Import_Detail_Entity e SET e.IS_AVAILABLE = false WHERE e.ID_IMPORT = :ID_IMPORT"
+            );
+            query.setParameter("ID_IMPORT", ID_IMPORT);
+            int rowsUpdated = query.executeUpdate();
+            return rowsUpdated > 0;
+    }
+
+
+    public static void shutdown() {
+        if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
+            entityManagerFactory.close();
+        }
+    }
 }

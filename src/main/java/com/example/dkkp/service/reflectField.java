@@ -2,10 +2,14 @@ package com.example.dkkp.service;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import jakarta.persistence.Column;
+
+
+
 
 public class reflectField {
 
-    public static List<String> getAllNameColumn(Object object){
+    public static List<String> getAllNameColumn(Object object) {
         if (object == null) {
             throw new IllegalArgumentException("Object should not be null");
         }
@@ -18,13 +22,18 @@ public class reflectField {
         return columnName;
     }
 
-    public static boolean isPropertyNameMatched(Object object, String nameToCheck) {
-        List<String> propertyNames = getAllNameColumn(object);
-        for (String propertyName : propertyNames) {
-            if (propertyName.equals(nameToCheck)) {
-                return true;
+    public static boolean isPropertyNameMatched(Class<?> clazz, String nameToCheck) {
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(Column.class)) {
+                Column columnAnnotation = field.getAnnotation(Column.class);
+                String columnName = columnAnnotation.name();
+                if (columnName.equalsIgnoreCase(nameToCheck.toUpperCase())) {
+                    return true;
+                }
             }
         }
         return false;
     }
+
 }

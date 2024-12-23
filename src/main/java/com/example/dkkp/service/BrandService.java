@@ -10,26 +10,21 @@ import java.util.List;
 
 public class BrandService {
     private final BrandDao brandDao;
-    private final EntityManager entityManager;
     private static final EntityManagerFactory entityManagerFactory;
 
     static {
         entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
     }
 
-    public BrandService() {
-        this.brandDao = new BrandDao();
-        this.entityManager = entityManagerFactory.createEntityManager();
+    public BrandService(EntityManager entityManager) {
+        this.brandDao = new BrandDao(entityManager);
     }
 
 
-    public boolean createNewBrand(Brand_Entity brand) {
+    public void createNewBrand(Brand_Entity brand) {
         // chạy được
         //add check thông tin trước khi tạo brand mới
-            String ID_BRAND = brand.getID_BRAND();
-            String NAME_BRAND = brand.getNAME_BRAND();
-            String DETAIl = brand.getDETAIL();
-            return brandDao.createBrand(brand);
+         brandDao.createBrand(brand);
     }
 
     public List<Brand_Entity> getBrandBy(
@@ -39,39 +34,28 @@ public class BrandService {
     ) {
         // chạy được
         // không cần kiểm tra sự hợp lệ của các tham số truyền vào khác như userId,...
-        try {
-            if (reflectField.isPropertyNameMatched(brand, sortField) || sortField == null) {
-                String ID_BRAND = brand.getID_BRAND();
+            if (reflectField.isPropertyNameMatched(Brand_Entity.class, sortField) || sortField == null) {
+                Integer ID_BRAND = brand.getID_BRAND();
                 String NAME_BRAND = brand.getNAME_BRAND();
                 return brandDao.getFilteredBrand(ID_BRAND, NAME_BRAND, sortField, sortOrder);
             }
             return null;
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Failed to get brand with filter", e);
-        }
     }
 
-    public boolean deleteBrand(String id) {
+    public void deleteBrand(Integer id) {
         // chạy được
         // không cần add check
-            if (id != null) {
-                return brandDao.deleteBrandById(id);
-            }else{
-                throw new RuntimeException("id is null");
-            }
+         brandDao.deleteBrandById(id);
     }
 
 
-    public boolean updateBrand(Brand_Entity brand) {
+    public void updateBrand(Brand_Entity brand) {
         // add check
         // chạy được
         // không cần add check
-            String id = brand.getID_BRAND();
-            String name = brand.getNAME_BRAND();
-            String detail = brand.getDETAIL();
-            if (id == null || (name == null && detail == null)) {
-                throw new RuntimeException("id or detail is null");
-            }
-            return brandDao.updateBrand(id, name, detail);
+        Integer id = brand.getID_BRAND();
+        String name = brand.getNAME_BRAND();
+        String detail = brand.getDETAIL();
+         brandDao.updateBrand(id, name, detail);
     }
 }

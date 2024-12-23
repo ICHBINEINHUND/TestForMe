@@ -4,7 +4,6 @@ import com.example.dkkp.model.Bill_Entity;
 import com.example.dkkp.model.EnumType;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,8 +15,8 @@ public class BillDao {
         entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
     }
 
-    public BillDao() {
-        this.entityManager = entityManagerFactory.createEntityManager();
+    public BillDao(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 
     // Thêm phương thức getEntityManager
@@ -26,142 +25,119 @@ public class BillDao {
     }
 
 
-    public boolean createBill(Bill_Entity billE) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
+    public void createBill(Bill_Entity billE) {
             entityManager.persist(billE);
-            transaction.commit();
-            return true;
-        } catch (RuntimeException e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
-            throw new RuntimeException("Error creating bill", e);
-        }
     }
 
-    public Bill_Entity getBillByID(String id) {
-            Bill_Entity importToCheck = entityManager.find(Bill_Entity.class, id);
-            return importToCheck;
+    public Bill_Entity getBillByID(Integer idBill) {
+        return entityManager.find(Bill_Entity.class, idBill);
     }
 
-    public boolean addSumPrice(String id, Double sumPrice) {
-        try {
-            Bill_Entity billToAddSumPrice = entityManager.find(Bill_Entity.class, id);
-            if (billToAddSumPrice == null) {
-                return false;
-            }
-            billToAddSumPrice.setSUM_PRICE(sumPrice);
+    public void addSumPrice(Integer idBill, Double totalPrice) {
+            Bill_Entity billToAddSumPrice = entityManager.find(Bill_Entity.class, idBill);
+            billToAddSumPrice.setTOTAL_PRICE(totalPrice);
             entityManager.merge(billToAddSumPrice);
-            return true;
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Error adding sum price", e);
-        }
     }
 
-    public List<Bill_Entity> getFilteredBills(LocalDateTime dateExport, String typeDate, String id, String phone, String idUser, EnumType.Status_Bill Status, String addBill,Double sumPrice,String idParent, String sortField, String sortOrder, Integer offset, Integer setOff) {
+    public List<Bill_Entity> getFilteredBills(
+            LocalDateTime dateExport,
+            String typeDate,
+            Integer idBill,
+            String phone,
+            String idUser,
+            EnumType.Status_Bill Status,
+            String addBill,
+            Double totalPrice,
+            String sortField,
+            String sortOrder,
+            Integer offset,
+            Integer setOff
+    ) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Bill_Entity> query = cb.createQuery(Bill_Entity.class);
         Root<Bill_Entity> root = query.from(Bill_Entity.class);
 
         Predicate conditions = cb.conjunction();
+        boolean hasConditions = false;
 
         if (dateExport != null) {
-            switch (typeDate) {
-                case "<":
-                    conditions = cb.and(conditions, cb.lessThan(root.get("DATE_EXP"), dateExport));
-                    break;
-                case ">":
-                    conditions = cb.and(conditions, cb.greaterThan(root.get("DATE_EXP"), dateExport));
-                    break;
-                case "=":
-                    conditions = cb.and(conditions, cb.equal(root.get("DATE_EXP"), dateExport));
-                    break;
-            }
+            conditions = switch (typeDate) {
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("DATE_EXP"), dateExport));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("DATE_EXP"), dateExport));
+                case "=" -> cb.and(conditions, cb.equal(root.get("DATE_EXP"), dateExport));
+                default -> conditions;
+            };
+            hasConditions = true;
         }
-
-        if (id != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("ID_BILL"), id));
+        if (idBill != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_BILL"), idBill));
+            hasConditions = true;
         }
         if (idUser != null) {
             conditions = cb.and(conditions, cb.equal(root.get("ID_USER"), idUser));
+            hasConditions = true;
         }
         if (Status != null) {
             conditions = cb.and(conditions, cb.equal(root.get("BILL_STATUS"), Status));
+            hasConditions = true;
         }
         if (phone != null) {
             conditions = cb.and(conditions, cb.equal(root.get("PHONE_BILL"), phone));
+            hasConditions = true;
         }
         if (addBill != null) {
             conditions = cb.and(conditions, cb.equal(root.get("ADD_BILL"), addBill));
+            hasConditions = true;
         }
-        if (sumPrice != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("SUM_PRICE"), sumPrice));
+        if (totalPrice != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("TOTAL_PRICE"), totalPrice));
+            hasConditions = true;
         }
-        if (idParent != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("ID_PARENT"), idParent));
+        if (hasConditions) {
+            query.where(conditions);
+        } else {
+            query.select(root);
         }
-
-
-        query.where(conditions);
-        if (sortField != "PHONE_BILL" && sortField != "ADD_BILL") {
-            if (sortField != null && sortOrder != null) {
-                Path<?> sortPath = root.get(sortField.toUpperCase());
-                if ("desc".equalsIgnoreCase(sortOrder)) {
-                    query.orderBy(cb.desc(sortPath));
-                } else {
-                    query.orderBy(cb.asc(sortPath));
-                }
+        if (sortField != null && sortOrder != null) {
+            Path<?> sortPath = root.get(sortField.toUpperCase());
+            if ("desc".equalsIgnoreCase(sortOrder)) {
+                query.orderBy(cb.desc(sortPath));
+            } else {
+                query.orderBy(cb.asc(sortPath));
             }
         }
-
         TypedQuery<Bill_Entity> typedQuery = entityManager.createQuery(query);
-        typedQuery.setFirstResult(offset); // Vị trí bắt đầu
-        typedQuery.setMaxResults(setOff);  // Số lượng bản ghi mỗi lần
+        typedQuery.setFirstResult(offset);
+        typedQuery.setMaxResults(setOff);
 
         return typedQuery.getResultList();
     }
 
-    public Bill_Entity findBill(String id) {
-        return entityManager.find(Bill_Entity.class, id);
+
+    public Bill_Entity findBill(Integer idBill) {
+        return entityManager.find(Bill_Entity.class, idBill);
     }
 
-    public boolean deleteBill(String id) {
-        try {
-            Bill_Entity billToDelete = entityManager.find(Bill_Entity.class, id);
+    public void deleteBill(Integer idBill) {
+
+            Bill_Entity billToDelete = entityManager.find(Bill_Entity.class, idBill);
             if (billToDelete != null && billToDelete.getBILL_STATUS() == EnumType.Status_Bill.PEN) {
                 billToDelete.setBILL_STATUS(EnumType.Status_Bill.CANC);
                 entityManager.merge(billToDelete);
-                return true;
-            }else{
-                return true;
+                return ;
             }
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Error deleting bill", e);
-        }
+            throw new RuntimeException("Bill does not exist");
+
     }
 
-    public boolean changeBillStatus(String id, EnumType.Status_Bill Status) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
-            Bill_Entity billToChangeStatus = entityManager.find(Bill_Entity.class, id);
+    public void changeBillStatus(Integer idBill, EnumType.Status_Bill Status) {
+            Bill_Entity billToChangeStatus = entityManager.find(Bill_Entity.class, idBill);
             if (billToChangeStatus != null) {
                 billToChangeStatus.setBILL_STATUS(Status);
                 entityManager.merge(billToChangeStatus);
-                transaction.commit();
-                return true;
+                return ;
             }
-            transaction.commit();
-        } catch (RuntimeException e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-                return false;
-            }
-            throw new RuntimeException("Error changing bill status", e);
-        }
-        return false;
+            throw new RuntimeException("Bill does not exist");
     }
 
 

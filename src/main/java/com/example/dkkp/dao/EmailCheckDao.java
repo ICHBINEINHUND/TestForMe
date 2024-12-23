@@ -12,27 +12,25 @@ public class EmailCheckDao {
     entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
   }
 
-  public EmailCheckDao() {
-    this.entityManager = entityManagerFactory.createEntityManager();
+  public EmailCheckDao(EntityManager entityManager) {
+    this.entityManager = entityManager;
   }
 
-  public boolean createToken(Email_Check_Entity email) {
+  public void createToken(Email_Check_Entity email) {
     EntityTransaction transaction = entityManager.getTransaction();
     try {
       transaction.begin();
       entityManager.persist(email);
       transaction.commit();
-      return true;
     } catch (RuntimeException e) {
       if (transaction.isActive()) {
         transaction.rollback();
-        return false;
       }
       throw new RuntimeException("Error creating token", e);
     }
   }
 
-  public boolean deleteTokensByEmail(String emailAddress) {
+  public void deleteTokensByEmail(String emailAddress) {
     EntityTransaction transaction = entityManager.getTransaction();
     try {
       transaction.begin();
@@ -45,10 +43,9 @@ public class EmailCheckDao {
           entityManager.remove(token);
         }
         transaction.commit();
-        return true;
+        return;
       }
-      transaction.commit();
-      return false;
+      transaction.rollback();
     } catch (RuntimeException e) {
       if (transaction.isActive()) {
         transaction.rollback();
@@ -62,7 +59,6 @@ public class EmailCheckDao {
     TypedQuery<Email_Check_Entity> query = entityManager.createQuery(jpql, Email_Check_Entity.class);
     query.setParameter("email", email);
     query.setParameter("token", token);
-    System.out.println("dcs");
     return query.getResultStream().findFirst().isPresent();
   }
 

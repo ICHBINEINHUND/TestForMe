@@ -2,38 +2,29 @@ package com.example.dkkp.service;
 
 import com.example.dkkp.dao.ImportDao;
 import com.example.dkkp.dao.ImportDetailDao;
-import com.example.dkkp.dao.ProductDao;
 import com.example.dkkp.model.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
-
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 public class ImportService {
     private final ImportDao importDao;
     private final ImportDetailDao importDetailDao;
     private static final EntityManagerFactory entityManagerFactory;
+    private final EntityManager entityManager;
 
     static {
         entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
     }
 
-    public ImportService() {
-        this.importDao = new ImportDao();
-        this.importDetailDao = new ImportDetailDao();
-        ProductDao productDao = new ProductDao();
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
+    public ImportService(EntityManager entityManager) {
+        this.importDao = new ImportDao(entityManager);
+        this.importDetailDao = new ImportDetailDao(entityManager);
+        this.entityManager = entityManager;
+
     }
 
     public List<Import_Entity> getImportByCombinedCondition(
@@ -41,272 +32,125 @@ public class ImportService {
             String typeDate,
             String sortField,
             String sortOrder,
-            int setOff // Số bản ghi mỗi luồng xử lý
+            int setOff, // Số bản ghi mỗi luồng xử lý
+            int offset
     ) {
-        LocalDateTime dateJoin = import_entity.getDATE_IMP();
-        String id = import_entity.getID_IMP();
-        Boolean status = import_entity.getSTATUS();
-        String idReplace = import_entity.getID_REPLACE();
-        ExecutorService executor = Executors.newFixedThreadPool(3);
-        AtomicBoolean continueFlag = new AtomicBoolean(true);
-        try {
-
-            ConcurrentLinkedQueue<Integer> offsetsQueue = new ConcurrentLinkedQueue<>();
-            for (int i = 0; i < Integer.MAX_VALUE; i++) {
-                offsetsQueue.add(i * setOff);
-            }
-
-            List<CompletableFuture<List<Import_Entity>>> futures = new ArrayList<>();
-
-            for (int i = 0; i < 3; i++) {
-                futures.add(CompletableFuture.supplyAsync(() -> {
-                    List<Import_Entity> results = new ArrayList<>();
-                    while (continueFlag.get()) {
-                        Integer offset = offsetsQueue.poll();
-                        if (offset == null) {
-                            continueFlag.set(false);
-                            break;
-                        }
-                        List<Import_Entity> partialResult = importDao.getFilteredImports(
-                                dateJoin, typeDate, id, status, idReplace, sortField, sortOrder, offset, setOff
-                        );
-
-                        if (partialResult.isEmpty()) {
-                            continueFlag.set(false);
-                            break;
-                        }
-                        results.addAll(partialResult);
-                    }
-                    return results;
-                }, executor));
-            }
-
-            List<Import_Entity> results = futures.stream()
-                    .map(CompletableFuture::join)
-                    .flatMap(List::stream)
-                    .collect(Collectors.toList());
-
-            executor.shutdown();
-            return results;
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Error when get import with filter");
+        if ((reflectField.isPropertyNameMatched(Import_Entity.class, sortField) && sortOrder != null) || sortField == null) {
+            LocalDateTime dateImport = import_entity.getDATE_IMP();
+            Integer id = import_entity.getID_IMP();
+            Boolean status = import_entity.getIS_AVAILABLE();
+            Integer idReplace = import_entity.getID_REPLACE();
+            Double totalPrice = import_entity.getTOTAL_PRICE();
+            return importDao.getFilteredImports(
+                    dateImport, typeDate, id, status, idReplace, totalPrice, sortField, sortOrder, offset, setOff
+            );
         }
+        throw new RuntimeException("Error with sort");
     }
 
     public List<Import_Detail_Entity> getImportDetailByCombinedCondition(
             Import_Detail_Entity importQuery,
             String sortField,
             String sortOrder,
-            int setOff // Số bản ghi mỗi luồng xử lý
+            int setOff, // Số bản ghi mỗi luồng xử lý
+            int offset
     ) {
-        try {
-            String id = importQuery.getID_IMPD();
-            String idParent = importQuery.getID_IPARENT();
-            String idSP = importQuery.getID_SP();
-            ExecutorService executor = Executors.newFixedThreadPool(3);
-            AtomicBoolean continueFlag = new AtomicBoolean(true);
-
-            ConcurrentLinkedQueue<Integer> offsetsQueue = new ConcurrentLinkedQueue<>();
-            for (int i = 0; i < Integer.MAX_VALUE; i++) {
-                offsetsQueue.add(i * setOff);
-            }
-            List<CompletableFuture<List<Import_Detail_Entity>>> futures = new ArrayList<>();
-
-            for (int i = 0; i < 3; i++) {
-                futures.add(CompletableFuture.supplyAsync(() -> {
-                    List<Import_Detail_Entity> results = new ArrayList<>();
-                    while (continueFlag.get()) {
-                        Integer offset = offsetsQueue.poll();
-                        if (offset == null) {
-                            continueFlag.set(false);
-                            break;
-                        }
-                        List<Import_Detail_Entity> partialResult = importDetailDao.getFilteredImportDetails(
-                                id, idParent, idSP, sortField, sortOrder, offset, setOff
-                        );
-
-                        if (partialResult.isEmpty()) {
-                            continueFlag.set(false);
-                            break;
-                        }
-                        results.addAll(partialResult);
-                    }
-                    return results;
-                }, executor));
-            }
-            List<Import_Detail_Entity> results = futures.stream()
-                    .map(CompletableFuture::join)
-                    .flatMap(List::stream)
-                    .collect(Collectors.toList());
-
-            executor.shutdown();
-            return results;
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Error when get import detail with filter");
+        Integer id = importQuery.getID_IMPD();
+        Integer idImport = importQuery.getID_IMPORT();
+        Integer idFinalProduct = importQuery.getID_FINAL_PRODUCT();
+        Integer idBaseProduct = importQuery.getID_BASE_PRODUCT();
+        Boolean isAvailable = importQuery.getIS_AVAILABLE();
+        Integer quantity = importQuery.getQUANTITY();
+        Double totalPrice = importQuery.getTOTAL_PRICE();
+        Double unitPrice = importQuery.getUNIT_PRICE();
+        if ((reflectField.isPropertyNameMatched(Import_Detail_Entity.class, sortField) && sortOrder != null) || sortField == null) {
+            return importDetailDao.getFilteredImportDetails(
+                    id, idImport, idFinalProduct, isAvailable, idBaseProduct, quantity, unitPrice, totalPrice, sortField, sortOrder, offset, setOff
+            );
         }
+        throw new RuntimeException("Error with sort");
     }
 
-    public boolean confirmImportAddProduct(String id) {
-        if (id != null) {
-            EntityTransaction transaction = importDao.getEntityManager().getTransaction();
-            try {
-                transaction.begin();
-                if (importDao.checkImport(id)) {
-                    List<Import_Detail_Entity> listImportDetail = importDetailDao.getFilteredImportDetails(null, id, null, null, null, null, null);
-                    for (Import_Detail_Entity importDetail : listImportDetail) {
-                        String idSp = importDetail.getID_SP();
-                        Integer quantity = importDetail.getQUANTITY_SP();
-                        ProductService productService = new ProductService();
-                        Product_Entity productE = productService.getProductByIDS(idSp);
-                        if (productE == null) {
-                            throw new RuntimeException("Error cant not find product to add");
-                        }
-                        Integer newQuantity = productE.getQUANTITY() + quantity;
-                        Product_Entity productEntity = new Product_Entity(id, null, null, null, null, null, null, newQuantity, null, null);
-                        productService.changeProduct(productEntity);
-                    }
-                    transaction.commit();
-                }
 
-            } catch (RuntimeException e) {
-                if (transaction.isActive()) {
-                    transaction.rollback();
-                    throw e;
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean deleteImport(String idParent) {
+    public void deleteImport(Integer idParent) {
         // add check
         if (idParent != null) {
-            EntityTransaction transaction = importDao.getEntityManager().getTransaction();
-            try {
-                transaction.begin();
-
-                boolean isDeleted = importDetailDao.deleteImportDetail(idParent);
-                if (!isDeleted) {
-                    throw new RuntimeException("Failed to delete import detail.");
-                }
-                boolean isUpdated = importDao.deleteImport(idParent);
-                if (!isUpdated) {
-                    throw new RuntimeException("Failed to delete import general.");
-                }
-                boolean isMinus = minusImportProduct(idParent);
-                if (!isMinus) {
-                    throw new RuntimeException("Failed to minus import product.");
-                }
-                transaction.commit();
-                return true;
-            } catch (Exception e) {
-                if (transaction.isActive()) {
-                    transaction.rollback();
-                }
-                throw e;
+            boolean isDeleted = importDetailDao.deleteImportDetail(idParent);
+            if (!isDeleted) {
+                throw new RuntimeException("Failed to delete import detail.");
             }
+            importDao.deleteImport(idParent);
+            minusImportProduct(idParent);
         }
-        return false;
+        throw new RuntimeException("Error with sort");
     }
 
-    public void registerNewImport(Import_Entity importEntity, List<Import_Detail_Entity> listImportDetail) throws SQLException {
+    public void registerNewImport(Import_Entity importEntity) throws
+            SQLException {
         //add check
-        EntityTransaction transaction = importDao.getEntityManager().getTransaction();
-        try {
-            transaction.begin();
-            LocalDateTime DATE_JOIN = LocalDateTime.now();
-            importEntity.setDATE_IMP(DATE_JOIN);
-            importDao.createImport(importEntity);
-            registerNewImportDetail(listImportDetail);
-            String id = importEntity.getID_IMP();
-            plusImportProduct(id);
-
-        } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
-            throw e;
-        }
+        LocalDateTime DATE_JOIN = LocalDateTime.now();
+        importEntity.setDATE_IMP(DATE_JOIN);
+        importDao.createImport(importEntity);
     }
 
     private void registerNewImportDetail(List<Import_Detail_Entity> listImportDetail) throws SQLException {
         //add check
-        importDetailDao.createImportDetail(listImportDetail);
-
-        Double sumPrice = 0.0;
-        String id = null;
-        for (Import_Detail_Entity importDetail : listImportDetail) {
-            sumPrice += importDetail.getPRICE_IMP_SP();
-            id = importDetail.getID_IPARENT();
-            if (importDao.addSumPrice(id, sumPrice)) throw new RuntimeException("Failed to add sum price.");
+        if (importDao.checkImport(listImportDetail.getFirst().getID_IMPD())) {
+            importDetailDao.createImportDetail(listImportDetail);
+            Double sumPrice = 0.0;
+            Integer id = null;
+            for (Import_Detail_Entity importDetail : listImportDetail) {
+                sumPrice += importDetail.getTOTAL_PRICE();
+                id = importDetail.getID_IMPORT();
+            }
+            plusImportProduct(id);
+            importDao.addSumPrice(id, sumPrice);
         }
+        throw new RuntimeException("Can not find id import general to add import detail");
     }
 
-    public boolean plusImportProduct(String id) {
+    private void plusImportProduct(Integer id) {
         if (id != null) {
-            EntityTransaction transaction = importDao.getEntityManager().getTransaction();
-            try {
-                transaction.begin();
-                if (importDao.getFilteredImports(null, null, id, null, null, null, null, null, null) != null) {
-                    List<Import_Detail_Entity> listImportDetail = importDetailDao.getFilteredImportDetails(null, id, null, null, null, null, null);
-                    for (Import_Detail_Entity importDetail : listImportDetail) {
-                        String idSp = importDetail.getID_SP();
-                        System.out.println(idSp);
-                        Integer quantity = importDetail.getQUANTITY_SP();
-                        ProductService productService = new ProductService();
-                        Product_Entity productE = productService.getProductByIDS(idSp);
-                        if (productE == null) {
-                            throw new RuntimeException("Error cant find product to plus quantity in plus product form import process");
-                        }
-                        Integer newQuantity = productE.getQUANTITY() + quantity;
-                        productE.setQUANTITY(newQuantity);
-                         productService.changeProduct(productE);
-                         return true;
-                    }
-                    transaction.commit();
-                }
 
-            } catch (RuntimeException e) {
-                if (transaction.isActive()) {
-                    transaction.rollback();
-                    throw e;
+            if (importDao.getFilteredImports(null, null, id, null, null, null, null, null, null, null) != null) {
+                List<Import_Detail_Entity> listImportDetail = importDetailDao.getFilteredImportDetails(null, id,null,null,null,null,null, null, null, null, null, null);
+                for (Import_Detail_Entity importDetail : listImportDetail) {
+                    Integer idSp = importDetail.getID_IMPORT();
+                    Integer quantity = importDetail.getQUANTITY();
+                    ProductBaseService productBaseService = new ProductBaseService(entityManager);
+                    Product_Base_Entity productE = productBaseService.getProductBaseByID(idSp);
+                    if (productE == null) {
+                        throw new RuntimeException("Error cant find product to plus quantity in plus product form import process");
+                    }
+                    Integer newQuantity = productE.getQUANTITY() + quantity;
+                    productE.setQUANTITY(newQuantity);
+                    productBaseService.updateProductBase(productE);
                 }
             }
         }
-        return false;
+        throw new RuntimeException("ID Import general to plus product from import  is null");
     }
-
-    public boolean minusImportProduct(String id) {
+    private void minusImportProduct(Integer id) {
         if (id != null) {
-            EntityTransaction transaction = importDao.getEntityManager().getTransaction();
-            try {
-                transaction.begin();
-                if (importDao.getFilteredImports(null, null, id, null, null, null, null, null, null) != null) {
-                    List<Import_Detail_Entity> listImportDetail = importDetailDao.getFilteredImportDetails(null, id, null, null, null, null, null);
-                    for (Import_Detail_Entity importDetail : listImportDetail) {
-                        String idSp = importDetail.getID_SP();
-                        System.out.println(idSp);
-                        Integer quantity = importDetail.getQUANTITY_SP();
-                        ProductService productService = new ProductService();
-                        Product_Entity productE = productService.getProductByIDS(idSp);
-                        if (productE == null) {
-                            throw new RuntimeException("Error");
-                        }
-                        Integer newQuantity = productE.getQUANTITY() - quantity;
-                        productE.setQUANTITY(newQuantity);
-
-                        productService.changeProduct(productE);
-                        return true;
+            if (importDao.getFilteredImports(null, null, id, null, null, null, null, null, null, null) != null) {
+                List<Import_Detail_Entity> listImportDetail = importDetailDao.getFilteredImportDetails(null, id,null,null,null,null,null, null, null, null, null, null);
+                for (Import_Detail_Entity importDetail : listImportDetail) {
+                    Integer idSp = importDetail.getID_IMPORT();
+                    Integer quantity = importDetail.getQUANTITY();
+                    ProductBaseService productBaseService = new ProductBaseService(entityManager);
+                    Product_Base_Entity productE = productBaseService.getProductBaseByID(idSp);
+                    if (productE == null) {
+                        throw new RuntimeException("Error cant find product to minus quantity in plus product form import process");
                     }
-                    transaction.commit();
-                }
-
-            } catch (RuntimeException e) {
-                if (transaction.isActive()) {
-                    transaction.rollback();
+                    if(productE.getQUANTITY() < quantity) {
+                        throw new RuntimeException("Product quantity is less than to minus quantity");
+                    }
+                    Integer newQuantity = productE.getQUANTITY() - quantity;
+                    productE.setQUANTITY(newQuantity);
+                    productBaseService.updateProductBase(productE);
                 }
             }
         }
-        return false;
+        throw new RuntimeException("ID Import general to plus product from import  is null");
     }
 }

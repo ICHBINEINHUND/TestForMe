@@ -47,16 +47,23 @@ public class User_Entity {
     this.ADDRESS = ADDRESS;
   }
 
-  public User_Entity(String ID_USER, String EMAIL_ACC, String PHONE_ACC, String PASSWORD_ACC, String ROLE_ACC, String NAME_USER, LocalDateTime DATE_JOIN, String SALT, String ADDRESS) {
+  public User_Entity(String ID_USER, String EMAIL_ACC, String PHONE_ACC, String PASSWORD_ACC, String ROLE_ACC, String NAME_USER, String ADDRESS) {
     this.ID_USER = ID_USER;
     this.EMAIL_ACC = EMAIL_ACC;
     this.PHONE_ACC = PHONE_ACC;
     this.PASSWORD_ACC = PASSWORD_ACC;
     this.ROLE_ACC = ROLE_ACC;
     this.NAME_USER = NAME_USER;
-    this.DATE_JOIN = DATE_JOIN;
-    this.SALT = SALT;
     this.ADDRESS = ADDRESS;
+  }
+
+  public User_Entity(String ADDRESS, String NAME_USER, String ROLE_ACC, String PASSWORD_ACC, String PHONE_ACC, String EMAIL_ACC) {
+    this.ADDRESS = ADDRESS;
+    this.NAME_USER = NAME_USER;
+    this.ROLE_ACC = ROLE_ACC;
+    this.PASSWORD_ACC = PASSWORD_ACC;
+    this.PHONE_ACC = PHONE_ACC;
+    this.EMAIL_ACC = EMAIL_ACC;
   }
 
   public String getID_USER() {

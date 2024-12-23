@@ -10,26 +10,19 @@ import jakarta.persistence.Table;
 public class Bill_Detail_Entity {
   @Id
   @Column(name = "\"ID_BILL_DETAIL\"")
-  private String ID_BILL_DETAIL;
-  @Column(name = "\"ID_PARENT\"")
-  private String ID_PARENT;
-  @Column(name = "\"QUANTITY_BILL\"")
-  private int QUANTITY_BILL;
-  @Column(name = "\"PRICE_BUY\"")
-  private Double PRICE_BUY;
-  @Column(name = "\"ID_SP\"")
-  private String ID_SP;
+  private Integer ID_BILL_DETAIL;
+  @Column(name = "\"ID_BILL\"")
+  private Integer ID_BILL;
+  @Column(name = "\"QUANTITY_SP\"")
+  private Integer QUANTITY_SP;
+  @Column(name = "\"TOTAL_DETAIL_PRICE\"")
+  private Double TOTAL_DETAIL_PRICE;
+  @Column(name = "\"UNIT_PRICE\"")
+  private Double UNIT_PRICE;
+  @Column(name = "\"ID_FINAL_PRODUCT\"")
+  private Integer ID_FINAL_PRODUCT;
   @Column(name = "\"AVAILABLE\"")
   private Boolean AVAILABLE;
-
-  public Bill_Detail_Entity(String ID_BILL, String ID_PARENT, int QUANTITY_BILL, Double PRICE_BUY, String ID_SP, Boolean AVAILABLE) {
-    this.ID_BILL_DETAIL = ID_BILL;
-    this.ID_PARENT = ID_PARENT;
-    this.QUANTITY_BILL = QUANTITY_BILL;
-    this.PRICE_BUY = PRICE_BUY;
-    this.ID_SP = ID_SP;
-    this.AVAILABLE = AVAILABLE;
-  }
 
   public Boolean getAVAILABLE() {
     return AVAILABLE;
@@ -39,46 +32,64 @@ public class Bill_Detail_Entity {
     this.AVAILABLE = AVAILABLE;
   }
 
-  public String getID_PARENT() {
-    return ID_PARENT;
+  public Integer getID_FINAL_PRODUCT() {
+    return ID_FINAL_PRODUCT;
   }
 
-  public void setID_PARENT(String ID_PARENT) {
-    this.ID_PARENT = ID_PARENT;
+  public void setID_FINAL_PRODUCT(Integer ID_FINAL_PRODUCT) {
+    this.ID_FINAL_PRODUCT = ID_FINAL_PRODUCT;
   }
 
-  public Bill_Detail_Entity() {}
+  public Double getUNIT_PRICE() {
+    return UNIT_PRICE;
+  }
 
-  public String getID_BILL() {
+  public void setUNIT_PRICE(Double UNIT_PRICE) {
+    this.UNIT_PRICE = UNIT_PRICE;
+  }
+
+  public Double getTOTAL_DETAIL_PRICE() {
+    return TOTAL_DETAIL_PRICE;
+  }
+
+  public void setTOTAL_DETAIL_PRICE(Double TOTAL_DETAIL_PRICE) {
+    this.TOTAL_DETAIL_PRICE = TOTAL_DETAIL_PRICE;
+  }
+
+  public Integer getQUANTITY_BILL() {
+    return QUANTITY_SP;
+  }
+
+  public void setQUANTITY_BILL(Integer QUANTITY_BILL) {
+    this.QUANTITY_SP = QUANTITY_BILL;
+  }
+
+  public Integer getID_BILL() {
+    return ID_BILL;
+  }
+
+  public void setID_BILL(Integer ID_BILL) {
+    this.ID_BILL = ID_BILL;
+  }
+
+  public Integer getID_BILL_DETAIL() {
     return ID_BILL_DETAIL;
   }
 
-  public void setID_BILL(String ID_BILL) {
-    this.ID_BILL_DETAIL = ID_BILL;
+  public void setID_BILL_DETAIL(Integer ID_BILL_DETAIL) {
+    this.ID_BILL_DETAIL = ID_BILL_DETAIL;
   }
 
-  public int getQUANTITY_BILL() {
-    return QUANTITY_BILL;
+  public Bill_Detail_Entity(Integer ID_BILL_DETAIL, Integer ID_BILL, Integer QUANTITY_BILL, Double TOTAL_DETAIL_PRICE, Double UNIT_PRICE, Integer ID_FINAL_PRODUCT, Boolean AVAILABLE) {
+    this.ID_BILL_DETAIL = ID_BILL_DETAIL;
+    this.ID_BILL = ID_BILL;
+    this.QUANTITY_SP = QUANTITY_BILL;
+    this.TOTAL_DETAIL_PRICE = TOTAL_DETAIL_PRICE;
+    this.UNIT_PRICE = UNIT_PRICE;
+    this.ID_FINAL_PRODUCT = ID_FINAL_PRODUCT;
+    this.AVAILABLE = AVAILABLE;
   }
 
-  public void setQUANTITY_BILL(int QUANTITY_BILL) {
-    this.QUANTITY_BILL = QUANTITY_BILL;
+  public Bill_Detail_Entity() {
   }
-
-  public Double getPRICE_BUY() {
-    return PRICE_BUY;
-  }
-
-  public void setPRICE_BUY(Double PRICE_BUY) {
-    this.PRICE_BUY = PRICE_BUY;
-  }
-
-  public String getID_SP() {
-    return ID_SP;
-  }
-
-  public void setID_SP(String ID_SP) {
-    this.ID_SP = ID_SP;
-  }
-
 }

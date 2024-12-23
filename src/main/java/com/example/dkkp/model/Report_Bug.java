@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public class Report_Bug {
     @Id
     @Column(name = "\"ID_REPORT\"")
-    private String ID_REPORT;
+    private Integer ID_REPORT;
     @Column(name = "\"TYPE_BUG\"")
     @Enumerated(jakarta.persistence.EnumType.ORDINAL)
     private Bug_Type TYPE_BUG;
@@ -20,11 +20,11 @@ public class Report_Bug {
     @Column(name = "\"ID_USER\"")
     private String ID_USER;
 
-    public String getID_REPORT() {
+    public Integer getID_REPORT() {
         return ID_REPORT;
     }
 
-    public void setID_REPORT(String ID_REPORT) {
+    public void setID_REPORT(Integer ID_REPORT) {
         this.ID_REPORT = ID_REPORT;
     }
 
@@ -60,7 +60,7 @@ public class Report_Bug {
         this.ID_USER = ID_USER;
     }
 
-    public Report_Bug(String ID_REPORT, Bug_Type TYPE_BUG, String SCRIPT_BUG, LocalDateTime DATE_REPORT, String ID_USER) {
+    public Report_Bug(Integer ID_REPORT, Bug_Type TYPE_BUG, String SCRIPT_BUG, LocalDateTime DATE_REPORT, String ID_USER) {
         this.ID_REPORT = ID_REPORT;
         this.TYPE_BUG = TYPE_BUG;
         this.SCRIPT_BUG = SCRIPT_BUG;
