@@ -92,16 +92,12 @@ public class UserService {
 
     public void decryptUserSensitiveData(User_Entity user) throws Exception {
         if (user.getADDRESS() != null) {
-            System.out.println(user.getADDRESS());
             user.setADDRESS(SecurityFunction.decrypt(user.getADDRESS()));
         }
-        System.out.println("qua");
         if (user.getPHONE_ACC() != null) {
-            System.out.println(user.getPHONE_ACC());
             user.setPHONE_ACC(SecurityFunction.decrypt(user.getPHONE_ACC()));
         }
         if (user.getEMAIL_ACC() != null) {
-            System.out.println(user.getEMAIL_ACC());
             user.setEMAIL_ACC(SecurityFunction.decrypt(user.getEMAIL_ACC()));
         }
     }

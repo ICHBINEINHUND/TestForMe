@@ -45,10 +45,7 @@ public class BillService {
             List<Bill_Entity> results = billDao.getFilteredBills(
                     dateExport, typeDate, id, phone, idUser, statusBill, add, totalPrice, sortField, sortOrder, offset, setOff);
             for (Bill_Entity bill : results) {
-                String phoneDe = SecurityFunction.decrypt(bill.getPHONE_BILL());
-                String addDe = SecurityFunction.decrypt(bill.getADD_BILL());
-                bill.setPHONE_BILL(phoneDe);
-                bill.setADD_BILL(addDe);
+                decryptBillSensitiveData(bill);
             }
             return results;
         }
@@ -98,8 +95,9 @@ public class BillService {
             for (Bill_Detail_Entity billDetail : listBillDetail) {
                 ProductFinalService productFinalService = new ProductFinalService(entityManager);
                 Product_Final_Entity productE = productFinalService.getProductByID(billDetail.getID_FINAL_PRODUCT());
-                if(productE == null) throw new RuntimeException("Cant find product final to minus quantity") ;
-                if(productE.getQUANTITY() < billDetail.getQUANTITY_BILL() ) throw new RuntimeException("Quantity product in final storage is smaller to minus") ;
+                if (productE == null) throw new RuntimeException("Cant find product final to minus quantity");
+                if (productE.getQUANTITY() < billDetail.getQUANTITY_BILL())
+                    throw new RuntimeException("Quantity product in final storage is smaller to minus");
                 Integer newQuantity = productE.getQUANTITY() - billDetail.getQUANTITY_BILL();
                 productE.setQUANTITY(newQuantity);
                 productFinalService.updateProductFinal(productE);
@@ -110,33 +108,37 @@ public class BillService {
 
     public void plusBillProduct(Integer id) {
         System.out.println("day la " + id);
-            List<Bill_Detail_Entity> listBillDetail = billDetailDao.getFilteredBillDetails(null, null, null, null, null, id, null, null, null, null, null);
-            for (Bill_Detail_Entity billDetail : listBillDetail) {
-                ProductFinalService productFinalService = new ProductFinalService(entityManager);
-                Product_Final_Entity productE = productFinalService.getProductByID(billDetail.getID_FINAL_PRODUCT());
-                if(productE == null) throw new RuntimeException("Cant find product final to plus quantity") ;
-                Integer newQuantity = productE.getQUANTITY() + billDetail.getQUANTITY_BILL();
-                productE.setQUANTITY(newQuantity);
-                productFinalService.updateProductFinal(productE);
+        List<Bill_Detail_Entity> listBillDetail = billDetailDao.getFilteredBillDetails(null, null, null, null, null, id, null, null, null, null, null);
+        for (Bill_Detail_Entity billDetail : listBillDetail) {
+            ProductFinalService productFinalService = new ProductFinalService(entityManager);
+            Product_Final_Entity productE = productFinalService.getProductByID(billDetail.getID_FINAL_PRODUCT());
+            if (productE == null) throw new RuntimeException("Cant find product final to plus quantity");
+            Integer newQuantity = productE.getQUANTITY() + billDetail.getQUANTITY_BILL();
+            productE.setQUANTITY(newQuantity);
+            productFinalService.updateProductFinal(productE);
 
         }
     }
 
 
-    public void registerNewBill(Bill_Entity billEntity) throws Exception {
+    public void registerNewBill(Bill_Entity billEntity, String phone, String add) throws Exception {
         //add check
         LocalDateTime DATE_JOIN = LocalDateTime.now();
-        String idUser = billEntity.getID_USER();
-        UserService userService = new UserService(entityManager);
-        User_Entity user = userService.getUsersByID(idUser);
-        entityManager.detach(user);
-        userService.decryptUserSensitiveData(user);
-        String phone = user.getPHONE_ACC();
-        String add = user.getADDRESS();
+        if (billEntity.getID_USER() != null) {
+            String idUser = billEntity.getID_USER();
+            UserService userService = new UserService(entityManager);
+            User_Entity user = userService.getUsersByID(idUser);
+            entityManager.detach(user);
+            userService.decryptUserSensitiveData(user);
+            phone = user.getPHONE_ACC();
+            add = user.getADDRESS();
+        }
+
 
         billEntity.setADD_BILL(add);
         billEntity.setPHONE_BILL(phone);
         billEntity.setDate_EXP(DATE_JOIN);
+        encryptBillSensitiveData(billEntity);
         billDao.createBill(billEntity);
     }
 
@@ -154,5 +156,25 @@ public class BillService {
             return;
         }
         throw new RuntimeException("Error list bill detail is null");
+    }
+
+    public void decryptBillSensitiveData(Bill_Entity bill) throws Exception {
+        if (bill.getADD_BILL() != null) {
+            bill.setADD_BILL(SecurityFunction.decrypt(bill.getADD_BILL()));
+        }
+        if (bill.getPHONE_BILL() != null) {
+            bill.setPHONE_BILL(SecurityFunction.decrypt(bill.getPHONE_BILL()));
+        }
+
+    }
+
+    public void encryptBillSensitiveData(Bill_Entity bill) throws Exception {
+        if (bill.getADD_BILL() != null) {
+            bill.setADD_BILL(SecurityFunction.encrypt(bill.getADD_BILL()));
+        }
+        if (bill.getPHONE_BILL() != null) {
+            bill.setPHONE_BILL(SecurityFunction.encrypt(bill.getPHONE_BILL()));
+        }
+
     }
 }
