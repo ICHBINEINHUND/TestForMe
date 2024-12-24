@@ -14,6 +14,7 @@ import java.util.List;
 public class Product_Base_Entity {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "\"ID_BASE_PRODUCT\"")
   private Integer ID_BASE_PRODUCT;
   @Column(name = "\"NAME_PRODUCT\"")

@@ -23,20 +23,8 @@ public class ProductFinalDao {
         return this.entityManager;
     }
 
-    public boolean createProductFinal(Product_Final_Entity product) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
+    public void createProductFinal(Product_Final_Entity product) {
             entityManager.persist(product);
-            transaction.commit();
-            return true;
-        } catch (RuntimeException e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-                return false;
-            }
-            throw new RuntimeException("Error creating product", e);
-        }
     }
 
     public Product_Final_Entity getProductFinalById(Integer ID_FINAL_PRODUCT) {

@@ -22,20 +22,8 @@ public class ProductOptionValuesDao {
         return this.entityManager;
     }
 
-    public boolean createProductOptionValues(Product_Option_Values_Entity optionValue) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
+    public void createProductOptionValues(Product_Option_Values_Entity optionValue) {
             entityManager.persist(optionValue);
-            transaction.commit();
-            return true;
-        } catch (RuntimeException e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-                return false;
-            }
-            throw new RuntimeException("Error creating option values", e);
-        }
     }
 
     public boolean updateOptionValue(Integer id,
@@ -99,49 +87,50 @@ public class ProductOptionValuesDao {
         return typedQuery.getResultList();
     }
 
-    public void deleteOptionValues(Integer id, Integer idOption, Integer idFinalProduct) {
+    public void deleteOptionValues(Integer ID, Integer ID_OPTION, Integer ID_FINAL_PRODUCT) {
+        // Bắt đầu xây dựng câu truy vấn
         StringBuilder queryStr = new StringBuilder("SELECT po FROM Product_Option_Values_Entity po WHERE 1=1");
-        var query = entityManager.createQuery(queryStr.toString(), Product_Option_Values_Entity.class);
-
-        if (id != null) {
-            queryStr.append(" AND po.ID = :id");
-            query.setParameter("id", id);
-        } else if (idOption != null) {
-            queryStr.append(" AND po.ID_OPTION = :idOption");
-            query.setParameter("idOption", idOption);
-        } else if (idFinalProduct != null) {
-            queryStr.append(" AND po.ID_FINAL_PRODUCT = :idFinalProduct");
-            query.setParameter("idFinalProduct", idFinalProduct);
+        if (ID != null) {
+            queryStr.append(" AND po.ID = :ID");
+        } else if (ID_OPTION != null) {
+            queryStr.append(" AND po.ID_OPTION = :ID_OPTION");
+        } else if (ID_FINAL_PRODUCT != null) {
+            queryStr.append(" AND po.ID_FINAL_PRODUCT = :ID_FINAL_PRODUCT");
         }
-
+        var query = entityManager.createQuery(queryStr.toString(), Product_Option_Values_Entity.class);
+        if (ID != null) {
+            query.setParameter("ID", ID);
+        } else if (ID_OPTION != null) {
+            query.setParameter("ID_OPTION", ID_OPTION);
+        } else if (ID_FINAL_PRODUCT != null) {
+            query.setParameter("ID_FINAL_PRODUCT", ID_FINAL_PRODUCT);
+        }
         List<Product_Option_Values_Entity> optionValues = query.getResultList();
         if (!optionValues.isEmpty()) {
             for (Product_Option_Values_Entity optionValue : optionValues) {
                 try {
                     entityManager.remove(optionValue);
-                    return;
                 } catch (RuntimeException e) {
                     throw new RuntimeException("Error occurred while deleting Option Value", e);
                 }
             }
+        } else {
+            throw new RuntimeException("Cannot find Option Values to delete");
         }
-        throw new RuntimeException("Cannot find Option Values to delete");
     }
 
 
-    public boolean updateProductOptionValues(Integer id, String value, Integer idOption,Integer idFinalProduct) {
-        EntityTransaction transaction = entityManager.getTransaction();
-            transaction.begin();
+
+    public void updateProductOptionValues(Integer id, String value, Integer idOption,Integer idFinalProduct) {
+
             Product_Option_Values_Entity optionValue = entityManager.find(Product_Option_Values_Entity.class, id);
             if (optionValue == null) {
-                return false;
+                throw new RuntimeException("Can not find option value to delete");
             }
             if (value != null) optionValue.setVALUE(value);
             if (idOption != null) optionValue.setID_OPTION(idOption);
             if (idFinalProduct != null) optionValue.setID_FINAL_PRODUCT(idFinalProduct);
             entityManager.merge(optionValue);
-            transaction.commit();
-            return true;
     }
 
     public static void shutdown() {

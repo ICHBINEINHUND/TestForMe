@@ -1,14 +1,12 @@
 package com.example.dkkp.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "import_detail")
 public class Import_Detail_Entity {
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "\"ID_IMPD\"")//
   private Integer ID_IMPD;
   @Column(name = "\"ID_IMPORT\"")//

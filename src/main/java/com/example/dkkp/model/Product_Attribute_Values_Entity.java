@@ -1,9 +1,6 @@
 package com.example.dkkp.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 
 @Entity
@@ -11,6 +8,7 @@ import jakarta.persistence.Table;
 public class Product_Attribute_Values_Entity {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "\"ID\"")
   private Integer ID;
   @Column(name = "\"ID_BASE_PRODUCT\"")

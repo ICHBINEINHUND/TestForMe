@@ -22,18 +22,12 @@ public class UserDao {
         this.entityManager = entityManager;
     }
 
-    public boolean createUser(User_Entity user) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
+    public void createUser(User_Entity user) {
+        try{
+
             entityManager.persist(user);
-            transaction.commit();
-            return true;
         } catch (RuntimeException e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
-            throw new RuntimeException("Error creating user", e);
+            throw new RuntimeException("Email already used");
         }
     }
 

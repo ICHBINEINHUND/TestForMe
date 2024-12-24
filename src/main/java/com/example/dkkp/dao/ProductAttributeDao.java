@@ -22,20 +22,8 @@ public class ProductAttributeDao {
         return this.entityManager;
     }
 
-    public boolean createProductAttribute(Product_Attribute_Entity productAttribute) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
+    public void createProductAttribute(Product_Attribute_Entity productAttribute) {
             entityManager.persist(productAttribute);
-            transaction.commit();
-            return true;
-        } catch (RuntimeException e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-                return false;
-            }
-            throw e;
-        }
     }
 
     public List<Product_Attribute_Entity> getFilteredProductAttribute(Integer ID_ATTRIBUTE, String NAME_ATTRIBUTE, Integer ID_CATEGORY, String sortField, String sortOrder, Integer setOff, Integer offSet) {

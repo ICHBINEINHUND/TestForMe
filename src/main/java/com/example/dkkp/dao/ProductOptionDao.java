@@ -22,20 +22,8 @@ public class ProductOptionDao {
         return this.entityManager;
     }
 
-    public boolean createProductOption(Product_Option_Entity productOption) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
+    public void createProductOption(Product_Option_Entity productOption) {
             entityManager.persist(productOption);
-            transaction.commit();
-            return true;
-        } catch (RuntimeException e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-                return false;
-            }
-            throw e;
-        }
     }
 
     public List<Product_Option_Entity> getFilteredProductOption(Integer id, String name, String sortField, String sortOrder,Integer setOff,Integer offSet) {
@@ -89,24 +77,13 @@ public class ProductOptionDao {
     }
 
 
-    public boolean updateProductOption(Integer id, String name) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
+    public void updateProductOption(Integer id, String name) {
             Product_Option_Entity productOption = entityManager.find(Product_Option_Entity.class, id);
             if (productOption == null) {
                 throw new RuntimeException("Cant not find Product Option to update with ID: " + id);
             }
             productOption.setNAME_OPTION(name);
             entityManager.merge(productOption);
-            transaction.commit();
-            return true;
-        } catch (RuntimeException e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
-            throw new RuntimeException("Error occurred while updating Product Option with ID_BASEPRODUCT: " + id, e);
-        }
     }
 
     public static void shutdown() {

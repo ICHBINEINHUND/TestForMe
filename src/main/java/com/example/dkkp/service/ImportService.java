@@ -6,6 +6,7 @@ import com.example.dkkp.model.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -93,62 +94,81 @@ public class ImportService {
         importDao.createImport(importEntity);
     }
 
-    private void registerNewImportDetail(List<Import_Detail_Entity> listImportDetail) throws SQLException {
+    public void registerNewImportDetail(List<Import_Detail_Entity> listImportDetail) throws SQLException {
         //add check
-        if (importDao.checkImport(listImportDetail.getFirst().getID_IMPD())) {
+
+        Integer id = listImportDetail.getFirst().getID_IMPORT();
+        if (importDao.checkImport(id)) {
+            System.out.println("vao roi");
             importDetailDao.createImportDetail(listImportDetail);
             Double sumPrice = 0.0;
-            Integer id = null;
             for (Import_Detail_Entity importDetail : listImportDetail) {
                 sumPrice += importDetail.getTOTAL_PRICE();
-                id = importDetail.getID_IMPORT();
             }
             plusImportProduct(id);
             importDao.addSumPrice(id, sumPrice);
+            return;
         }
         throw new RuntimeException("Can not find id import general to add import detail");
     }
 
     private void plusImportProduct(Integer id) {
         if (id != null) {
-
             if (importDao.getFilteredImports(null, null, id, null, null, null, null, null, null, null) != null) {
-                List<Import_Detail_Entity> listImportDetail = importDetailDao.getFilteredImportDetails(null, id,null,null,null,null,null, null, null, null, null, null);
+                List<Import_Detail_Entity> listImportDetail = importDetailDao.getFilteredImportDetails(null, id, null, null, null, null, null, null, null, null, null, null);
                 for (Import_Detail_Entity importDetail : listImportDetail) {
-                    Integer idSp = importDetail.getID_IMPORT();
-                    Integer quantity = importDetail.getQUANTITY();
-                    ProductBaseService productBaseService = new ProductBaseService(entityManager);
-                    Product_Base_Entity productE = productBaseService.getProductBaseByID(idSp);
-                    if (productE == null) {
-                        throw new RuntimeException("Error cant find product to plus quantity in plus product form import process");
+                        Integer quantity = importDetail.getQUANTITY();
+                    if (importDetail.getID_BASE_PRODUCT() != null) {
+                        Integer idSp = importDetail.getID_BASE_PRODUCT();
+                        ProductBaseService productBaseService = new ProductBaseService(entityManager);
+                        Product_Base_Entity productE = productBaseService.getProductBaseByID(idSp);
+                        if (productE == null) throw new RuntimeException("Error cant find product base to plus quantity in plus product form import process");
+                        productE.setQUANTITY(productE.getQUANTITY() + quantity);
+                        productBaseService.updateProductBase(productE);
+                    } else  {
+                        Integer idSp = importDetail.getID_FINAL_PRODUCT();
+                        ProductFinalService productFinalService = new ProductFinalService(entityManager);
+                        Product_Final_Entity productE = productFinalService.getProductByID(idSp);
+                        if (productE == null)  throw new RuntimeException("Error cant find product final to plus quantity in plus product form import process");
+                        productE.setQUANTITY( productE.getQUANTITY() + quantity);
+                        productFinalService.updateProductFinal(productE);
                     }
-                    Integer newQuantity = productE.getQUANTITY() + quantity;
-                    productE.setQUANTITY(newQuantity);
-                    productBaseService.updateProductBase(productE);
                 }
+                return;
             }
         }
         throw new RuntimeException("ID Import general to plus product from import  is null");
     }
+
     private void minusImportProduct(Integer id) {
         if (id != null) {
             if (importDao.getFilteredImports(null, null, id, null, null, null, null, null, null, null) != null) {
-                List<Import_Detail_Entity> listImportDetail = importDetailDao.getFilteredImportDetails(null, id,null,null,null,null,null, null, null, null, null, null);
+                List<Import_Detail_Entity> listImportDetail = importDetailDao.getFilteredImportDetails(null, id, null, null, null, null, null, null, null, null, null, null);
                 for (Import_Detail_Entity importDetail : listImportDetail) {
-                    Integer idSp = importDetail.getID_IMPORT();
                     Integer quantity = importDetail.getQUANTITY();
-                    ProductBaseService productBaseService = new ProductBaseService(entityManager);
-                    Product_Base_Entity productE = productBaseService.getProductBaseByID(idSp);
-                    if (productE == null) {
-                        throw new RuntimeException("Error cant find product to minus quantity in plus product form import process");
+                    if (importDetail.getID_BASE_PRODUCT() != null) {
+                        Integer idSp = importDetail.getID_BASE_PRODUCT();
+                        ProductBaseService productBaseService = new ProductBaseService(entityManager);
+                        Product_Base_Entity productE = productBaseService.getProductBaseByID(idSp);
+                        if (productE == null) throw new RuntimeException("Error cant find product base to plus quantity in plus product form import process");
+                        if(quantity > productE.getQUANTITY()) {
+                            throw new RuntimeException("Product base in storage is smaller to minus");
+                        }
+                        productE.setQUANTITY(productE.getQUANTITY() - quantity);
+                        productBaseService.updateProductBase(productE);
+                    } else  {
+                        Integer idSp = importDetail.getID_FINAL_PRODUCT();
+                        ProductFinalService productFinalService = new ProductFinalService(entityManager);
+                        Product_Final_Entity productE = productFinalService.getProductByID(idSp);
+                        if (productE == null)  throw new RuntimeException("Error cant find product final to plus quantity in plus product form import process");
+                        if(quantity > productE.getQUANTITY()) {
+                            throw new RuntimeException("Product base in storage is smaller to minus");
+                        }
+                        productE.setQUANTITY( productE.getQUANTITY() - quantity);
+                        productFinalService.updateProductFinal(productE);
                     }
-                    if(productE.getQUANTITY() < quantity) {
-                        throw new RuntimeException("Product quantity is less than to minus quantity");
-                    }
-                    Integer newQuantity = productE.getQUANTITY() - quantity;
-                    productE.setQUANTITY(newQuantity);
-                    productBaseService.updateProductBase(productE);
                 }
+                return;
             }
         }
         throw new RuntimeException("ID Import general to plus product from import  is null");

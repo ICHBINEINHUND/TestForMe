@@ -15,7 +15,7 @@ public class BillDetailDao {
     }
 
     public BillDetailDao(EntityManager entityManager) {
-        this.entityManager =entityManager;
+        this.entityManager = entityManager;
     }
 
     public EntityManager getEntityManager() {
@@ -23,25 +23,16 @@ public class BillDetailDao {
     }
 
     public void createBillDetail(List<Bill_Detail_Entity> listBillDetail) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
-            int batchSize = 10;
-            for (int i = 0; i < listBillDetail.size(); i++) {
-                Bill_Detail_Entity billDetail = listBillDetail.get(i);
-                entityManager.persist(billDetail);
-                if (i % batchSize == 0 && i > 0) {
-                    entityManager.flush();
-                    entityManager.clear();
-                }
+        int batchSize = 10;
+        for (int i = 0; i < listBillDetail.size(); i++) {
+            Bill_Detail_Entity billDetail = listBillDetail.get(i);
+            entityManager.persist(billDetail);
+            if (i % batchSize == 0 && i > 0) {
+                entityManager.flush();
+                entityManager.clear();
             }
-            transaction.commit();
-        } catch (RuntimeException e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
-            throw new RuntimeException("Error creating bill detail", e);
         }
+
     }
 
     public List<Bill_Detail_Entity> getFilteredBillDetails(Integer ID_BILL_DETAIL,
@@ -113,22 +104,22 @@ public class BillDetailDao {
 
 
     public void cancelBillDetail(Integer ID_BILL) {
-            List<Bill_Detail_Entity> billDetails = entityManager.createQuery(
-                            "SELECT bd FROM Bill_Detail_Entity bd WHERE bd.ID_BILL = :ID_BILL_DETAIL", Bill_Detail_Entity.class)
-                    .setParameter("ID_BILL_DETAIL", ID_BILL)
-                    .getResultList();
-            if (billDetails.isEmpty()) {
-                throw new RuntimeException("No Bill Details found for the given ID_PARENT");
-            }
-            for (Bill_Detail_Entity billDetail : billDetails) {
-                billDetail.setAVAILABLE(false);
-            }
+        List<Bill_Detail_Entity> billDetails = entityManager.createQuery(
+                        "SELECT bd FROM Bill_Detail_Entity bd WHERE bd.ID_BILL = :ID_BILL_DETAIL", Bill_Detail_Entity.class)
+                .setParameter("ID_BILL_DETAIL", ID_BILL)
+                .getResultList();
+        if (billDetails.isEmpty()) {
+            throw new RuntimeException("No Bill Details found for the given ID_PARENT");
+        }
+        for (Bill_Detail_Entity billDetail : billDetails) {
+            billDetail.setAVAILABLE(false);
+        }
     }
 
     public void updateBillDetail(Integer ID_BILL_DETAIL, Integer QUANTITY_SP, Double TOTAL_DETAIL_PRICE, Integer ID_FINAL_PRODUCT) {
         Bill_Detail_Entity billDetail = entityManager.find(Bill_Detail_Entity.class, ID_BILL_DETAIL);
         if (billDetail == null) {
-            return ;
+            return;
         }
         if (QUANTITY_SP != null) billDetail.setQUANTITY_BILL(QUANTITY_SP);
         if (TOTAL_DETAIL_PRICE != null) billDetail.setTOTAL_DETAIL_PRICE(TOTAL_DETAIL_PRICE);
@@ -137,12 +128,12 @@ public class BillDetailDao {
     }
 
     public void deleteBillDetail(Integer ID_BILL_DETAIL) {
-            Bill_Detail_Entity brandToDelete = entityManager.find(Bill_Detail_Entity.class, ID_BILL_DETAIL);
-            if (brandToDelete != null) {
-                entityManager.remove(brandToDelete);
-                return;
-            }
-            throw new RuntimeException("No Bill Details found to delete");
+        Bill_Detail_Entity brandToDelete = entityManager.find(Bill_Detail_Entity.class, ID_BILL_DETAIL);
+        if (brandToDelete != null) {
+            entityManager.remove(brandToDelete);
+            return;
+        }
+        throw new RuntimeException("No Bill Details found to delete");
 
     }
 

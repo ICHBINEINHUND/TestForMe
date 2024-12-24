@@ -7,6 +7,7 @@ import com.example.dkkp.model.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+
 import java.util.List;
 
 public class ProductFinalService {
@@ -34,18 +35,18 @@ public class ProductFinalService {
             Integer setOff,
             Integer offset
     ) {
-            Integer ID_SP = product_Final_Entity.getID_SP();
-            String NAME_PRODUCT = product_Final_Entity.getNAME_PRODUCT();
-            String DES_PRODUCT = product_Final_Entity.getDES_PRODUCT();
-            Double PRICE_SP = product_Final_Entity.getPRICE_SP();
-            String IMAGE_SP = product_Final_Entity.getIMAGE_SP();
-            Integer QUANTITY = product_Final_Entity.getQUANTITY();
-            Double DISCOUNT = product_Final_Entity.getDISCOUNT();
-            Integer ID_BASE_PRODUCT = product_Final_Entity.getID_BASE_PRODUCT();
+        Integer ID_SP = product_Final_Entity.getID_SP();
+        String NAME_PRODUCT = product_Final_Entity.getNAME_PRODUCT();
+        String DES_PRODUCT = product_Final_Entity.getDES_PRODUCT();
+        Double PRICE_SP = product_Final_Entity.getPRICE_SP();
+        String IMAGE_SP = product_Final_Entity.getIMAGE_SP();
+        Integer QUANTITY = product_Final_Entity.getQUANTITY();
+        Double DISCOUNT = product_Final_Entity.getDISCOUNT();
+        Integer ID_BASE_PRODUCT = product_Final_Entity.getID_BASE_PRODUCT();
 
         if (reflectField.isPropertyNameMatched(Product_Final_Entity.class, sortField) || sortField == null) {
             return productFinalDao.getFilteredProductFinal(
-                    ID_SP,ID_BASE_PRODUCT,NAME_PRODUCT,PRICE_SP,typePrice,QUANTITY,DISCOUNT,typeDiscount,sortField,sortOrder,setOff,offset
+                    ID_SP, ID_BASE_PRODUCT, NAME_PRODUCT, PRICE_SP, typePrice, QUANTITY, DISCOUNT, typeDiscount, sortField, sortOrder, setOff, offset
             );
         }
         ;
@@ -70,7 +71,7 @@ public class ProductFinalService {
         Double DISCOUNT = product_Final_Entity.getDISCOUNT();
         Integer ID_BASE_PRODUCT = product_Final_Entity.getID_BASE_PRODUCT();
         //add check
-        productFinalDao.updateProductFinal(ID_SP,ID_BASE_PRODUCT,NAME_PRODUCT,DES_PRODUCT,QUANTITY,DISCOUNT,IMAGE_SP,PRICE_SP);
+        productFinalDao.updateProductFinal(ID_SP, ID_BASE_PRODUCT, NAME_PRODUCT, DES_PRODUCT, QUANTITY, DISCOUNT, IMAGE_SP, PRICE_SP);
     }
 
     public void createProductFinal(Product_Final_Entity product_Final_Entity) {
@@ -82,7 +83,7 @@ public class ProductFinalService {
         String DES_PRODUCT = product_Final_Entity.getDES_PRODUCT();
         Double PRICE_SP = product_Final_Entity.getPRICE_SP();
         String IMAGE_SP = product_Final_Entity.getIMAGE_SP();
-        Integer QUANTITY = product_Final_Entity.getQUANTITY();
+        product_Final_Entity.setQUANTITY(0);
         Double DISCOUNT = product_Final_Entity.getDISCOUNT();
 
         productFinalDao.createProductFinal(product_Final_Entity);
@@ -100,12 +101,12 @@ public class ProductFinalService {
         String NAME = productOptionEntity.getNAME_OPTION();
 
         if (reflectField.isPropertyNameMatched(Product_Option_Entity.class, sortField) || sortField == null) {
-            productOptionDao.getFilteredProductOption(ID, NAME, sortField, sortOrder,setOff,offset);
+            productOptionDao.getFilteredProductOption(ID, NAME, sortField, sortOrder, setOff, offset);
 
         }
         throw new RuntimeException("Error with sort");
     }
-    
+
     public void deleteProductOption(Integer id) {
         productOptionDao.deleteProductOptionById(id);
     }
@@ -115,7 +116,7 @@ public class ProductFinalService {
         String nameOption = productOption.getNAME_OPTION();
 
         //add check
-        productOptionDao.updateProductOption(idOption,nameOption);
+        productOptionDao.updateProductOption(idOption, nameOption);
     }
 
     public void createProductOption(Product_Option_Entity productOption) {
@@ -127,7 +128,7 @@ public class ProductFinalService {
 
         productOptionDao.createProductOption(productOption);
     }
-    
+
     public List<Product_Option_Values_Entity> getProductOptionValuesCombinedCondition(
             Product_Option_Values_Entity productOptionValues,
             String sortField,
@@ -142,16 +143,16 @@ public class ProductFinalService {
         Integer ID_FINAL_PRODUCT = productOptionValues.getID_FINAL_PRODUCT();
 
         if (reflectField.isPropertyNameMatched(Product_Option_Values_Entity.class, sortField) || sortField == null) {
-                productOptionValuesDao.getFilteredProductOptionValue(ID,ID_OPTION,VALUE,ID_FINAL_PRODUCT,sortField,sortOrder,setOff,offset);
+            productOptionValuesDao.getFilteredProductOptionValue(ID, ID_OPTION, VALUE, ID_FINAL_PRODUCT, sortField, sortOrder, setOff, offset);
         }
         throw new RuntimeException("Error with sort");
     }
 
     public void deleteProductOptionValues(Integer id, Integer idOption, Integer idFinalProduct) {
         // add check
-        productOptionValuesDao.deleteOptionValues(id,idOption,idFinalProduct);
+        productOptionValuesDao.deleteOptionValues(id, idOption, idFinalProduct);
     }
-    
+
     public void updateProductOptionValues(Product_Option_Values_Entity productOptionValues) {
         Integer ID = productOptionValues.getID();
         Integer ID_OPTION = productOptionValues.getID_OPTION();
@@ -159,7 +160,7 @@ public class ProductFinalService {
         Integer ID_FINAL_PRODUCT = productOptionValues.getID_FINAL_PRODUCT();
 
         //add check
-        productOptionValuesDao.updateProductOptionValues(ID,VALUE,ID_OPTION,ID_FINAL_PRODUCT);
+        productOptionValuesDao.updateProductOptionValues(ID, VALUE, ID_OPTION, ID_FINAL_PRODUCT);
     }
 
     public void createProductOptionValues(Product_Option_Values_Entity productOptionValues) {

@@ -10,6 +10,7 @@ import com.example.dkkp.model.EnumType.Status_Bill;
 @Table(name = "bill")
 public class Bill_Entity {
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "\"ID_BILL\"")
   private Integer ID_BILL;
   @Column(name = "\"DATE_EXP\"")
@@ -92,7 +93,7 @@ public class Bill_Entity {
     return BILL_STATUS;
   }
 
-  public Bill_Entity(Integer ID_BILL, LocalDateTime date_EXP, String PHONE_BILL, String ADD_BILL, String ID_USER, Double TOTAL_PRICE, String DESCRIPTION, Status_Bill BILL_STATUS) {
+  public Bill_Entity(Integer ID_BILL, LocalDateTime date_EXP, String ID_USER, Double TOTAL_PRICE, String DESCRIPTION, Status_Bill BILL_STATUS) {
     this.ID_BILL = ID_BILL;
     Date_EXP = date_EXP;
     this.PHONE_BILL = PHONE_BILL;

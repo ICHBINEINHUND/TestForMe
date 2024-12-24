@@ -1,9 +1,6 @@
 package com.example.dkkp.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +10,7 @@ import java.time.LocalDateTime;
 public class Product_Final_Entity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "\"ID_FINAL_PRODUCT\"")
     private Integer ID_SP;
     @Column(name = "\"ID_BASE_PRODUCT\"")

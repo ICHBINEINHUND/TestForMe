@@ -107,8 +107,8 @@ public class BillDao {
             }
         }
         TypedQuery<Bill_Entity> typedQuery = entityManager.createQuery(query);
-        typedQuery.setFirstResult(offset);
-        typedQuery.setMaxResults(setOff);
+        if(offset != null) typedQuery.setFirstResult(offset);
+        if(setOff != null) typedQuery.setMaxResults(setOff);
 
         return typedQuery.getResultList();
     }

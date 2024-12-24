@@ -20,9 +20,7 @@ public class ImportDetailDao {
     }
 
     public void createImportDetail(List<Import_Detail_Entity> listImportDetail) throws SQLException {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
+
             int batchSize = 10;
             for (int i = 0; i < listImportDetail.size(); i++) {
                 Import_Detail_Entity importDetail = listImportDetail.get(i);
@@ -32,13 +30,7 @@ public class ImportDetailDao {
                     entityManager.clear();
                 }
             }
-            transaction.commit();
-        } catch (RuntimeException e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-                throw new RuntimeException("Error create import detail", e);
-            }
-        }
+
     }
 
     public EntityManager getEntityManager() {

@@ -57,7 +57,7 @@ public class ReportService {
     ) {
         // chạy được
         // không cần kiểm tra sự hợp lệ của các tham số truyền vào khác như userId,...
-        if (reflectField.isPropertyNameMatched(Report_Bug.class, sortField) || sortField == null) {
+        if (  sortField == null || reflectField.isPropertyNameMatched(Report_Bug.class, sortField) ) {
             String userId = report.getID_USER();
             Integer reportId = report.getID_REPORT();
             LocalDateTime dateReport = report.getDATE_REPORT();

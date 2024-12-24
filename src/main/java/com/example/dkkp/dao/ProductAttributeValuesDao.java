@@ -93,58 +93,44 @@ public class ProductAttributeValuesDao {
 
     public void deleteAttributeValues(Integer id, Integer ID_ATTRIBUTE, Integer ID_BASE_PRODUCT) {
         StringBuilder queryStr = new StringBuilder("SELECT po FROM Product_Attribute_Values_Entity po WHERE 1=1");
-        var query = entityManager.createQuery(queryStr.toString(), Product_Attribute_Values_Entity.class);
 
+        var query = entityManager.createQuery(queryStr.toString(), Product_Attribute_Values_Entity.class);
         if (id != null) {
             queryStr.append(" AND po.ID = :id");
-            query.setParameter("id", id);
         } else if (ID_BASE_PRODUCT != null) {
             queryStr.append(" AND po.ID_BASE_PRODUCT = :ID_BASE_PRODUCT");
-            query.setParameter("ID_BASE_PRODUCT", ID_BASE_PRODUCT);
         } else if (ID_ATTRIBUTE != null) {
             queryStr.append(" AND po.ID_ATTRIBUTE = :ID_ATTRIBUTE");
+        }
+        if (id != null) {
+            query.setParameter("id", id);
+        } else if (ID_BASE_PRODUCT != null) {
+            query.setParameter("ID_BASE_PRODUCT", ID_BASE_PRODUCT);
+        } else if (ID_ATTRIBUTE != null) {
             query.setParameter("ID_ATTRIBUTE", ID_ATTRIBUTE);
         }
-
         List<Product_Attribute_Values_Entity> attributeValues = query.getResultList();
         if (!attributeValues.isEmpty()) {
             for (Product_Attribute_Values_Entity optionValue : attributeValues) {
-                try {
-                    entityManager.remove(optionValue);
-                    return;
-                } catch (RuntimeException e) {
-                    throw new RuntimeException("Error occurred while deleting Attribute Value", e);
-                }
+                entityManager.remove(optionValue);
             }
         }
-        throw new RuntimeException("Can not find option value to delete");
-
     }
 
-    public boolean updateProductAttributeValues(Integer ID,
-                                                String VALUE,
-                                                Integer ID_BASE_PRODUCT,
-                                                Integer ID_ATTRIBUTE
+
+    public void updateProductAttributeValues(Integer ID,
+                                             String VALUE,
+                                             Integer ID_BASE_PRODUCT,
+                                             Integer ID_ATTRIBUTE
     ) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
-            Product_Attribute_Values_Entity attributeValue = entityManager.find(Product_Attribute_Values_Entity.class, ID);
-            if (attributeValue == null) {
-                return false;
-            }
-            if (VALUE != null) attributeValue.setVALUE(VALUE);
-            if (ID_ATTRIBUTE != null) attributeValue.setID_ATTRIBUTE(ID_ATTRIBUTE);
-            if (ID_BASE_PRODUCT != null) attributeValue.setID_BASE_PRODUCT(ID_BASE_PRODUCT);
-            entityManager.merge(attributeValue);
-            transaction.commit();
-            return true;
-        } catch (RuntimeException e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
-            throw new RuntimeException("Error occurred while updating attributeValue", e);
+        Product_Attribute_Values_Entity attributeValue = entityManager.find(Product_Attribute_Values_Entity.class, ID);
+        if (attributeValue == null) {
+            throw new RuntimeException("Cannot find Product Attribute Value with ID: " + ID);
         }
+        if (VALUE != null) attributeValue.setVALUE(VALUE);
+        if (ID_ATTRIBUTE != null) attributeValue.setID_ATTRIBUTE(ID_ATTRIBUTE);
+        if (ID_BASE_PRODUCT != null) attributeValue.setID_BASE_PRODUCT(ID_BASE_PRODUCT);
+        entityManager.merge(attributeValue);
     }
 
     public static void shutdown() {

@@ -6,6 +6,7 @@ import com.example.dkkp.model.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -81,13 +82,13 @@ public class BillService {
         if (statusBill == EnumType.Status_Bill.CANC) {
             billDao.changeBillStatus(id, statusBill);
             billDetailDao.cancelBillDetail(id);
-             plusBillProduct(id);
+            plusBillProduct(id);
         }
         if (billDao.getBillByID(id).getBILL_STATUS() == EnumType.Status_Bill.PEN) {
             billDao.changeBillStatus(id, statusBill);
-             minusProduct(id);
+            minusProduct(id);
         }
-         billDao.changeBillStatus(id, statusBill);
+        billDao.changeBillStatus(id, statusBill);
     }
 
 
@@ -95,29 +96,29 @@ public class BillService {
         if (billDao.getFilteredBills(null, null, id, null, null, null, null, null, null, null, null, null) != null) {
             List<Bill_Detail_Entity> listBillDetail = billDetailDao.getFilteredBillDetails(null, null, null, null, null, id, null, null, null, null, null);
             for (Bill_Detail_Entity billDetail : listBillDetail) {
-                ProductBaseService productBaseService = new ProductBaseService(entityManager);
-                Product_Base_Entity productE = productBaseService.getProductBaseByID(billDetail.getID_FINAL_PRODUCT());
-                if (productE.getQUANTITY() < billDetail.getQUANTITY_BILL()) {
-                    throw new RuntimeException("Error the quantity in warehouse is lower than the quantity to minus");
-                }
+                ProductFinalService productFinalService = new ProductFinalService(entityManager);
+                Product_Final_Entity productE = productFinalService.getProductByID(billDetail.getID_FINAL_PRODUCT());
+                if(productE == null) throw new RuntimeException("Cant find product final to minus quantity") ;
+                if(productE.getQUANTITY() < billDetail.getQUANTITY_BILL() ) throw new RuntimeException("Quantity product in final storage is smaller to minus") ;
                 Integer newQuantity = productE.getQUANTITY() - billDetail.getQUANTITY_BILL();
-                Product_Base_Entity productEntity = new Product_Base_Entity(id, null, newQuantity, null, null, null, null, null);
-                productBaseService.updateProductBase(productEntity);
+                productE.setQUANTITY(newQuantity);
+                productFinalService.updateProductFinal(productE);
             }
         }
 
     }
 
     public void plusBillProduct(Integer id) {
-        if (billDao.getFilteredBills(null, null, id, null, null, null, null, null, null, null, null, null) != null) {
+        System.out.println("day la " + id);
             List<Bill_Detail_Entity> listBillDetail = billDetailDao.getFilteredBillDetails(null, null, null, null, null, id, null, null, null, null, null);
             for (Bill_Detail_Entity billDetail : listBillDetail) {
-                ProductBaseService productBaseService = new ProductBaseService(entityManager);
-                Product_Base_Entity productE = productBaseService.getProductBaseByID(billDetail.getID_FINAL_PRODUCT());
+                ProductFinalService productFinalService = new ProductFinalService(entityManager);
+                Product_Final_Entity productE = productFinalService.getProductByID(billDetail.getID_FINAL_PRODUCT());
+                if(productE == null) throw new RuntimeException("Cant find product final to plus quantity") ;
                 Integer newQuantity = productE.getQUANTITY() + billDetail.getQUANTITY_BILL();
-                Product_Base_Entity productEntity = new Product_Base_Entity(id, null, newQuantity, null, null, null, null, null);
-                productBaseService.updateProductBase(productEntity);
-            }
+                productE.setQUANTITY(newQuantity);
+                productFinalService.updateProductFinal(productE);
+
         }
     }
 
@@ -128,6 +129,7 @@ public class BillService {
         String idUser = billEntity.getID_USER();
         UserService userService = new UserService(entityManager);
         User_Entity user = userService.getUsersByID(idUser);
+        entityManager.detach(user);
         userService.decryptUserSensitiveData(user);
         String phone = user.getPHONE_ACC();
         String add = user.getADDRESS();
@@ -135,22 +137,21 @@ public class BillService {
         billEntity.setADD_BILL(add);
         billEntity.setPHONE_BILL(phone);
         billEntity.setDate_EXP(DATE_JOIN);
-         billDao.createBill(billEntity);
+        billDao.createBill(billEntity);
     }
 
-    private boolean registerNewBillDetail(List<Bill_Detail_Entity> listBillDetail) {
+    public void registerNewBillDetail(List<Bill_Detail_Entity> listBillDetail) {
         //add check
         if (listBillDetail != null) {
             billDetailDao.createBillDetail(listBillDetail);
             Double sumPrice = 0.0;
-            Integer id = null;
+            Integer id = listBillDetail.getFirst().getID_BILL();
+            if (id == null) throw new RuntimeException("Error cant find bill general to create bill detail");
             for (Bill_Detail_Entity billDetail : listBillDetail) {
-                id = billDetail.getID_BILL();
                 sumPrice += billDetail.getTOTAL_DETAIL_PRICE();
             }
-            if (id == null) throw new RuntimeException("Error cant find bill general to create bill detail");
             billDao.addSumPrice(id, sumPrice);
-            return true;
+            return;
         }
         throw new RuntimeException("Error list bill detail is null");
     }

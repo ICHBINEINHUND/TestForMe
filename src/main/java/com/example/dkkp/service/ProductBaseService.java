@@ -81,7 +81,7 @@ public class ProductBaseService {
 
         Integer idBaseProduct = product_BASE_entity.getID_BASE_PRODUCT();
         String NAME_PRODUCT = product_BASE_entity.getNAME_PRODUCT();
-        Integer TOTAL_QUANTITY = product_BASE_entity.getQUANTITY();
+        product_BASE_entity.setQUANTITY(0);
         LocalDateTime DATE_RELEASE = product_BASE_entity.getDATE_RELEASE();
         String DES_PRODUCT = product_BASE_entity.getDES_PRODUCT();
         Integer VIEW_COUNT = product_BASE_entity.getVIEW_COUNT();

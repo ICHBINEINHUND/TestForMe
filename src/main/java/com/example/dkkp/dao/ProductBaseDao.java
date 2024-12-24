@@ -25,17 +25,7 @@ public class ProductBaseDao {
     }
 
     public void createProductBase(Product_Base_Entity product) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
             entityManager.persist(product);
-            transaction.commit();
-        } catch (RuntimeException e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
-            throw new RuntimeException("Error creating product", e);
-        }
     }
 
     public Product_Base_Entity getProductBaseById(Integer ID_BASE_PRODUCT) {

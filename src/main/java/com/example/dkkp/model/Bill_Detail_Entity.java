@@ -1,14 +1,12 @@
 package com.example.dkkp.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "bill_detail")
 public class Bill_Detail_Entity {
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "\"ID_BILL_DETAIL\"")
   private Integer ID_BILL_DETAIL;
   @Column(name = "\"ID_BILL\"")
@@ -80,14 +78,14 @@ public class Bill_Detail_Entity {
     this.ID_BILL_DETAIL = ID_BILL_DETAIL;
   }
 
-  public Bill_Detail_Entity(Integer ID_BILL_DETAIL, Integer ID_BILL, Integer QUANTITY_BILL, Double TOTAL_DETAIL_PRICE, Double UNIT_PRICE, Integer ID_FINAL_PRODUCT, Boolean AVAILABLE) {
+  public Bill_Detail_Entity(Integer ID_BILL_DETAIL, Integer ID_BILL, Integer QUANTITY_BILL,  Double UNIT_PRICE, Integer ID_FINAL_PRODUCT, Boolean AVAILABLE) {
     this.ID_BILL_DETAIL = ID_BILL_DETAIL;
     this.ID_BILL = ID_BILL;
     this.QUANTITY_SP = QUANTITY_BILL;
-    this.TOTAL_DETAIL_PRICE = TOTAL_DETAIL_PRICE;
     this.UNIT_PRICE = UNIT_PRICE;
     this.ID_FINAL_PRODUCT = ID_FINAL_PRODUCT;
     this.AVAILABLE = AVAILABLE;
+    this.TOTAL_DETAIL_PRICE = this.UNIT_PRICE * this.QUANTITY_SP;
   }
 
   public Bill_Detail_Entity() {

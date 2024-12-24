@@ -25,19 +25,19 @@ public class UserService {
         if (user == null) {
             return null;
         }
-        decryptUserSensitiveData(user);
         return user;
     }
 
     public User_Entity getUsersByEmail(String Email) throws Exception {
         // chạy được
         User_Entity user = userDao.getUsersByMail(SecurityFunction.encrypt(Email));
-        decryptUserSensitiveData(user);
+
+//        decryptUserSensitiveData(user);
         return user;
     }
 
 
-    public boolean registerNewUser(User_Entity user) throws Exception {
+    public void registerNewUser(User_Entity user) throws Exception {
         //chạy được
         // add check ( từ user lấy các property để kiểm tra nếu đạt
         // thì gọi return userDao.createUser(userC);
@@ -53,7 +53,7 @@ public class UserService {
         user.setDATE_JOIN(DATE_JOIN);
         // mã hóa thông tin cá nhân
         encryptUserSensitiveData(user);
-        return userDao.createUser(user);
+         userDao.createUser(user);
     }
 
 
@@ -92,12 +92,16 @@ public class UserService {
 
     public void decryptUserSensitiveData(User_Entity user) throws Exception {
         if (user.getADDRESS() != null) {
+            System.out.println(user.getADDRESS());
             user.setADDRESS(SecurityFunction.decrypt(user.getADDRESS()));
         }
+        System.out.println("qua");
         if (user.getPHONE_ACC() != null) {
+            System.out.println(user.getPHONE_ACC());
             user.setPHONE_ACC(SecurityFunction.decrypt(user.getPHONE_ACC()));
         }
         if (user.getEMAIL_ACC() != null) {
+            System.out.println(user.getEMAIL_ACC());
             user.setEMAIL_ACC(SecurityFunction.decrypt(user.getEMAIL_ACC()));
         }
     }
