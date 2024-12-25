@@ -10,9 +10,8 @@ import com.example.dkkp.model.EnumType.Status_Bill;
 @Table(name = "bill")
 public class Bill_Entity {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "\"ID_BILL\"")
-  private Integer ID_BILL;
+  private String ID_BILL;
   @Column(name = "\"DATE_EXP\"")
   private LocalDateTime Date_EXP;
   @Column(name = "\"PHONE_BILL\"")
@@ -29,7 +28,7 @@ public class Bill_Entity {
   @Enumerated(EnumType.ORDINAL)
   private Status_Bill BILL_STATUS;
 
-  public void setID_BILL(Integer ID_BILL) {
+  public void setID_BILL(String ID_BILL) {
     this.ID_BILL = ID_BILL;
   }
 
@@ -61,7 +60,7 @@ public class Bill_Entity {
     this.BILL_STATUS = BILL_STATUS;
   }
 
-  public Integer getID_BILL() {
+  public String getID_BILL() {
     return ID_BILL;
   }
 
@@ -93,8 +92,9 @@ public class Bill_Entity {
     return BILL_STATUS;
   }
 
-  public Bill_Entity(Integer ID_BILL, LocalDateTime date_EXP, String ID_USER, Double TOTAL_PRICE, String DESCRIPTION, Status_Bill BILL_STATUS) {
-    this.ID_BILL = ID_BILL;
+  public Bill_Entity( LocalDateTime date_EXP, String ID_USER, Double TOTAL_PRICE, String DESCRIPTION, Status_Bill BILL_STATUS) {
+    long timestamp = System.currentTimeMillis();
+    this.ID_BILL = "BILL-" + timestamp + "-" + (int)(Math.random() * 1000);
     Date_EXP = date_EXP;
     this.PHONE_BILL = PHONE_BILL;
     this.ADD_BILL = ADD_BILL;

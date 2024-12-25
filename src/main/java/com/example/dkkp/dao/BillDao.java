@@ -29,11 +29,11 @@ public class BillDao {
             entityManager.persist(billE);
     }
 
-    public Bill_Entity getBillByID(Integer idBill) {
+    public Bill_Entity getBillByID(String idBill) {
         return entityManager.find(Bill_Entity.class, idBill);
     }
 
-    public void addSumPrice(Integer idBill, Double totalPrice) {
+    public void addSumPrice(String idBill, Double totalPrice) {
             Bill_Entity billToAddSumPrice = entityManager.find(Bill_Entity.class, idBill);
             billToAddSumPrice.setTOTAL_PRICE(totalPrice);
             entityManager.merge(billToAddSumPrice);
@@ -42,7 +42,7 @@ public class BillDao {
     public List<Bill_Entity> getFilteredBills(
             LocalDateTime dateExport,
             String typeDate,
-            Integer idBill,
+            String idBill,
             String phone,
             String idUser,
             EnumType.Status_Bill Status,
@@ -114,11 +114,11 @@ public class BillDao {
     }
 
 
-    public Bill_Entity findBill(Integer idBill) {
+    public Bill_Entity findBill(String idBill) {
         return entityManager.find(Bill_Entity.class, idBill);
     }
 
-    public void deleteBill(Integer idBill) {
+    public void deleteBill(String idBill) {
 
             Bill_Entity billToDelete = entityManager.find(Bill_Entity.class, idBill);
             if (billToDelete != null && billToDelete.getBILL_STATUS() == EnumType.Status_Bill.PEN) {
@@ -130,7 +130,7 @@ public class BillDao {
 
     }
 
-    public void changeBillStatus(Integer idBill, EnumType.Status_Bill Status) {
+    public void changeBillStatus(String idBill, EnumType.Status_Bill Status) {
             Bill_Entity billToChangeStatus = entityManager.find(Bill_Entity.class, idBill);
             if (billToChangeStatus != null) {
                 billToChangeStatus.setBILL_STATUS(Status);

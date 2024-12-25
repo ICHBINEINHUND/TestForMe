@@ -42,8 +42,11 @@ public class ProductBaseDao {
                                                             Integer ID_CATEGORY,
                                                             Integer ID_BRAND,
                                                             Integer TOTAL_QUANTITY,
+                                                            String typeQuantity,
                                                             LocalDateTime DATE_RELEASE,
                                                             String typeDate,
+                                                            Integer ViewCount,
+                                                            String typeView,
                                                             String sortField,
                                                             String sortOrder,
                                                             Integer offset,
@@ -83,7 +86,25 @@ public class ProductBaseDao {
             hasConditions = true;
         }
         if (TOTAL_QUANTITY != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("TOTAL_QUANTITY"), TOTAL_QUANTITY));
+            conditions = switch (typeQuantity) {
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("TOTAL_QUANTITY"), TOTAL_QUANTITY));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("TOTAL_QUANTITY"), TOTAL_QUANTITY));
+                case "=" -> cb.and(conditions, cb.equal(root.get("TOTAL_QUANTITY"), TOTAL_QUANTITY));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("TOTAL_QUANTITY"), TOTAL_QUANTITY));
+                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("TOTAL_QUANTITY"), TOTAL_QUANTITY));
+                default -> conditions;
+            };
+            hasConditions = true;
+        }
+        if (ViewCount != null) {
+            conditions = switch (typeQuantity) {
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("ViewCount"), ViewCount));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("ViewCount"), ViewCount));
+                case "=" -> cb.and(conditions, cb.equal(root.get("ViewCount"), ViewCount));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("ViewCount"), ViewCount));
+                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("ViewCount"), ViewCount));
+                default -> conditions;
+            };
             hasConditions = true;
         }
 

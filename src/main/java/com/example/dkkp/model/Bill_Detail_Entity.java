@@ -10,7 +10,7 @@ public class Bill_Detail_Entity {
   @Column(name = "\"ID_BILL_DETAIL\"")
   private Integer ID_BILL_DETAIL;
   @Column(name = "\"ID_BILL\"")
-  private Integer ID_BILL;
+  private String ID_BILL;
   @Column(name = "\"QUANTITY_SP\"")
   private Integer QUANTITY_SP;
   @Column(name = "\"TOTAL_DETAIL_PRICE\"")
@@ -62,11 +62,11 @@ public class Bill_Detail_Entity {
     this.QUANTITY_SP = QUANTITY_BILL;
   }
 
-  public Integer getID_BILL() {
+  public String getID_BILL() {
     return ID_BILL;
   }
 
-  public void setID_BILL(Integer ID_BILL) {
+  public void setID_BILL(String ID_BILL) {
     this.ID_BILL = ID_BILL;
   }
 
@@ -78,7 +78,7 @@ public class Bill_Detail_Entity {
     this.ID_BILL_DETAIL = ID_BILL_DETAIL;
   }
 
-  public Bill_Detail_Entity(Integer ID_BILL_DETAIL, Integer ID_BILL, Integer QUANTITY_BILL,  Double UNIT_PRICE, Integer ID_FINAL_PRODUCT, Boolean AVAILABLE) {
+  public Bill_Detail_Entity(Integer ID_BILL_DETAIL, String ID_BILL, Integer QUANTITY_BILL,  Double UNIT_PRICE, Integer ID_FINAL_PRODUCT, Boolean AVAILABLE) {
     this.ID_BILL_DETAIL = ID_BILL_DETAIL;
     this.ID_BILL = ID_BILL;
     this.QUANTITY_SP = QUANTITY_BILL;

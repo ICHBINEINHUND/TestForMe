@@ -10,7 +10,7 @@ public class Import_Detail_Entity {
   @Column(name = "\"ID_IMPD\"")//
   private Integer ID_IMPD;
   @Column(name = "\"ID_IMPORT\"")//
-  private Integer ID_IMPORT;
+  private String ID_IMPORT;
   @Column(name = "\"IS_AVAILABLE\"")//
   private boolean IS_AVAILABLE;
   @Column(name = "\"ID_BASE_PRODUCT\"")//
@@ -34,11 +34,11 @@ public class Import_Detail_Entity {
     this.ID_IMPD = ID_IMPD;
   }
 
-  public Integer getID_IMPORT() {
+  public String getID_IMPORT() {
     return ID_IMPORT;
   }
 
-  public void setID_IMPORT(Integer ID_IMPORT) {
+  public void setID_IMPORT(String ID_IMPORT) {
     this.ID_IMPORT = ID_IMPORT;
   }
 
@@ -98,7 +98,7 @@ public class Import_Detail_Entity {
     this.DESCRIPTION = DESCRIPTION;
   }
 
-  public Import_Detail_Entity(Integer ID_IMPD, Integer ID_IMPORT, boolean IS_AVAILABLE, Integer ID_BASE_PRODUCT, Integer ID_FINAL_PRODUCT, Integer QUANTITY, Double UNIT_PRICE, Double TOTAL_PRICE, String DESCRIPTION) {
+  public Import_Detail_Entity(Integer ID_IMPD, String ID_IMPORT, boolean IS_AVAILABLE, Integer ID_BASE_PRODUCT, Integer ID_FINAL_PRODUCT, Integer QUANTITY, Double UNIT_PRICE, Double TOTAL_PRICE, String DESCRIPTION) {
     this.ID_IMPD = ID_IMPD;
     this.ID_IMPORT = ID_IMPORT;
     this.IS_AVAILABLE = IS_AVAILABLE;

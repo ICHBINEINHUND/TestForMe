@@ -32,6 +32,8 @@ public class ProductBaseService {
             String sortField,
             String sortOrder,
             String typeDate,
+            String typeQuantity,
+            String typeView,
             Integer setOff,
             Integer offset
     ) {
@@ -40,14 +42,14 @@ public class ProductBaseService {
         Integer TOTAL_QUANTITY = product_BASE_entity.getQUANTITY();
         LocalDateTime DATE_RELEASE = product_BASE_entity.getDATE_RELEASE();
 //        String DES_PRODUCT = product_BASE_entity.getDES_PRODUCT();
-//        Integer VIEW_COUNT = product_BASE_entity.getVIEW_COUNT();
+        Integer VIEW_COUNT = product_BASE_entity.getVIEW_COUNT();
         Integer ID_CATEGORY = product_BASE_entity.getID_CATEGORY();
         Integer ID_BRAND = product_BASE_entity.getID_BRAND();
 
         if (reflectField.isPropertyNameMatched(Product_Base_Entity.class, sortField) || sortField == null) {
 
             return productBaseDao.getFilteredProductBase(
-                    idBaseProduct, NAME_PRODUCT, ID_CATEGORY, ID_BRAND, TOTAL_QUANTITY, DATE_RELEASE, typeDate, sortField, sortOrder, offset, setOff
+                    idBaseProduct, NAME_PRODUCT, ID_CATEGORY, ID_BRAND, TOTAL_QUANTITY,typeQuantity, DATE_RELEASE, typeDate,VIEW_COUNT,typeView, sortField, sortOrder, offset, setOff
             );
         }
         ;

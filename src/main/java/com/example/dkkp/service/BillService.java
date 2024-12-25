@@ -35,7 +35,7 @@ public class BillService {
             int offset
     ) throws Exception {
         LocalDateTime dateExport = billEntity.getDate_EXP();
-        Integer id = billEntity.getID_BILL();
+        String id = billEntity.getID_BILL();
         String phone = SecurityFunction.encrypt(billEntity.getPHONE_BILL());
         String add = SecurityFunction.encrypt(billEntity.getADD_BILL());
         String idUser = billEntity.getID_USER();
@@ -60,7 +60,7 @@ public class BillService {
             int offset
     ) throws Exception {
         Integer idBillDetail = billDetailEntity.getID_BILL_DETAIL();
-        Integer idBill = billDetailEntity.getID_BILL();
+        String idBill = billDetailEntity.getID_BILL();
         Double totalPrice = billDetailEntity.getTOTAL_DETAIL_PRICE();
         Double unitPrice = billDetailEntity.getUNIT_PRICE();
         Boolean available = billDetailEntity.getAVAILABLE();
@@ -74,7 +74,7 @@ public class BillService {
     }
 
 
-    public void changeBillStatus(Integer id, EnumType.Status_Bill statusBill) {
+    public void changeBillStatus(String id, EnumType.Status_Bill statusBill) {
 
         if (statusBill == EnumType.Status_Bill.CANC) {
             billDao.changeBillStatus(id, statusBill);
@@ -89,7 +89,7 @@ public class BillService {
     }
 
 
-    public void minusProduct(Integer id) {
+    public void minusProduct(String id) {
         if (billDao.getFilteredBills(null, null, id, null, null, null, null, null, null, null, null, null) != null) {
             List<Bill_Detail_Entity> listBillDetail = billDetailDao.getFilteredBillDetails(null, null, null, null, null, id, null, null, null, null, null);
             for (Bill_Detail_Entity billDetail : listBillDetail) {
@@ -106,7 +106,7 @@ public class BillService {
 
     }
 
-    public void plusBillProduct(Integer id) {
+    public void plusBillProduct(String id) {
         System.out.println("day la " + id);
         List<Bill_Detail_Entity> listBillDetail = billDetailDao.getFilteredBillDetails(null, null, null, null, null, id, null, null, null, null, null);
         for (Bill_Detail_Entity billDetail : listBillDetail) {
@@ -147,7 +147,7 @@ public class BillService {
         if (listBillDetail != null) {
             billDetailDao.createBillDetail(listBillDetail);
             Double sumPrice = 0.0;
-            Integer id = listBillDetail.getFirst().getID_BILL();
+            String id = listBillDetail.getFirst().getID_BILL();
             if (id == null) throw new RuntimeException("Error cant find bill general to create bill detail");
             for (Bill_Detail_Entity billDetail : listBillDetail) {
                 sumPrice += billDetail.getTOTAL_DETAIL_PRICE();

@@ -40,7 +40,8 @@ public class BillDetailDao {
                                                            Double UNIT_PRICE,
                                                            Integer ID_FINAL_PRODUCT,
                                                            Integer QUANTITY_SP,
-                                                           Integer ID_BILL, Boolean AVAILABLE,
+                                                           String ID_BILL,
+                                                           Boolean AVAILABLE,
                                                            String sortField,
                                                            String sortOrder,
                                                            Integer offset,
@@ -103,10 +104,10 @@ public class BillDetailDao {
     }
 
 
-    public void cancelBillDetail(Integer ID_BILL) {
+    public void cancelBillDetail(String ID_BILL) {
         List<Bill_Detail_Entity> billDetails = entityManager.createQuery(
-                        "SELECT bd FROM Bill_Detail_Entity bd WHERE bd.ID_BILL = :ID_BILL_DETAIL", Bill_Detail_Entity.class)
-                .setParameter("ID_BILL_DETAIL", ID_BILL)
+                        "SELECT bd FROM Bill_Detail_Entity bd WHERE bd.ID_BILL = :String", Bill_Detail_Entity.class)
+                .setParameter("String", ID_BILL)
                 .getResultList();
         if (billDetails.isEmpty()) {
             throw new RuntimeException("No Bill Details found for the given ID_PARENT");

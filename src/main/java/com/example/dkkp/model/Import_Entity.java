@@ -9,9 +9,8 @@ import java.time.LocalDateTime;
 @Table(name = "import")
 public class Import_Entity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "\"ID_IMP\"")
-    private Integer ID_IMP;
+    private String ID_IMP;
     @Column(name = "\"DATE_IMP\"")
     private LocalDateTime DATE_IMP;
     @Column(name = "\"DESCRIPTION\"")
@@ -24,11 +23,11 @@ public class Import_Entity {
     private Double TOTAL_PRICE;
 
 
-    public Integer getID_IMP() {
+    public String getID_IMP() {
         return ID_IMP;
     }
 
-    public void setID_IMP(Integer ID_IMP) {
+    public void setID_IMP(String ID_IMP) {
         this.ID_IMP = ID_IMP;
     }
 
@@ -73,8 +72,9 @@ public class Import_Entity {
     }
 
 
-    public Import_Entity(Integer ID_IMP, LocalDateTime DATE_IMP, String DESCRIPTION, Boolean IS_AVAILABLE, Integer ID_REPLACE, Double TOTAL_PRICE) {
-        this.ID_IMP = ID_IMP;
+    public Import_Entity( LocalDateTime DATE_IMP, String DESCRIPTION, Boolean IS_AVAILABLE, Integer ID_REPLACE, Double TOTAL_PRICE) {
+        long timestamp = System.currentTimeMillis();
+        this.ID_IMP = "IMPT-" + timestamp + "-" + (int)(Math.random() * 1000);
         this.DATE_IMP = DATE_IMP;
         this.DESCRIPTION = DESCRIPTION;
         this.IS_AVAILABLE = IS_AVAILABLE;

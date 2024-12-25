@@ -38,7 +38,7 @@ public class ImportService {
     ) {
         if ((reflectField.isPropertyNameMatched(Import_Entity.class, sortField) && sortOrder != null) || sortField == null) {
             LocalDateTime dateImport = import_entity.getDATE_IMP();
-            Integer id = import_entity.getID_IMP();
+            String id = import_entity.getID_IMP();
             Boolean status = import_entity.getIS_AVAILABLE();
             Integer idReplace = import_entity.getID_REPLACE();
             Double totalPrice = import_entity.getTOTAL_PRICE();
@@ -57,7 +57,7 @@ public class ImportService {
             int offset
     ) {
         Integer id = importQuery.getID_IMPD();
-        Integer idImport = importQuery.getID_IMPORT();
+        String idImport = importQuery.getID_IMPORT();
         Integer idFinalProduct = importQuery.getID_FINAL_PRODUCT();
         Integer idBaseProduct = importQuery.getID_BASE_PRODUCT();
         Boolean isAvailable = importQuery.getIS_AVAILABLE();
@@ -73,10 +73,10 @@ public class ImportService {
     }
 
 
-    public void deleteImport(Integer idParent) {
+    public void deleteImportAndDetail(String idParent) {
         // add check
         if (idParent != null) {
-            boolean isDeleted = importDetailDao.deleteImportDetail(idParent);
+            boolean isDeleted = importDetailDao.deleteImportDetailByIdImport(idParent);
             if (!isDeleted) {
                 throw new RuntimeException("Failed to delete import detail.");
             }
@@ -97,7 +97,7 @@ public class ImportService {
     public void registerNewImportDetail(List<Import_Detail_Entity> listImportDetail) throws SQLException {
         //add check
 
-        Integer id = listImportDetail.getFirst().getID_IMPORT();
+        String id = listImportDetail.getFirst().getID_IMPORT();
         if (importDao.checkImport(id)) {
             System.out.println("vao roi");
             importDetailDao.createImportDetail(listImportDetail);
@@ -112,7 +112,7 @@ public class ImportService {
         throw new RuntimeException("Can not find id import general to add import detail");
     }
 
-    private void plusImportProduct(Integer id) {
+    private void plusImportProduct(String id) {
         if (id != null) {
             if (importDao.getFilteredImports(null, null, id, null, null, null, null, null, null, null) != null) {
                 List<Import_Detail_Entity> listImportDetail = importDetailDao.getFilteredImportDetails(null, id, null, null, null, null, null, null, null, null, null, null);
@@ -140,7 +140,7 @@ public class ImportService {
         throw new RuntimeException("ID Import general to plus product from import  is null");
     }
 
-    private void minusImportProduct(Integer id) {
+    private void minusImportProduct(String id) {
         if (id != null) {
             if (importDao.getFilteredImports(null, null, id, null, null, null, null, null, null, null) != null) {
                 List<Import_Detail_Entity> listImportDetail = importDetailDao.getFilteredImportDetails(null, id, null, null, null, null, null, null, null, null, null, null);

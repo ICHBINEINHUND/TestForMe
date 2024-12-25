@@ -37,7 +37,7 @@ public class ImportDetailDao {
         return this.entityManager;
     }
 
-    public List<Import_Detail_Entity> getFilteredImportDetails(Integer ID_IMPD, Integer ID_IMPORT, Integer ID_FINAL_PRODUCT,Boolean IS_AVAILABLE,Integer ID_BASE_PRODUCT,Integer QUANTITY,Double UNIT_PRICE,Double TOTAL_PRICE, String sortField, String sortOrder, Integer offset, Integer setOff) {
+    public List<Import_Detail_Entity> getFilteredImportDetails(Integer ID_IMPD, String ID_IMPORT, Integer ID_FINAL_PRODUCT,Boolean IS_AVAILABLE,Integer ID_BASE_PRODUCT,Integer QUANTITY,Double UNIT_PRICE,Double TOTAL_PRICE, String sortField, String sortOrder, Integer offset, Integer setOff) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Import_Detail_Entity> query = cb.createQuery(Import_Detail_Entity.class);
         Root<Import_Detail_Entity> root = query.from(Import_Detail_Entity.class);
@@ -100,7 +100,7 @@ public class ImportDetailDao {
     }
 
 
-    public boolean deleteImportDetail(Integer ID_IMPORT) {
+    public boolean deleteImportDetailByIdImport(String ID_IMPORT) {
             Query query = entityManager.createQuery(
                     "UPDATE Import_Detail_Entity e SET e.IS_AVAILABLE = false WHERE e.ID_IMPORT = :ID_IMPORT"
             );

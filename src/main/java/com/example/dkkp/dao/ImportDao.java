@@ -30,7 +30,7 @@ public class ImportDao {
 
 
 
-    public List<Import_Entity> getFilteredImports(LocalDateTime DATE_IMP, String typeDate, Integer ID_IMP, Boolean IS_AVAILABLE, Integer ID_REPLACE,Double TOTAL_PRICE, String sortField, String sortOrder, Integer offset, Integer setOff) {
+    public List<Import_Entity> getFilteredImports(LocalDateTime DATE_IMP, String typeDate, String ID_IMP, Boolean IS_AVAILABLE, Integer ID_REPLACE,Double TOTAL_PRICE, String sortField, String sortOrder, Integer offset, Integer setOff) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Import_Entity> query = cb.createQuery(Import_Entity.class);
         Root<Import_Entity> root = query.from(Import_Entity.class);
@@ -81,7 +81,7 @@ public class ImportDao {
         return typedQuery.getResultList();
     }
 
-    public void addSumPrice(Integer ID_IMP, Double sumPrice) {
+    public void addSumPrice(String ID_IMP, Double sumPrice) {
             Import_Entity importToAddSumPrice = entityManager.find(Import_Entity.class, ID_IMP);
             if (importToAddSumPrice == null) {
                 throw new RuntimeException("Can find import general to add total price");
@@ -90,12 +90,12 @@ public class ImportDao {
             entityManager.merge(importToAddSumPrice);
     }
 
-    public boolean checkImport(Integer ID_IMP) {
+    public boolean checkImport(String ID_IMP) {
             Import_Entity importToCheck = entityManager.find(Import_Entity.class, ID_IMP);
             return importToCheck.getIS_AVAILABLE();
     }
 
-    public void deleteImport(Integer ID_IMP) {
+    public void deleteImport(String ID_IMP) {
             Import_Entity importToDelete = entityManager.find(Import_Entity.class, ID_IMP);
             if (importToDelete != null) {
                 importToDelete.setIS_AVAILABLE(false);
@@ -105,7 +105,7 @@ public class ImportDao {
             throw new RuntimeException("Can find import general to delete");
     }
 
-    public void updateDescriptionImport(Integer ID_IMP, String description) {
+    public void updateDescriptionImport(String ID_IMP, String description) {
             Import_Entity importToEdit = entityManager.find(Import_Entity.class, ID_IMP);
             if (importToEdit == null) {
                 throw new RuntimeException("Can find import general to update");
