@@ -39,7 +39,7 @@
     </VBox>
   </HBox>
   <HBox alignment="CENTER" spacing="10">
-    <DatePicker fx:id="datePicker"/>
+    <DatePicker/>
     <MFXButton buttonType="RAISED" mnemonicParsing="false" text="OK" onAction="#initialize" styleClass="Btn"/>
   </HBox>
   <HBox spacing="20" alignment="CENTER">

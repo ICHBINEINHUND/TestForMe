@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import io.github.palexdev.materialfx.controls.*?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.Label?>
-<StackPane xmlns:fx="http://javafx.com/fxml" styleClass="productAP">
+<StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.dkkp.controller.ProductDetailController"
+           fx:id="main" styleClass="productAP">
   <HBox spacing="5">
     <VBox HBox.hgrow="ALWAYS" alignment="TOP_CENTER" spacing="5">
       <MFXTextField fx:id="searchFld" floatingText="Search" floatMode="BORDER" prefWidth="250"/>
@@ -29,8 +28,12 @@
     </VBox>
     <VBox prefWidth="75" spacing="5">
       <MFXButton buttonType="RAISED" mnemonicParsing="false" text="⚙ Filter" prefWidth="70" styleClass="Btn"/>
-      <MFXButton buttonType="RAISED" mnemonicParsing="false" text="I View" prefWidth="70" styleClass="Btn"/>
-      <MFXButton buttonType="RAISED" mnemonicParsing="false" text="X Delete" prefWidth="70" styleClass="Btn"/>
+      <MFXButton fx:id="crtBtn" buttonType="RAISED" mnemonicParsing="false" text="+ Create" prefWidth="70"
+                 styleClass="Btn"/>
+      <MFXButton fx:id="updBtn" buttonType="RAISED" mnemonicParsing="false" text="- Update" prefWidth="70"
+                 styleClass="Btn"/>
+      <MFXButton fx:id="delBtn" buttonType="RAISED" mnemonicParsing="false" text="X Delete" prefWidth="70"
+                 styleClass="Btn"/>
     </VBox>
   </HBox>
 </StackPane>

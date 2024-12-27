@@ -6,8 +6,8 @@
 <VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.dkkp.controller.ProductController" spacing="20">
   <HBox spacing="10" styleClass="productNav">
     <VBox alignment="CENTER">
-      <MFXButton fx:id="productBaseFinal" buttonType="RAISED" mnemonicParsing="false" text="Product Base | Final"
-                 onAction="#loadProductBaseFinal" styleClass="productNavBtn"/>
+      <MFXButton fx:id="productDetail" buttonType="RAISED" mnemonicParsing="false" text="Product Detail"
+                 onAction="#loadProductDetail" styleClass="productNavBtn"/>
     </VBox>
     <VBox alignment="CENTER">
       <MFXButton fx:id="productOption" buttonType="RAISED" mnemonicParsing="false" text="Product Option"
