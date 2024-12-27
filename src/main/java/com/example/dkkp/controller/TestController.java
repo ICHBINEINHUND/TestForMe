@@ -20,10 +20,18 @@ public class TestController {
         try {
             transaction.begin();
 
+//            Product_Base_Entity pd = new Product_Base_Entity(null,"Pd 3",20,LocalDateTime.now(),"des pd",20,1,5);
+            Product_Base_Entity pd = new Product_Base_Entity(null,null,null,null,"des pd",null,null,null,"Apple",null);
             ProductBaseService productBaseService = new ProductBaseService(entityManager);
-            Product_Attribute_Entity n = new Product_Attribute_Entity(1,"not clot",null);
-            productBaseService.deleteProductAttribute(1);
-//
+//            productBaseService.createProductBase(pd);
+            List<Product_Base_Entity> o = productBaseService.getProductBaseByCombinedCondition(pd,null,null,null,null,null,null,null);
+            for(Product_Base_Entity p : o){
+                System.out.println(p.getID_BASE_PRODUCT());
+                System.out.println(p.getNAME_PRODUCT());
+                System.out.println(p.getID_CATEGORY());
+                System.out.println(p.getNAME_CATEGORY());
+                System.out.println("-----");
+            }
             transaction.commit();
         } catch (Exception e) {
             if (transaction.isActive()) {

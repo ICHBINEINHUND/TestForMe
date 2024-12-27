@@ -45,11 +45,13 @@ public class ProductBaseService {
         Integer VIEW_COUNT = product_BASE_entity.getVIEW_COUNT();
         Integer ID_CATEGORY = product_BASE_entity.getID_CATEGORY();
         Integer ID_BRAND = product_BASE_entity.getID_BRAND();
+        String NAME_BRAND = product_BASE_entity.getNAME_BRAND();
+        String NAME_CATEGORY = product_BASE_entity.getNAME_CATEGORY();
 
-        if (reflectField.isPropertyNameMatched(Product_Base_Entity.class, sortField) || sortField == null) {
+        if ( sortField == null ||reflectField.isPropertyNameMatched(Product_Base_Entity.class, sortField) ) {
 
             return productBaseDao.getFilteredProductBase(
-                    idBaseProduct, NAME_PRODUCT, ID_CATEGORY, ID_BRAND, TOTAL_QUANTITY,typeQuantity, DATE_RELEASE, typeDate,VIEW_COUNT,typeView, sortField, sortOrder, offset, setOff
+                    idBaseProduct, NAME_PRODUCT, ID_CATEGORY,NAME_CATEGORY, ID_BRAND,NAME_BRAND, TOTAL_QUANTITY,typeQuantity, DATE_RELEASE, typeDate,VIEW_COUNT,typeView, sortField, sortOrder, offset, setOff
             );
         }
         ;
@@ -104,9 +106,10 @@ public class ProductBaseService {
         Integer ID_ATTRIBUTE = productAttribute.getID_ATTRIBUTE();
         String NAME_ATTRIBUTE = productAttribute.getNAME_ATTRIBUTE();
         Integer ID_CATEGORY = productAttribute.getID_CATEGORY();
+        String NAME_CATEGORY = productAttribute.getNAME_CATEGORY();
 
         if (reflectField.isPropertyNameMatched(Product_Attribute_Entity.class, sortField) || sortField == null) {
-            productAttributeDao.getFilteredProductAttribute(ID_ATTRIBUTE, NAME_ATTRIBUTE, ID_CATEGORY, sortField, sortOrder,setOff,offset);
+            productAttributeDao.getFilteredProductAttribute(ID_ATTRIBUTE, NAME_ATTRIBUTE, ID_CATEGORY,NAME_CATEGORY, sortField, sortOrder,setOff,offset);
 
         }
         throw new RuntimeException("Error with sort");
@@ -147,10 +150,12 @@ public class ProductBaseService {
         Integer ID_ATTRIBUTE = productAttributeValues.getID_ATTRIBUTE();
         String VALUE = productAttributeValues.getVALUE();
         Integer ID_BASE_PRODUCT = productAttributeValues.getID_BASE_PRODUCT();
+        String NAME_ATTRIBUTE = productAttributeValues.getNAME_ATTRIBUTE();
+        String NAME_PRODUCT = productAttributeValues.getNAME_PRODUCT();
 
 
         if (reflectField.isPropertyNameMatched(Product_Attribute_Values_Entity.class, sortField) || sortField == null) {
-                productAttributeValuesDao.getFilteredProductAttributeValues(ID,VALUE,ID_ATTRIBUTE,ID_BASE_PRODUCT,sortField,sortOrder,setOff,offset);
+                productAttributeValuesDao.getFilteredProductAttributeValues(ID,VALUE,ID_ATTRIBUTE,NAME_ATTRIBUTE,ID_BASE_PRODUCT,NAME_PRODUCT,sortField,sortOrder,setOff,offset);
         }
         throw new RuntimeException("Error with sort");
     }

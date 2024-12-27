@@ -62,7 +62,8 @@ public class ReportService {
             Integer reportId = report.getID_REPORT();
             LocalDateTime dateReport = report.getDATE_REPORT();
             EnumType.Bug_Type bugType = report.getTYPE_BUG();
-            return reportDao.getFilteredReports(userId, reportId, bugType, dateReport, typeDate, sortField, sortOrder);
+            String EMAIL_ACC = report.getEMAIL_ACC();
+            return reportDao.getFilteredReports(userId,EMAIL_ACC, reportId, bugType, dateReport, typeDate, sortField, sortOrder);
         }
         return null;
     }

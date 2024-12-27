@@ -1,6 +1,8 @@
 package com.example.dkkp.dao;
 
+import com.example.dkkp.model.Category_Entity;
 import com.example.dkkp.model.Product_Attribute_Entity;
+import com.example.dkkp.model.Product_Attribute_Values_Entity;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
 
@@ -26,19 +28,25 @@ public class ProductAttributeDao {
             entityManager.persist(productAttribute);
     }
 
-    public List<Product_Attribute_Entity> getFilteredProductAttribute(Integer ID_ATTRIBUTE, String NAME_ATTRIBUTE, Integer ID_CATEGORY, String sortField, String sortOrder, Integer setOff, Integer offSet) {
+    public List<Product_Attribute_Entity> getFilteredProductAttribute(Integer ID_ATTRIBUTE, String NAME_ATTRIBUTE, Integer ID_CATEGORY,String NAME_CATEGORY, String sortField, String sortOrder, Integer setOff, Integer offSet) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Product_Attribute_Entity> query = cb.createQuery(Product_Attribute_Entity.class);
         Root<Product_Attribute_Entity> root = query.from(Product_Attribute_Entity.class);
+        Join<Product_Attribute_Entity, Category_Entity> categoryJoin = root.join("category", JoinType.INNER);
 
         Predicate conditions = cb.conjunction();
         boolean hasConditions = false;
+
+        if (NAME_CATEGORY != null) {
+            conditions = cb.and(conditions, cb.like(categoryJoin.get("NAME_CATEGORY"), "%" + NAME_CATEGORY + "%"));
+            hasConditions = true;
+        }
         if (ID_ATTRIBUTE != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("ID_OPTION"), ID_ATTRIBUTE));
+            conditions = cb.and(conditions, cb.equal(root.get("ID_ATTRIBUTE"), ID_ATTRIBUTE));
             hasConditions = true;
         }
         if (NAME_ATTRIBUTE != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("NAME_OPTION"), NAME_ATTRIBUTE));
+            conditions = cb.and(conditions, cb.equal(root.get("NAME_ATTRIBUTE"), NAME_ATTRIBUTE));
             hasConditions = true;
         }
         if (ID_CATEGORY != null) {
@@ -60,6 +68,14 @@ public class ProductAttributeDao {
                 query.orderBy(cb.asc(sortPath));
             }
         }
+
+        query.select(cb.construct(
+                Product_Attribute_Entity.class,
+                root.get("ID_ATTRIBUTE"),
+                root.get("NAME_ATTRIBUTE"),
+                root.get("ID_CATEGORY"),
+                categoryJoin.get("NAME_CATEGORY")
+        ));
 
         TypedQuery<Product_Attribute_Entity> typedQuery = entityManager.createQuery(query);
         typedQuery.setFirstResult(offSet);

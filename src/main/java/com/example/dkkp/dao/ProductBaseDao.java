@@ -1,5 +1,7 @@
 package com.example.dkkp.dao;
 
+import com.example.dkkp.model.Brand_Entity;
+import com.example.dkkp.model.Category_Entity;
 import com.example.dkkp.model.Product_Base_Entity;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
@@ -25,7 +27,7 @@ public class ProductBaseDao {
     }
 
     public void createProductBase(Product_Base_Entity product) {
-            entityManager.persist(product);
+        entityManager.persist(product);
     }
 
     public Product_Base_Entity getProductBaseById(Integer ID_BASE_PRODUCT) {
@@ -40,7 +42,9 @@ public class ProductBaseDao {
     public List<Product_Base_Entity> getFilteredProductBase(Integer ID_BASE_PRODUCT,
                                                             String NAME_PRODUCT,
                                                             Integer ID_CATEGORY,
+                                                            String NAME_CATEGORY,
                                                             Integer ID_BRAND,
+                                                            String NAME_BRAND,
                                                             Integer TOTAL_QUANTITY,
                                                             String typeQuantity,
                                                             LocalDateTime DATE_RELEASE,
@@ -54,6 +58,9 @@ public class ProductBaseDao {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Product_Base_Entity> query = cb.createQuery(Product_Base_Entity.class);
         Root<Product_Base_Entity> root = query.from(Product_Base_Entity.class);
+
+        Join<Product_Base_Entity, Category_Entity> categoryJoin = root.join("category", JoinType.INNER);
+        Join<Product_Base_Entity, Brand_Entity> brandJoin = root.join("brand", JoinType.INNER);
 
         Predicate conditions = cb.conjunction();
         boolean hasConditions = false;
@@ -70,19 +77,27 @@ public class ProductBaseDao {
             hasConditions = true;
         }
         if (ID_BASE_PRODUCT != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("ID_SP"), ID_BASE_PRODUCT));
+            conditions = cb.and(conditions, cb.equal(root.get("ID_BASE_PRODUCT"), ID_BASE_PRODUCT));
             hasConditions = true;
         }
         if (NAME_PRODUCT != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("NAME_PRODUCT"), NAME_PRODUCT));
+            conditions = cb.and(conditions, cb.like(root.get("NAME_PRODUCT"), "%" + NAME_PRODUCT + "%"));
             hasConditions = true;
         }
         if (ID_CATEGORY != null) {
             conditions = cb.and(conditions, cb.equal(root.get("ID_CATEGORY"), ID_CATEGORY));
             hasConditions = true;
         }
+        if (NAME_CATEGORY != null) {
+            conditions = cb.and(conditions, cb.like(categoryJoin.get("NAME_CATEGORY"), "%" + NAME_CATEGORY + "%"));
+            hasConditions = true;
+        }
         if (ID_BRAND != null) {
             conditions = cb.and(conditions, cb.equal(root.get("ID_BRAND"), ID_BRAND));
+            hasConditions = true;
+        }
+        if (NAME_BRAND != null) {
+            conditions = cb.and(conditions, cb.like(brandJoin.get("NAME_BRAND"), "%" + NAME_BRAND + "%"));
             hasConditions = true;
         }
         if (TOTAL_QUANTITY != null) {
@@ -97,7 +112,7 @@ public class ProductBaseDao {
             hasConditions = true;
         }
         if (ViewCount != null) {
-            conditions = switch (typeQuantity) {
+            conditions = switch (typeView) {
                 case "<" -> cb.and(conditions, cb.lessThan(root.get("ViewCount"), ViewCount));
                 case ">" -> cb.and(conditions, cb.greaterThan(root.get("ViewCount"), ViewCount));
                 case "=" -> cb.and(conditions, cb.equal(root.get("ViewCount"), ViewCount));
@@ -123,6 +138,20 @@ public class ProductBaseDao {
             }
         }
 
+        query.select(cb.construct(
+                Product_Base_Entity.class,
+                root.get("ID_BASE_PRODUCT"),
+                root.get("NAME_PRODUCT"),
+                root.get("QUANTITY"),
+                root.get("DATE_RELEASE"),
+                root.get("DES_PRODUCT"),
+                root.get("VIEW_COUNT"),
+                root.get("ID_CATEGORY"),
+                root.get("ID_BRAND"),
+                brandJoin.get("NAME_BRAND"),
+                categoryJoin.get("NAME_CATEGORY")
+        ));
+
         TypedQuery<Product_Base_Entity> typedQuery = entityManager.createQuery(query);
         if (offset != null) typedQuery.setFirstResult(offset);
         if (setOff != null) typedQuery.setMaxResults(setOff);
@@ -139,7 +168,7 @@ public class ProductBaseDao {
                 throw new RuntimeException("Fail to delete base product attribute please delete all row in attribute values first");
             }
         }
-            throw new RuntimeException("Cant find ID_BASE_PRODUCT to delete");
+        throw new RuntimeException("Cant find ID_BASE_PRODUCT to delete");
     }
 
     public boolean updateProductBase(Integer ID_BASE_PRODUCT,

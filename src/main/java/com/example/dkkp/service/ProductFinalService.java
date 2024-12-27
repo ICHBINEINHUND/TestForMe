@@ -37,16 +37,17 @@ public class ProductFinalService {
     ) {
         Integer ID_SP = product_Final_Entity.getID_SP();
         String NAME_PRODUCT = product_Final_Entity.getNAME_PRODUCT();
-        String DES_PRODUCT = product_Final_Entity.getDES_PRODUCT();
+//        String DES_PRODUCT = product_Final_Entity.getDES_PRODUCT();
         Double PRICE_SP = product_Final_Entity.getPRICE_SP();
-        String IMAGE_SP = product_Final_Entity.getIMAGE_SP();
+//        String IMAGE_SP = product_Final_Entity.getIMAGE_SP();
         Integer QUANTITY = product_Final_Entity.getQUANTITY();
         Double DISCOUNT = product_Final_Entity.getDISCOUNT();
         Integer ID_BASE_PRODUCT = product_Final_Entity.getID_BASE_PRODUCT();
+        String NAME_PRODUCT_BASE = product_Final_Entity.getNAME_PRODUCT_BASE();
 
         if (reflectField.isPropertyNameMatched(Product_Final_Entity.class, sortField) || sortField == null) {
             return productFinalDao.getFilteredProductFinal(
-                    ID_SP, ID_BASE_PRODUCT, NAME_PRODUCT, PRICE_SP, typePrice, QUANTITY, DISCOUNT, typeDiscount, sortField, sortOrder, setOff, offset
+                    ID_SP, ID_BASE_PRODUCT,NAME_PRODUCT_BASE, NAME_PRODUCT, PRICE_SP, typePrice, QUANTITY, DISCOUNT, typeDiscount, sortField, sortOrder, setOff, offset
             );
         }
         ;
@@ -141,9 +142,11 @@ public class ProductFinalService {
         Integer ID_OPTION = productOptionValues.getID_OPTION();
         String VALUE = productOptionValues.getVALUE();
         Integer ID_FINAL_PRODUCT = productOptionValues.getID_FINAL_PRODUCT();
+        String NAME_OPTION = productOptionValues.getName_Option();
+        String NAME_PRODUCT = productOptionValues.getNAME_FINAL_PRODUCT();
 
         if (reflectField.isPropertyNameMatched(Product_Option_Values_Entity.class, sortField) || sortField == null) {
-            productOptionValuesDao.getFilteredProductOptionValue(ID, ID_OPTION, VALUE, ID_FINAL_PRODUCT, sortField, sortOrder, setOff, offset);
+            productOptionValuesDao.getFilteredProductOptionValue(ID, ID_OPTION,NAME_OPTION, VALUE, ID_FINAL_PRODUCT,NAME_PRODUCT, sortField, sortOrder, setOff, offset);
         }
         throw new RuntimeException("Error with sort");
     }

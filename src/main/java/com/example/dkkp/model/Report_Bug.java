@@ -20,6 +20,22 @@ public class Report_Bug {
     @Column(name = "\"ID_USER\"")
     private String ID_USER;
 
+    @Transient
+    private String EMAIL_ACC;
+
+    @ManyToOne
+    @JoinColumn(name = "\"ID_USER\"", referencedColumnName = "\"ID_USER\"", insertable = false, updatable = false)
+    private User_Entity userEntity;
+
+    public String getEMAIL_ACC() {
+        return EMAIL_ACC;
+    }
+
+    public void setEMAIL_ACC(String EMAIL_ACC) {
+        this.EMAIL_ACC = EMAIL_ACC;
+    }
+
+
     public Integer getID_REPORT() {
         return ID_REPORT;
     }
@@ -66,6 +82,15 @@ public class Report_Bug {
         this.SCRIPT_BUG = SCRIPT_BUG;
         this.DATE_REPORT = DATE_REPORT;
         this.ID_USER = ID_USER;
+    }
+
+    public Report_Bug(Integer ID_REPORT, Bug_Type TYPE_BUG, String SCRIPT_BUG, LocalDateTime DATE_REPORT, String ID_USER, String EMAIL_ACC) {
+        this.ID_REPORT = ID_REPORT;
+        this.TYPE_BUG = TYPE_BUG;
+        this.SCRIPT_BUG = SCRIPT_BUG;
+        this.DATE_REPORT = DATE_REPORT;
+        this.ID_USER = ID_USER;
+        this.EMAIL_ACC = EMAIL_ACC;
     }
 
     public Report_Bug() {

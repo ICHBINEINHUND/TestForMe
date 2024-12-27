@@ -1,5 +1,8 @@
 package com.example.dkkp.dao;
 
+import com.example.dkkp.model.Product_Base_Entity;
+import com.example.dkkp.model.Product_Final_Entity;
+import com.example.dkkp.model.Product_Option_Entity;
 import com.example.dkkp.model.Product_Option_Values_Entity;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
@@ -23,12 +26,13 @@ public class ProductOptionValuesDao {
     }
 
     public void createProductOptionValues(Product_Option_Values_Entity optionValue) {
-            entityManager.persist(optionValue);
+        entityManager.persist(optionValue);
     }
 
     public boolean updateOptionValue(Integer id,
                                      String value,
                                      Integer idOption,
+
                                      Integer idFinalProduct) {
         EntityTransaction transaction = entityManager.getTransaction();
 
@@ -44,10 +48,13 @@ public class ProductOptionValuesDao {
         return true;
     }
 
-    public List<Product_Option_Values_Entity> getFilteredProductOptionValue(Integer id, Integer idOption, String value, Integer idFinalProduct, String sortField, String sortOrder, Integer offset, Integer setOff) {
+    public List<Product_Option_Values_Entity> getFilteredProductOptionValue(Integer id, Integer idOption, String NAME_OPTION, String value, Integer idFinalProduct, String NAME_PRODUCT, String sortField, String sortOrder, Integer offset, Integer setOff) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Product_Option_Values_Entity> query = cb.createQuery(Product_Option_Values_Entity.class);
         Root<Product_Option_Values_Entity> root = query.from(Product_Option_Values_Entity.class);
+
+        Join<Product_Option_Values_Entity, Product_Option_Entity> productOptionjoin = root.join("product_options", JoinType.INNER);
+        Join<Product_Option_Values_Entity, Product_Final_Entity> productFinaljoin = root.join("product_final", JoinType.INNER);
 
         Predicate conditions = cb.conjunction();
         boolean hasConditions = false;
@@ -59,6 +66,11 @@ public class ProductOptionValuesDao {
             conditions = cb.and(conditions, cb.equal(root.get("ID_OPTION"), idOption));
             hasConditions = true;
         }
+        if (NAME_OPTION != null) {
+            conditions = cb.and(conditions, cb.like(productOptionjoin.get("NAME_OPTION"), "%" + NAME_OPTION + "%"));
+            hasConditions = true;
+        }
+
         if (value != null) {
             conditions = cb.and(conditions, cb.equal(root.get("VALUE"), value));
             hasConditions = true;
@@ -67,7 +79,10 @@ public class ProductOptionValuesDao {
             conditions = cb.and(conditions, cb.equal(root.get("ID_FINAL_PRODUCT"), idFinalProduct));
             hasConditions = true;
         }
-
+        if (NAME_PRODUCT != null) {
+            conditions = cb.and(conditions, cb.like(productFinaljoin.get("NAME_PRODUCT"), "%" + NAME_PRODUCT + "%"));
+            hasConditions = true;
+        }
         if (hasConditions) {
             query.where(conditions);
         } else {
@@ -81,6 +96,16 @@ public class ProductOptionValuesDao {
                 query.orderBy(cb.asc(sortPath));
             }
         }
+
+        query.select(cb.construct(
+                Product_Option_Values_Entity.class,
+                root.get("ID"),
+                root.get("ID_OPTION"),
+                root.get("VALUE"),
+                root.get("ID_FINAL_PRODUCT"),
+                productOptionjoin.get("NAME_OPTION"),
+                productOptionjoin.get("NAME_PRODUCT")
+        ));
         TypedQuery<Product_Option_Values_Entity> typedQuery = entityManager.createQuery(query);
         if (offset != null) typedQuery.setFirstResult(offset);
         if (setOff != null) typedQuery.setMaxResults(setOff);
@@ -120,17 +145,16 @@ public class ProductOptionValuesDao {
     }
 
 
+    public void updateProductOptionValues(Integer id, String value, Integer idOption, Integer idFinalProduct) {
 
-    public void updateProductOptionValues(Integer id, String value, Integer idOption,Integer idFinalProduct) {
-
-            Product_Option_Values_Entity optionValue = entityManager.find(Product_Option_Values_Entity.class, id);
-            if (optionValue == null) {
-                throw new RuntimeException("Can not find option value to delete");
-            }
-            if (value != null) optionValue.setVALUE(value);
-            if (idOption != null) optionValue.setID_OPTION(idOption);
-            if (idFinalProduct != null) optionValue.setID_FINAL_PRODUCT(idFinalProduct);
-            entityManager.merge(optionValue);
+        Product_Option_Values_Entity optionValue = entityManager.find(Product_Option_Values_Entity.class, id);
+        if (optionValue == null) {
+            throw new RuntimeException("Can not find option value to delete");
+        }
+        if (value != null) optionValue.setVALUE(value);
+        if (idOption != null) optionValue.setID_OPTION(idOption);
+        if (idFinalProduct != null) optionValue.setID_FINAL_PRODUCT(idFinalProduct);
+        entityManager.merge(optionValue);
     }
 
     public static void shutdown() {

@@ -3,20 +3,20 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.StackPane?>
-<StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.dkkp.controller.ProductBaseFinalController"
+<StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.dkkp.controller.ProductBaseController"
            fx:id="main" styleClass="productAP">
   <HBox spacing="5">
     <VBox HBox.hgrow="ALWAYS" alignment="TOP_CENTER" spacing="5">
       <MFXTextField fx:id="searchFld" floatingText="Search" floatMode="BORDER" prefWidth="250"/>
       <MFXPaginatedTableView fx:id="productTable" rowsPerPage="5" pagesToShow="3">
         <tableColumns>
-          <MFXTableColumn fx:id="ID_SP" text="ID" styleClass="productBF"/>
-          <MFXTableColumn fx:id="NAME_SP" text="NAME" styleClass="productBF"/>
-          <MFXTableColumn fx:id="PRICE_SP" text="PRICE" styleClass="productBF"/>
-          <MFXTableColumn fx:id="ID_CATEGORY" text="CATEGORY" styleClass="productBF"/>
-          <MFXTableColumn fx:id="QUANTITY" text="QUANTITY" styleClass="productBF"/>
+          <MFXTableColumn fx:id="ID_BASE_PRODUCT" text="ID" styleClass="productBF"/>
+          <MFXTableColumn fx:id="NAME_PRODUCT" text="NAME" styleClass="productBF"/>
+          <MFXTableColumn fx:id="DATE_RELEASE" text="PRICE" styleClass="productBF"/>
+          <MFXTableColumn fx:id="DES_PRODUCT" text="CATEGORY" styleClass="productBF"/>
+          <MFXTableColumn fx:id="TOTAL_QUANTITY" text="QUANTITY" styleClass="productBF"/>
           <MFXTableColumn fx:id="VIEW_COUNT" text="VIEW COUNT" styleClass="productBF"/>
-          <MFXTableColumn fx:id="DISCOUNT" text="DISCOUNT" styleClass="productBF"/>
+          <MFXTableColumn fx:id="ID_CATEGORY" text="DISCOUNT" styleClass="productBF"/>
         </tableColumns>
       </MFXPaginatedTableView>
     </VBox>

@@ -28,6 +28,34 @@ public class Bill_Entity {
   @Enumerated(EnumType.ORDINAL)
   private Status_Bill BILL_STATUS;
 
+  @Transient
+  private String EMAIL_ACC;
+
+  @ManyToOne
+  @JoinColumn(name = "\"ID_USER\"", referencedColumnName = "\"ID_USER\"", insertable = false, updatable = false)
+  private User_Entity userEntity;
+
+  public Bill_Entity(String ID_BILL, LocalDateTime date_EXP, String PHONE_BILL, String ADD_BILL, String ID_USER, Double TOTAL_PRICE, String DESCRIPTION, Status_Bill BILL_STATUS, String EMAIL_ACC) {
+    this.ID_BILL = ID_BILL;
+    this.Date_EXP = date_EXP;
+    this.PHONE_BILL = PHONE_BILL;
+    this.ADD_BILL = ADD_BILL;
+    this.ID_USER = ID_USER;
+    this.EMAIL_ACC = EMAIL_ACC;
+    this.TOTAL_PRICE = TOTAL_PRICE;
+    this.DESCRIPTION = DESCRIPTION;
+    this.BILL_STATUS = BILL_STATUS;
+  }
+
+  public String getEMAIL_ACC() {
+    return EMAIL_ACC;
+  }
+
+  public void setEMAIL_ACC(String EMAIL_ACC) {
+    this.EMAIL_ACC = EMAIL_ACC;
+  }
+
+
   public void setID_BILL(String ID_BILL) {
     this.ID_BILL = ID_BILL;
   }

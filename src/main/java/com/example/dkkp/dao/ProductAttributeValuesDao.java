@@ -1,6 +1,6 @@
 package com.example.dkkp.dao;
 
-import com.example.dkkp.model.Product_Attribute_Values_Entity;
+import com.example.dkkp.model.*;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
 
@@ -43,7 +43,9 @@ public class ProductAttributeValuesDao {
     public List<Product_Attribute_Values_Entity> getFilteredProductAttributeValues(Integer ID,
                                                                                    String VALUE,
                                                                                    Integer ID_ATTRIBUTE,
+                                                                                   String NAME_ATTRIBUTE,
                                                                                    Integer ID_BASE_PRODUCT,
+                                                                                   String NAME_PRODUCT,
                                                                                    String sortField,
                                                                                    String sortOrder,
                                                                                    Integer offset,
@@ -51,6 +53,9 @@ public class ProductAttributeValuesDao {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Product_Attribute_Values_Entity> query = cb.createQuery(Product_Attribute_Values_Entity.class);
         Root<Product_Attribute_Values_Entity> root = query.from(Product_Attribute_Values_Entity.class);
+
+        Join<Product_Attribute_Values_Entity, Product_Attribute_Entity> productAttributeJoin = root.join("product_attribute", JoinType.INNER);
+        Join<Product_Attribute_Values_Entity, Product_Base_Entity> productBasejoin = root.join("product_base", JoinType.INNER);
 
         Predicate conditions = cb.conjunction();
         boolean hasConditions = false;
@@ -67,8 +72,16 @@ public class ProductAttributeValuesDao {
             conditions = cb.and(conditions, cb.equal(root.get("ID_ATTRIBUTE"), ID_ATTRIBUTE));
             hasConditions = true;
         }
+        if (NAME_ATTRIBUTE != null) {
+            conditions = cb.and(conditions, cb.like(productAttributeJoin.get("NAME_ATTRIBUTE"), "%" + NAME_ATTRIBUTE + "%"));
+            hasConditions = true;
+        }
         if (ID_BASE_PRODUCT != null) {
             conditions = cb.and(conditions, cb.equal(root.get("ID_BASE_PRODUCT"), ID_BASE_PRODUCT));
+            hasConditions = true;
+        }
+        if (NAME_PRODUCT != null) {
+            conditions = cb.and(conditions, cb.like(productBasejoin.get("NAME_PRODUCT"), "%" + NAME_PRODUCT + "%"));
             hasConditions = true;
         }
 
@@ -85,6 +98,16 @@ public class ProductAttributeValuesDao {
                 query.orderBy(cb.asc(sortPath));
             }
         }
+
+        query.select(cb.construct(
+                Product_Attribute_Values_Entity.class,
+                root.get("ID"),
+                root.get("ID_BASE_PRODUCT"),
+                root.get("ID_ATTRIBUTE"),
+                root.get("VALUE"),
+                productAttributeJoin.get("NAME_ATTRIBUTE"),
+                productBasejoin.get("NAME_PRODUCT")
+        ));
         TypedQuery<Product_Attribute_Values_Entity> typedQuery = entityManager.createQuery(query);
         if (offset != null) typedQuery.setFirstResult(offset);
         if (setOff != null) typedQuery.setMaxResults(setOff);

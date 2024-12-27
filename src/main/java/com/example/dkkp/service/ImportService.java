@@ -64,9 +64,11 @@ public class ImportService {
         Integer quantity = importQuery.getQUANTITY();
         Double totalPrice = importQuery.getTOTAL_PRICE();
         Double unitPrice = importQuery.getUNIT_PRICE();
+        String NAME_FINAL_PRODUCT = importQuery.getNAME_PRODUCT_FINAL();
+        String NAME_BASE_PRODUCT = importQuery.getNAME_PRODUCT_BASE();
         if ((reflectField.isPropertyNameMatched(Import_Detail_Entity.class, sortField) && sortOrder != null) || sortField == null) {
             return importDetailDao.getFilteredImportDetails(
-                    id, idImport, idFinalProduct, isAvailable, idBaseProduct, quantity, unitPrice, totalPrice, sortField, sortOrder, offset, setOff
+                    id, idImport, idFinalProduct,NAME_FINAL_PRODUCT, isAvailable, idBaseProduct,NAME_BASE_PRODUCT, quantity, unitPrice, totalPrice, sortField, sortOrder, offset, setOff
             );
         }
         throw new RuntimeException("Error with sort");
@@ -115,7 +117,7 @@ public class ImportService {
     private void plusImportProduct(String id) {
         if (id != null) {
             if (importDao.getFilteredImports(null, null, id, null, null, null, null, null, null, null) != null) {
-                List<Import_Detail_Entity> listImportDetail = importDetailDao.getFilteredImportDetails(null, id, null, null, null, null, null, null, null, null, null, null);
+                List<Import_Detail_Entity> listImportDetail = importDetailDao.getFilteredImportDetails(null, id,null,null, null, null, null, null, null, null, null, null, null, null);
                 for (Import_Detail_Entity importDetail : listImportDetail) {
                         Integer quantity = importDetail.getQUANTITY();
                     if (importDetail.getID_BASE_PRODUCT() != null) {
@@ -143,7 +145,7 @@ public class ImportService {
     private void minusImportProduct(String id) {
         if (id != null) {
             if (importDao.getFilteredImports(null, null, id, null, null, null, null, null, null, null) != null) {
-                List<Import_Detail_Entity> listImportDetail = importDetailDao.getFilteredImportDetails(null, id, null, null, null, null, null, null, null, null, null, null);
+                List<Import_Detail_Entity> listImportDetail = importDetailDao.getFilteredImportDetails(null, id,null,null ,null, null, null, null, null, null, null, null, null, null);
                 for (Import_Detail_Entity importDetail : listImportDetail) {
                     Integer quantity = importDetail.getQUANTITY();
                     if (importDetail.getID_BASE_PRODUCT() != null) {

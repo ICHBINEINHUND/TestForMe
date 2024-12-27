@@ -17,6 +17,44 @@ public class Product_Attribute_Values_Entity {
   private Integer ID_ATTRIBUTE;
   @Column(name = "\"VALUE\"")
   private String VALUE;
+  @ManyToOne
+  @JoinColumn(name = "\"ID_ATTRIBUTE\"", referencedColumnName = "\"ID_ATTRIBUTE\"", insertable = false, updatable = false)
+  private Product_Attribute_Entity product_attribute_entity;
+  @ManyToOne
+  @JoinColumn(name = "\"ID_BASE_PRODUCT\"", referencedColumnName = "\"ID_BASE_PRODUCT\"", insertable = false, updatable = false)
+  private Product_Base_Entity product_base_entity;
+
+  @Transient
+  private String NAME_ATTRIBUTE;
+  @Transient
+  private String NAME_PRODUCT;
+
+  public Product_Attribute_Values_Entity(Integer ID, Integer ID_BASE_PRODUCT, Integer ID_ATTRIBUTE, String VALUE, String NAME_ATTRIBUTE, String NAME_PRODUCT) {
+    this.ID = ID;
+    this.ID_BASE_PRODUCT = ID_BASE_PRODUCT;
+    this.NAME_PRODUCT = NAME_PRODUCT;
+    this.VALUE = VALUE;
+    this.ID_ATTRIBUTE = ID_ATTRIBUTE;
+    this.NAME_ATTRIBUTE = NAME_ATTRIBUTE;
+  }
+
+  public String getNAME_PRODUCT() {
+    return NAME_PRODUCT;
+  }
+
+  public void setNAME_PRODUCT(String NAME_PRODUCT) {
+    this.NAME_PRODUCT = NAME_PRODUCT;
+  }
+
+  public String getNAME_ATTRIBUTE() {
+    return NAME_ATTRIBUTE;
+  }
+
+  public void setNAME_ATTRIBUTE(String NAME_ATTRIBUTE) {
+    this.NAME_ATTRIBUTE = NAME_ATTRIBUTE;
+  }
+
+
 
   public Integer getID() {
     return ID;

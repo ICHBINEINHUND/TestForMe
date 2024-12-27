@@ -1,6 +1,8 @@
 package com.example.dkkp.dao;
 
 import com.example.dkkp.model.Bill_Detail_Entity;
+import com.example.dkkp.model.Import_Detail_Entity;
+import com.example.dkkp.model.Product_Final_Entity;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
 
@@ -39,6 +41,7 @@ public class BillDetailDao {
                                                            Double TOTAL_DETAIL_PRICE,
                                                            Double UNIT_PRICE,
                                                            Integer ID_FINAL_PRODUCT,
+                                                           String NAME_FINAL_PRODUCT,
                                                            Integer QUANTITY_SP,
                                                            String ID_BILL,
                                                            Boolean AVAILABLE,
@@ -50,6 +53,7 @@ public class BillDetailDao {
         CriteriaQuery<Bill_Detail_Entity> query = cb.createQuery(Bill_Detail_Entity.class);
         Root<Bill_Detail_Entity> root = query.from(Bill_Detail_Entity.class);
 
+        Join<Bill_Detail_Entity, Product_Final_Entity> productFinalJoin = root.join("product_final", JoinType.INNER);
         Predicate conditions = cb.conjunction();
         boolean hasConditions = false;
 
@@ -77,6 +81,10 @@ public class BillDetailDao {
             conditions = cb.and(conditions, cb.equal(root.get("ID_FINAL_PRODUCT"), ID_FINAL_PRODUCT));
             hasConditions = true;
         }
+        if (NAME_FINAL_PRODUCT != null) {
+            conditions = cb.and(conditions, cb.like(productFinalJoin.get("NAME_PRODUCT"), "%" + NAME_FINAL_PRODUCT + "%"));
+            hasConditions = true;
+        }
         if (AVAILABLE != null) {
             conditions = cb.and(conditions, cb.equal(root.get("AVAILABLE"), AVAILABLE));
             hasConditions = true;
@@ -95,6 +103,16 @@ public class BillDetailDao {
                 query.orderBy(cb.asc(sortPath));
             }
         }
+        query.select(cb.construct(
+                Bill_Detail_Entity.class,
+                root.get("ID_BILL_DETAIL"),
+                root.get("ID_BILL"),
+                root.get("QUANTITY_SP"),
+                productFinalJoin.get("UNIT_PRICE"),
+                root.get("ID_FINAL_PRODUCT"),
+                root.get("AVAILABLE"),
+                productFinalJoin.get("NAME_PRODUCT")
+        ));
 
         TypedQuery<Bill_Detail_Entity> typedQuery = entityManager.createQuery(query);
         if (offset != null) typedQuery.setFirstResult(offset);

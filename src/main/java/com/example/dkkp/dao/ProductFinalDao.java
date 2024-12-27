@@ -1,5 +1,7 @@
 package com.example.dkkp.dao;
 
+import com.example.dkkp.model.Category_Entity;
+import com.example.dkkp.model.Product_Base_Entity;
 import com.example.dkkp.model.Product_Final_Entity;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
@@ -24,7 +26,7 @@ public class ProductFinalDao {
     }
 
     public void createProductFinal(Product_Final_Entity product) {
-            entityManager.persist(product);
+        entityManager.persist(product);
     }
 
     public Product_Final_Entity getProductFinalById(Integer ID_FINAL_PRODUCT) {
@@ -38,6 +40,7 @@ public class ProductFinalDao {
 
     public List<Product_Final_Entity> getFilteredProductFinal(Integer ID_SP,
                                                               Integer ID_BASE_PRODUCT,
+                                                              String NAME_PRODUCT_BASE,
                                                               String NAME_PRODUCT,
                                                               Double PRICE_SP,
                                                               String typePrice,
@@ -51,6 +54,8 @@ public class ProductFinalDao {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Product_Final_Entity> query = cb.createQuery(Product_Final_Entity.class);
         Root<Product_Final_Entity> root = query.from(Product_Final_Entity.class);
+
+        Join<Product_Final_Entity, Product_Base_Entity> baseProductJoin = root.join("product_base", JoinType.INNER);
 
         Predicate conditions = cb.conjunction();
         boolean hasConditions = false;
@@ -89,6 +94,10 @@ public class ProductFinalDao {
             conditions = cb.and(conditions, cb.equal(root.get("ID_BASE_PRODUCT"), ID_BASE_PRODUCT));
             hasConditions = true;
         }
+        if (NAME_PRODUCT_BASE != null) {
+            conditions = cb.and(conditions, cb.like(baseProductJoin.get("NAME_CATEGORY"), "%" + NAME_PRODUCT_BASE + "%"));
+            hasConditions = true;
+        }
 
         if (QUANTITY != null) {
             conditions = cb.and(conditions, cb.equal(root.get("QUANTITY"), QUANTITY));
@@ -110,6 +119,20 @@ public class ProductFinalDao {
             }
         }
 
+        query.select(cb.construct(
+                Product_Final_Entity.class,
+                root.get("ID_SP"),
+                root.get("ID_BASE_PRODUCT"),
+                root.get("NAME_PRODUCT"),
+                root.get("QUANTITY"),
+                root.get("PRICE_SP"),
+                root.get("DISCOUNT"),
+                root.get("IMAGE_SP"),
+                baseProductJoin.get("NAME_PRODUCT"),
+                root.get("DES_PRODUCT")
+        ));
+
+
         TypedQuery<Product_Final_Entity> typedQuery = entityManager.createQuery(query);
         if (offset != null) typedQuery.setFirstResult(offset);
         if (setOff != null) typedQuery.setMaxResults(setOff);
@@ -127,13 +150,13 @@ public class ProductFinalDao {
     }
 
     public void updateProductFinal(Integer ID_SP,
-                                      Integer ID_BASE_PRODUCT,
-                                      String NAME_PRODUCT,
-                                      String DES_PRODUCT,
-                                      Integer QUANTITY,
-                                      Double DISCOUNT,
-                                      String IMAGE_SP,
-                                      Double Price
+                                   Integer ID_BASE_PRODUCT,
+                                   String NAME_PRODUCT,
+                                   String DES_PRODUCT,
+                                   Integer QUANTITY,
+                                   Double DISCOUNT,
+                                   String IMAGE_SP,
+                                   Double Price
     ) {
         Product_Final_Entity product = entityManager.find(Product_Final_Entity.class, ID_SP);
         if (product == null) {

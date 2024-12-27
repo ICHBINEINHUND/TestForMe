@@ -1,6 +1,6 @@
 package com.example.dkkp.dao;
 
-import com.example.dkkp.model.Import_Detail_Entity;
+import com.example.dkkp.model.*;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
 
@@ -37,13 +37,16 @@ public class ImportDetailDao {
         return this.entityManager;
     }
 
-    public List<Import_Detail_Entity> getFilteredImportDetails(Integer ID_IMPD, String ID_IMPORT, Integer ID_FINAL_PRODUCT,Boolean IS_AVAILABLE,Integer ID_BASE_PRODUCT,Integer QUANTITY,Double UNIT_PRICE,Double TOTAL_PRICE, String sortField, String sortOrder, Integer offset, Integer setOff) {
+    public List<Import_Detail_Entity> getFilteredImportDetails(Integer ID_IMPD, String ID_IMPORT, Integer ID_FINAL_PRODUCT,String NAME_FINAL_PRODUCT,Boolean IS_AVAILABLE,Integer ID_BASE_PRODUCT,String NAME_BASE_PRODUCT,Integer QUANTITY,Double UNIT_PRICE,Double TOTAL_PRICE, String sortField, String sortOrder, Integer offset, Integer setOff) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Import_Detail_Entity> query = cb.createQuery(Import_Detail_Entity.class);
         Root<Import_Detail_Entity> root = query.from(Import_Detail_Entity.class);
+        Join<Import_Detail_Entity, Product_Base_Entity> productBaseJoin = root.join("product_base", JoinType.INNER);
+        Join<Import_Detail_Entity, Product_Final_Entity> productFinalJoin = root.join("product_final", JoinType.INNER);
 
         Predicate conditions = cb.conjunction();
         boolean hasConditions = false;
+
         if (ID_IMPD != null ) {
             conditions = cb.and(conditions, cb.equal(root.get("ID_IMPD"), ID_IMPD));
             hasConditions = true;
@@ -56,8 +59,16 @@ public class ImportDetailDao {
             conditions = cb.and(conditions, cb.equal(root.get("ID_FINAL_PRODUCT"), ID_FINAL_PRODUCT));
             hasConditions = true;
         }
+        if (NAME_FINAL_PRODUCT != null) {
+            conditions = cb.and(conditions, cb.like(productFinalJoin.get("NAME_PRODUCT"), "%" + NAME_FINAL_PRODUCT + "%"));
+            hasConditions = true;
+        }
         if (ID_BASE_PRODUCT != null) {
             conditions = cb.and(conditions, cb.equal(root.get("ID_BASE_PRODUCT"), ID_BASE_PRODUCT));
+            hasConditions = true;
+        }
+        if (NAME_BASE_PRODUCT != null) {
+            conditions = cb.and(conditions, cb.like(productBaseJoin.get("NAME_PRODUCT"), "%" + NAME_BASE_PRODUCT + "%"));
             hasConditions = true;
         }
         if (QUANTITY != null ) {
@@ -91,6 +102,20 @@ public class ImportDetailDao {
                 query.orderBy(cb.asc(sortPath));
             }
         }
+
+        query.select(cb.construct(
+                Import_Detail_Entity.class,
+                root.get("ID_IMPD"),
+                root.get("ID_IMPORT"),
+                root.get("IS_AVAILABLE"),
+                root.get("ID_BASE_PRODUCT"),
+                root.get("ID_FINAL_PRODUCT"),
+                root.get("QUANTITY"),
+                root.get("UNIT_PRICE"),
+                root.get("DESCRIPTION"),
+                productBaseJoin.get("NAME_PRODUCT"),
+                productFinalJoin.get("NAME_PRODUCT")
+        ));
 
         TypedQuery<Import_Detail_Entity> typedQuery = entityManager.createQuery(query);
         if (offset != null) typedQuery.setFirstResult(offset);

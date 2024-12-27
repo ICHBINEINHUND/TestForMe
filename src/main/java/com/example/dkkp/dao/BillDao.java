@@ -1,6 +1,6 @@
 package com.example.dkkp.dao;
 
-import com.example.dkkp.model.Bill_Entity;
+import com.example.dkkp.model.*;
 import com.example.dkkp.model.EnumType;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
@@ -45,6 +45,7 @@ public class BillDao {
             String idBill,
             String phone,
             String idUser,
+            String EMAIL_ACC,
             EnumType.Status_Bill Status,
             String addBill,
             Double totalPrice,
@@ -56,9 +57,16 @@ public class BillDao {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Bill_Entity> query = cb.createQuery(Bill_Entity.class);
         Root<Bill_Entity> root = query.from(Bill_Entity.class);
+        Join<Bill_Entity, User_Entity> userJoin = root.join("uzer", JoinType.INNER);
+
 
         Predicate conditions = cb.conjunction();
         boolean hasConditions = false;
+
+        if (EMAIL_ACC != null) {
+            conditions = cb.and(conditions, cb.like(userJoin.get("EMAIL_ACC"), "%" + EMAIL_ACC + "%"));
+            hasConditions = true;
+        }
 
         if (dateExport != null) {
             conditions = switch (typeDate) {
@@ -106,6 +114,19 @@ public class BillDao {
                 query.orderBy(cb.asc(sortPath));
             }
         }
+
+        query.select(cb.construct(
+                Bill_Entity.class,
+                root.get("ID_BILL"),
+                root.get("DATE_EXP"),
+                root.get("PHONE_BILL"),
+                root.get("ADD_BILL"),
+                root.get("ID_USER"),
+                root.get("TOTAL_PRICE"),
+                root.get("DESCRIPTION"),
+                root.get("BILL_STATUS"),
+                userJoin.get("EMAIL_ACC")
+        ));
         TypedQuery<Bill_Entity> typedQuery = entityManager.createQuery(query);
         if(offset != null) typedQuery.setFirstResult(offset);
         if(setOff != null) typedQuery.setMaxResults(setOff);

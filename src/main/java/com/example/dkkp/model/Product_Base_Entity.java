@@ -32,6 +32,20 @@ public class Product_Base_Entity {
   @Column(name = "\"ID_BRAND\"")
   private Integer ID_BRAND;
 
+  @ManyToOne
+  @JoinColumn(name = "\"ID_CATEGORY\"", referencedColumnName = "\"ID_CATEGORY\"", insertable = false, updatable = false)
+  private Category_Entity category;
+
+  @ManyToOne
+  @JoinColumn(name = "\"ID_BRAND\"", referencedColumnName = "\"ID_BRAND\"", insertable = false, updatable = false)
+  private Brand_Entity brand;
+
+  @Transient
+  private String NAME_BRAND;
+  @Transient
+  private String NAME_CATEGORY;
+
+
   public Integer getID_BASE_PRODUCT() {
     return ID_BASE_PRODUCT;
   }
@@ -94,6 +108,35 @@ public class Product_Base_Entity {
 
   public void setID_BRAND(Integer ID_BRAND) {
     this.ID_BRAND = ID_BRAND;
+  }
+
+  public String getNAME_BRAND() {
+    return NAME_BRAND;
+  }
+
+  public void setNAME_BRAND(String NAME_BRAND) {
+    this.NAME_BRAND = NAME_BRAND;
+  }
+
+  public String getNAME_CATEGORY() {
+    return NAME_CATEGORY;
+  }
+
+  public void setNAME_CATEGORY(String NAME_CATEGORY) {
+    this.NAME_CATEGORY = NAME_CATEGORY;
+  }
+
+  public Product_Base_Entity(Integer ID_BASE_PRODUCT, String NAME_PRODUCT, Integer QUANTITY, LocalDateTime DATE_RELEASE, String DES_PRODUCT, Integer VIEW_COUNT, Integer ID_CATEGORY, Integer ID_BRAND, String NAME_BRAND, String NAME_CATEGORY) {
+    this.ID_BASE_PRODUCT = ID_BASE_PRODUCT;
+    this.NAME_PRODUCT = NAME_PRODUCT;
+    this.QUANTITY = QUANTITY;
+    this.DATE_RELEASE = DATE_RELEASE;
+    this.DES_PRODUCT = DES_PRODUCT;
+    this.VIEW_COUNT = VIEW_COUNT;
+    this.ID_CATEGORY = ID_CATEGORY;
+    this.ID_BRAND = ID_BRAND;
+    this.NAME_BRAND = NAME_BRAND;
+    this.NAME_CATEGORY = NAME_CATEGORY;
   }
 
   public Product_Base_Entity(Integer ID_BASE_PRODUCT, String NAME_PRODUCT, Integer QUANTITY, LocalDateTime DATE_RELEASE, String DES_PRODUCT, Integer VIEW_COUNT, Integer ID_CATEGORY, Integer ID_BRAND) {

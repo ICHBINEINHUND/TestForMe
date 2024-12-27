@@ -27,6 +27,14 @@ public class HomeController {
   private Button exportTab;
   @FXML
   private Button reportTab;
+
+  // Các đối tượng controller
+  private DashboardController dashboardController;
+  private ProductController productController;
+//  private ImportController importController;
+//  private ExportController exportController;
+//  private ReportController reportController;
+
   private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
   @FXML
@@ -36,30 +44,50 @@ public class HomeController {
 
   @FXML
   public void loadDashboardView() {
+    if (dashboardController == null) {
+      dashboardController = new DashboardController();
+      dashboardController.initialize();
+    }
     setMainView("/com/example/dkkp/DashboardView.fxml");
     setActiveTab(dashboardTab);
   }
 
   @FXML
   public void loadProductView() {
+    if (productController == null) {
+      productController = new ProductController();
+      productController.initialize();
+    }
     setMainView("/com/example/dkkp/ProductView.fxml");
     setActiveTab(productTab);
   }
 
   @FXML
   public void loadImportView() {
+//    if (importController == null) {
+//      importController = new ImportController();
+//      importController.initialize();
+//    }
     setMainView("/com/example/dkkp/ImportView.fxml");
     setActiveTab(importTab);
   }
 
   @FXML
   public void loadExportView() {
+//    if (exportController == null) {
+//      exportController = new ExportController();
+//      exportController.initialize();
+//    }
     setMainView("/com/example/dkkp/ExportView.fxml");
     setActiveTab(exportTab);
   }
 
   @FXML
   public void loadReportView() {
+//    if (reportController == null) {
+//      reportController = new ReportController();
+//      reportController.initialize();
+//    }
     setMainView("/com/example/dkkp/ReportView.fxml");
     setActiveTab(reportTab);
   }
