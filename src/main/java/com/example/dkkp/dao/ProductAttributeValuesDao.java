@@ -8,11 +8,7 @@ import java.util.List;
 
 public class ProductAttributeValuesDao {
     private final EntityManager entityManager;
-    private static final EntityManagerFactory entityManagerFactory;
 
-    static {
-        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
-    }
 
     public ProductAttributeValuesDao(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -156,9 +152,5 @@ public class ProductAttributeValuesDao {
         entityManager.merge(attributeValue);
     }
 
-    public static void shutdown() {
-        if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
-            entityManagerFactory.close();
-        }
-    }
+
 }

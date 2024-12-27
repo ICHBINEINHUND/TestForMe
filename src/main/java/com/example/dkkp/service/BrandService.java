@@ -2,19 +2,14 @@ package com.example.dkkp.service;
 
 import com.example.dkkp.dao.BrandDao;
 import com.example.dkkp.model.Brand_Entity;
+import com.example.dkkp.model.Category_Entity;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
+
 
 import java.util.List;
 
 public class BrandService {
     private final BrandDao brandDao;
-    private static final EntityManagerFactory entityManagerFactory;
-
-    static {
-        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
-    }
 
     public BrandService(EntityManager entityManager) {
         this.brandDao = new BrandDao(entityManager);
@@ -27,6 +22,26 @@ public class BrandService {
          brandDao.createBrand(brand);
     }
 
+    public List<Brand_Entity> getFilteredBrand(
+            Category_Entity category,
+            String sortField,
+            String sortOrder
+    ) {
+        // chạy được
+        // không cần thêm check
+        if (reflectField.isPropertyNameMatched(Brand_Entity.class, sortField)) {
+            Integer id = category.getID_CATEGORY();
+            String name = category.getNAME_CATEGORY();
+
+            return brandDao.getFilteredBrand(
+                    id, name, sortField, sortOrder
+            );
+        }else{
+            throw new RuntimeException("Error with sort field category");
+        }
+
+    }
+
     public List<Brand_Entity> getBrandBy(
             Brand_Entity brand,
             String sortField,
@@ -34,7 +49,7 @@ public class BrandService {
     ) {
         // chạy được
         // không cần kiểm tra sự hợp lệ của các tham số truyền vào khác như userId,...
-            if (reflectField.isPropertyNameMatched(Brand_Entity.class, sortField) || sortField == null) {
+            if (reflectField.isPropertyNameMatched(Brand_Entity.class, sortField)) {
                 Integer ID_BRAND = brand.getID_BRAND();
                 String NAME_BRAND = brand.getNAME_BRAND();
                 return brandDao.getFilteredBrand(ID_BRAND, NAME_BRAND, sortField, sortOrder);

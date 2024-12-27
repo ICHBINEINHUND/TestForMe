@@ -1,7 +1,6 @@
 package com.example.dkkp.dao;
 
 import com.example.dkkp.model.Bill_Detail_Entity;
-import com.example.dkkp.model.Import_Detail_Entity;
 import com.example.dkkp.model.Product_Final_Entity;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
@@ -10,11 +9,6 @@ import java.util.List;
 
 public class BillDetailDao {
     private final EntityManager entityManager;
-    private static final EntityManagerFactory entityManagerFactory;
-
-    static {
-        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
-    }
 
     public BillDetailDao(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -43,6 +37,7 @@ public class BillDetailDao {
                                                            Integer ID_FINAL_PRODUCT,
                                                            String NAME_FINAL_PRODUCT,
                                                            Integer QUANTITY_SP,
+                                                           String typeQuantity,
                                                            String ID_BILL,
                                                            Boolean AVAILABLE,
                                                            String sortField,
@@ -69,8 +64,15 @@ public class BillDetailDao {
             conditions = cb.and(conditions, cb.greaterThanOrEqualTo(root.get("UNIT_PRICE"), UNIT_PRICE));
             hasConditions = true;
         }
-        if (QUANTITY_SP != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("QUANTITY_SP"), QUANTITY_SP));
+        if (typeQuantity != null) {
+            conditions = switch (typeQuantity) {
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("QUANTITY_SP"), QUANTITY_SP));
+                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("QUANTITY_SP"), QUANTITY_SP));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("QUANTITY_SP"), QUANTITY_SP));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("QUANTITY_SP"), QUANTITY_SP));
+                case "=" -> cb.and(conditions, cb.equal(root.get("QUANTITY_SP"), QUANTITY_SP));
+                default -> conditions;
+            };
             hasConditions = true;
         }
         if (ID_BILL != null) {
@@ -157,9 +159,4 @@ public class BillDetailDao {
     }
 
 
-    public static void shutdown() {
-        if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
-            entityManagerFactory.close();
-        }
-    }
 }

@@ -8,11 +8,7 @@ import java.util.List;
 
 public class BrandDao {
     private final EntityManager entityManager;
-    private static final EntityManagerFactory entityManagerFactory;
 
-    static {
-        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
-    }
 
     public BrandDao(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -81,9 +77,4 @@ public class BrandDao {
     }
 
 
-    public static void shutdown() {
-        if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
-            entityManagerFactory.close();
-        }
-    }
 }

@@ -9,11 +9,6 @@ import java.util.List;
 
 public class ImportDetailDao {
     private final EntityManager entityManager;
-    private static final EntityManagerFactory entityManagerFactory;
-
-    static {
-        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
-    }
 
     public ImportDetailDao(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -37,7 +32,7 @@ public class ImportDetailDao {
         return this.entityManager;
     }
 
-    public List<Import_Detail_Entity> getFilteredImportDetails(Integer ID_IMPD, String ID_IMPORT, Integer ID_FINAL_PRODUCT,String NAME_FINAL_PRODUCT,Boolean IS_AVAILABLE,Integer ID_BASE_PRODUCT,String NAME_BASE_PRODUCT,Integer QUANTITY,Double UNIT_PRICE,Double TOTAL_PRICE, String sortField, String sortOrder, Integer offset, Integer setOff) {
+    public List<Import_Detail_Entity> getFilteredImportDetails(Integer ID_IMPD, String ID_IMPORT, Integer ID_FINAL_PRODUCT,String NAME_FINAL_PRODUCT,Boolean IS_AVAILABLE,Integer ID_BASE_PRODUCT,String NAME_BASE_PRODUCT,Integer QUANTITY,String typeQuantity,String typeUPrice,String typePPrice,Double UNIT_PRICE,Double TOTAL_PRICE, String sortField, String sortOrder, Integer offset, Integer setOff) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Import_Detail_Entity> query = cb.createQuery(Import_Detail_Entity.class);
         Root<Import_Detail_Entity> root = query.from(Import_Detail_Entity.class);
@@ -71,20 +66,43 @@ public class ImportDetailDao {
             conditions = cb.and(conditions, cb.like(productBaseJoin.get("NAME_PRODUCT"), "%" + NAME_BASE_PRODUCT + "%"));
             hasConditions = true;
         }
-        if (QUANTITY != null ) {
-            conditions = cb.and(conditions, cb.equal(root.get("QUANTITY"), QUANTITY));
+        if (typeQuantity != null) {
+            conditions = switch (typeQuantity) {
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("QUANTITY"), QUANTITY));
+                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("QUANTITY"), QUANTITY));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("QUANTITY"), QUANTITY));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("QUANTITY"), QUANTITY));
+                case "=" -> cb.and(conditions, cb.equal(root.get("QUANTITY"), QUANTITY));
+                default -> conditions;
+            };
             hasConditions = true;
         }
         if (IS_AVAILABLE != null ) {
             conditions = cb.and(conditions, cb.equal(root.get("IS_AVAILABLE"), IS_AVAILABLE));
             hasConditions = true;
         }
-        if (UNIT_PRICE != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("UNIT_PRICE"), UNIT_PRICE));
+
+        if (typeUPrice != null) {
+            conditions = switch (typeUPrice) {
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("UNIT_PRICE"), UNIT_PRICE));
+                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("UNIT_PRICE"), UNIT_PRICE));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("UNIT_PRICE"), UNIT_PRICE));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("UNIT_PRICE"), UNIT_PRICE));
+                case "=" -> cb.and(conditions, cb.equal(root.get("UNIT_PRICE"), UNIT_PRICE));
+                default -> conditions;
+            };
             hasConditions = true;
         }
-        if (TOTAL_PRICE != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("TOTAL_PRICE"), TOTAL_PRICE));
+
+        if (typePPrice != null) {
+            conditions = switch (typePPrice) {
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("TOTAL_PRICE"), TOTAL_PRICE));
+                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("TOTAL_PRICE"), TOTAL_PRICE));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("TOTAL_PRICE"), TOTAL_PRICE));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("TOTAL_PRICE"), TOTAL_PRICE));
+                case "=" -> cb.and(conditions, cb.equal(root.get("TOTAL_PRICE"), TOTAL_PRICE));
+                default -> conditions;
+            };
             hasConditions = true;
         }
 
@@ -135,9 +153,4 @@ public class ImportDetailDao {
     }
 
 
-    public static void shutdown() {
-        if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
-            entityManagerFactory.close();
-        }
-    }
 }

@@ -14,16 +14,10 @@ import java.util.Random;
 
 public class CheckMailService {
     private final EmailCheckDao checkmail;
-    private final EntityManager entityManager;
-    private static final EntityManagerFactory entityManagerFactory;
 
-    static {
-        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
-    }
 
     public CheckMailService(EntityManager entityManager) {
         this.checkmail = new EmailCheckDao(entityManager);
-        this.entityManager = entityManagerFactory.createEntityManager();
     }
 
     public void createToken(String email) throws Exception {
@@ -91,7 +85,4 @@ public class CheckMailService {
         }
     }
 
-    public void shutdown() {
-        EmailCheckDao.shutdown();
-    }
 }

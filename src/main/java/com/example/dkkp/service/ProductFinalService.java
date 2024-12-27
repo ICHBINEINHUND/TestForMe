@@ -14,11 +14,6 @@ public class ProductFinalService {
     private final ProductFinalDao productFinalDao;
     private final ProductOptionDao productOptionDao;
     private final ProductOptionValuesDao productOptionValuesDao;
-    private static final EntityManagerFactory entityManagerFactory;
-
-    static {
-        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
-    }
 
     public ProductFinalService(EntityManager entityManager) {
         this.productFinalDao = new ProductFinalDao(entityManager);
@@ -30,6 +25,7 @@ public class ProductFinalService {
             Product_Final_Entity product_Final_Entity,
             String typePrice,
             String typeDiscount,
+            String typeQuantity,
             String sortField,
             String sortOrder,
             Integer setOff,
@@ -45,9 +41,9 @@ public class ProductFinalService {
         Integer ID_BASE_PRODUCT = product_Final_Entity.getID_BASE_PRODUCT();
         String NAME_PRODUCT_BASE = product_Final_Entity.getNAME_PRODUCT_BASE();
 
-        if (reflectField.isPropertyNameMatched(Product_Final_Entity.class, sortField) || sortField == null) {
+        if (reflectField.isPropertyNameMatched(Product_Final_Entity.class, sortField) ) {
             return productFinalDao.getFilteredProductFinal(
-                    ID_SP, ID_BASE_PRODUCT,NAME_PRODUCT_BASE, NAME_PRODUCT, PRICE_SP, typePrice, QUANTITY, DISCOUNT, typeDiscount, sortField, sortOrder, setOff, offset
+                    ID_SP, ID_BASE_PRODUCT,NAME_PRODUCT_BASE, NAME_PRODUCT, PRICE_SP, typePrice, QUANTITY, DISCOUNT, typeDiscount,typeQuantity, sortField, sortOrder, setOff, offset
             );
         }
         ;
@@ -101,7 +97,7 @@ public class ProductFinalService {
         Integer ID = productOptionEntity.getID_OPTION();
         String NAME = productOptionEntity.getNAME_OPTION();
 
-        if (reflectField.isPropertyNameMatched(Product_Option_Entity.class, sortField) || sortField == null) {
+        if (reflectField.isPropertyNameMatched(Product_Option_Entity.class, sortField) ) {
             productOptionDao.getFilteredProductOption(ID, NAME, sortField, sortOrder, setOff, offset);
 
         }
@@ -145,7 +141,7 @@ public class ProductFinalService {
         String NAME_OPTION = productOptionValues.getName_Option();
         String NAME_PRODUCT = productOptionValues.getNAME_FINAL_PRODUCT();
 
-        if (reflectField.isPropertyNameMatched(Product_Option_Values_Entity.class, sortField) || sortField == null) {
+        if (reflectField.isPropertyNameMatched(Product_Option_Values_Entity.class, sortField)) {
             productOptionValuesDao.getFilteredProductOptionValue(ID, ID_OPTION,NAME_OPTION, VALUE, ID_FINAL_PRODUCT,NAME_PRODUCT, sortField, sortOrder, setOff, offset);
         }
         throw new RuntimeException("Error with sort");

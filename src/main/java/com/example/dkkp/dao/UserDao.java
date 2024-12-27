@@ -12,11 +12,7 @@ import java.util.List;
 
 public class UserDao {
     private final EntityManager entityManager;
-    private static final EntityManagerFactory entityManagerFactory;
 
-    static {
-        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
-    }
 
     public UserDao(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -101,12 +97,5 @@ public class UserDao {
         user.setPASSWORD_ACC(newPass);
         entityManager.merge(user);
 
-    }
-
-
-    public static void shutdown() {
-        if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
-            entityManagerFactory.close();
-        }
     }
 }

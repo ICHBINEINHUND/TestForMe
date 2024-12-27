@@ -3,23 +3,15 @@ package com.example.dkkp.service;
 import com.example.dkkp.dao.CategoryDao;
 import com.example.dkkp.model.Category_Entity;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 
 import java.util.List;
 
 public class CategoryService {
     private final CategoryDao categoryDao;
-    private final EntityManager entityManager;
-    private static final EntityManagerFactory entityManagerFactory;
 
-    static {
-        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
-    }
 
     public CategoryService(EntityManager entityManager) {
         this.categoryDao = new CategoryDao(entityManager);
-        this.entityManager = entityManagerFactory.createEntityManager();
     }
 
 
@@ -36,7 +28,7 @@ public class CategoryService {
     ) {
         // chạy được
         // không cần thêm check
-            if (reflectField.isPropertyNameMatched(Category_Entity.class, sortField) || sortField == null) {
+            if (reflectField.isPropertyNameMatched(Category_Entity.class, sortField)) {
                 Integer id = category.getID_CATEGORY();
                 String name = category.getNAME_CATEGORY();
 

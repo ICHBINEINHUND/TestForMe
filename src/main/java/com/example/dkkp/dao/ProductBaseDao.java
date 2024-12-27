@@ -11,11 +11,7 @@ import java.util.List;
 
 public class ProductBaseDao {
     private final EntityManager entityManager;
-    private static final EntityManagerFactory entityManagerFactory;
 
-    static {
-        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
-    }
 
     public ProductBaseDao(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -196,12 +192,6 @@ public class ProductBaseDao {
             return true;
         } catch (RuntimeException e) {
             throw new RuntimeException("Error occurred while updating product base", e);
-        }
-    }
-
-    public static void shutdown() {
-        if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
-            entityManagerFactory.close();
         }
     }
 }

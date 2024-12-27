@@ -6,11 +6,7 @@ import java.util.List;
 
 public class EmailCheckDao {
   private final EntityManager entityManager;
-  private static final EntityManagerFactory entityManagerFactory;
 
-  static {
-    entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
-  }
 
   public EmailCheckDao(EntityManager entityManager) {
     this.entityManager = entityManager;
@@ -42,9 +38,5 @@ public class EmailCheckDao {
     return query.getResultStream().findFirst().isPresent();
   }
 
-  public static void shutdown() {
-    if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
-      entityManagerFactory.close();
-    }
-  }
+
 }

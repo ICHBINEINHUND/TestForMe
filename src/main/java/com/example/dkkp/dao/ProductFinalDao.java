@@ -10,11 +10,7 @@ import java.util.List;
 
 public class ProductFinalDao {
     private final EntityManager entityManager;
-    private static final EntityManagerFactory entityManagerFactory;
 
-    static {
-        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
-    }
 
     public ProductFinalDao(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -47,6 +43,7 @@ public class ProductFinalDao {
                                                               Integer QUANTITY,
                                                               Double DISCOUNT,
                                                               String typeDiscount,
+                                                              String typeQuantity,
                                                               String sortField,
                                                               String sortOrder,
                                                               Integer offset,
@@ -99,8 +96,15 @@ public class ProductFinalDao {
             hasConditions = true;
         }
 
-        if (QUANTITY != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("QUANTITY"), QUANTITY));
+        if (typeQuantity != null) {
+            conditions = switch (typeQuantity) {
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("QUANTITY"), QUANTITY));
+                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("QUANTITY"), QUANTITY));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("QUANTITY"), QUANTITY));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("QUANTITY"), QUANTITY));
+                case "=" -> cb.and(conditions, cb.equal(root.get("QUANTITY"), QUANTITY));
+                default -> conditions;
+            };
             hasConditions = true;
         }
 
@@ -177,9 +181,5 @@ public class ProductFinalDao {
         }
     }
 
-    public static void shutdown() {
-        if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
-            entityManagerFactory.close();
-        }
-    }
+
 }

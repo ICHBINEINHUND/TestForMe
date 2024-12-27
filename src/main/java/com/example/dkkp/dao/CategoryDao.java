@@ -8,11 +8,7 @@ import java.util.List;
 
 public class CategoryDao {
     private final EntityManager entityManager;
-    private static final EntityManagerFactory entityManagerFactory;
 
-    static {
-        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
-    }
 
     public CategoryDao(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -80,9 +76,5 @@ public class CategoryDao {
             throw new RuntimeException();
     }
 
-    public static void shutdown() {
-        if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
-            entityManagerFactory.close();
-        }
-    }
+
 }

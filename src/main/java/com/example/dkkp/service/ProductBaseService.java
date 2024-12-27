@@ -15,11 +15,6 @@ public class ProductBaseService {
     private final ProductBaseDao productBaseDao;
     private final ProductAttributeDao productAttributeDao;
     private final ProductAttributeValuesDao productAttributeValuesDao;
-    private static final EntityManagerFactory entityManagerFactory;
-
-    static {
-        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
-    }
 
     public ProductBaseService(EntityManager entityManager) {
         this.productBaseDao = new ProductBaseDao(entityManager);
@@ -108,7 +103,7 @@ public class ProductBaseService {
         Integer ID_CATEGORY = productAttribute.getID_CATEGORY();
         String NAME_CATEGORY = productAttribute.getNAME_CATEGORY();
 
-        if (reflectField.isPropertyNameMatched(Product_Attribute_Entity.class, sortField) || sortField == null) {
+        if (reflectField.isPropertyNameMatched(Product_Attribute_Entity.class, sortField) ) {
             productAttributeDao.getFilteredProductAttribute(ID_ATTRIBUTE, NAME_ATTRIBUTE, ID_CATEGORY,NAME_CATEGORY, sortField, sortOrder,setOff,offset);
 
         }
@@ -154,7 +149,7 @@ public class ProductBaseService {
         String NAME_PRODUCT = productAttributeValues.getNAME_PRODUCT();
 
 
-        if (reflectField.isPropertyNameMatched(Product_Attribute_Values_Entity.class, sortField) || sortField == null) {
+        if (reflectField.isPropertyNameMatched(Product_Attribute_Values_Entity.class, sortField)) {
                 productAttributeValuesDao.getFilteredProductAttributeValues(ID,VALUE,ID_ATTRIBUTE,NAME_ATTRIBUTE,ID_BASE_PRODUCT,NAME_PRODUCT,sortField,sortOrder,setOff,offset);
         }
         throw new RuntimeException("Error with sort");

@@ -10,11 +10,6 @@ import java.util.List;
 
 public class ProductAttributeDao {
     private final EntityManager entityManager;
-    private static final EntityManagerFactory entityManagerFactory;
-
-    static {
-        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
-    }
 
     public ProductAttributeDao(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -111,9 +106,5 @@ public class ProductAttributeDao {
             throw new RuntimeException("Error occurred while updating Product Option with ID_BASEPRODUCT: " + ID_ATTRIBUTE, e);
         }
     }
-    public static void shutdown() {
-        if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
-            entityManagerFactory.close();
-        }
-    }
+
 }

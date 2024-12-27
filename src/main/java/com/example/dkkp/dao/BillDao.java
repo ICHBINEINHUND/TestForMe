@@ -9,11 +9,7 @@ import java.util.List;
 
 public class BillDao {
     private final EntityManager entityManager;
-    private static final EntityManagerFactory entityManagerFactory;
 
-    static {
-        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
-    }
 
     public BillDao(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -49,6 +45,7 @@ public class BillDao {
             EnumType.Status_Bill Status,
             String addBill,
             Double totalPrice,
+            String typePrice,
             String sortField,
             String sortOrder,
             Integer offset,
@@ -71,6 +68,8 @@ public class BillDao {
         if (dateExport != null) {
             conditions = switch (typeDate) {
                 case "<" -> cb.and(conditions, cb.lessThan(root.get("DATE_EXP"), dateExport));
+                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("DATE_EXP"), dateExport));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("DATE_EXP"), dateExport));
                 case ">" -> cb.and(conditions, cb.greaterThan(root.get("DATE_EXP"), dateExport));
                 case "=" -> cb.and(conditions, cb.equal(root.get("DATE_EXP"), dateExport));
                 default -> conditions;
@@ -97,8 +96,15 @@ public class BillDao {
             conditions = cb.and(conditions, cb.equal(root.get("ADD_BILL"), addBill));
             hasConditions = true;
         }
-        if (totalPrice != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("TOTAL_PRICE"), totalPrice));
+        if (typePrice != null) {
+            conditions = switch (typePrice) {
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("TOTAL_PRICE"), totalPrice));
+                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("TOTAL_PRICE"), dateExport));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("TOTAL_PRICE"), dateExport));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("TOTAL_PRICE"), dateExport));
+                case "=" -> cb.and(conditions, cb.equal(root.get("TOTAL_PRICE"), dateExport));
+                default -> conditions;
+            };
             hasConditions = true;
         }
         if (hasConditions) {
@@ -162,9 +168,4 @@ public class BillDao {
     }
 
 
-    public static void shutdown() {
-        if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
-            entityManagerFactory.close();
-        }
-    }
 }

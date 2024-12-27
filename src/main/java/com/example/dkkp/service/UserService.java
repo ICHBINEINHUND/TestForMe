@@ -3,29 +3,19 @@ package com.example.dkkp.service;
 import com.example.dkkp.dao.UserDao;
 import com.example.dkkp.model.User_Entity;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
+
 
 import java.time.LocalDateTime;
 
 public class UserService {
     private final UserDao userDao;
-    private static final EntityManagerFactory entityManagerFactory;
-
-    static {
-        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
-    }
 
     public UserService(EntityManager entityManager) {
         this.userDao = new UserDao(entityManager);
     }
 
     public User_Entity getUsersByID(String id) throws Exception {
-        User_Entity user = userDao.getUsersByID(id);
-        if (user == null) {
-            return null;
-        }
-        return user;
+        return userDao.getUsersByID(id);
     }
 
     public User_Entity getUsersByEmail(String Email) throws Exception {

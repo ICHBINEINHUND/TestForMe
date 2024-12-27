@@ -10,11 +10,7 @@ import java.util.List;
 
 public class ReportDao {
     private final EntityManager entityManager;
-    private static final EntityManagerFactory entityManagerFactory;
 
-    static {
-        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
-    }
 
     public ReportDao(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -124,9 +120,5 @@ public class ReportDao {
         return deletedCount > 0;
     }
 
-    public static void shutdown() {
-        if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
-            entityManagerFactory.close();
-        }
-    }
+
 }

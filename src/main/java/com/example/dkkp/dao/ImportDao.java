@@ -9,11 +9,6 @@ import java.util.List;
 
 public class ImportDao {
     private final EntityManager entityManager;
-    private static final EntityManagerFactory entityManagerFactory;
-
-    static {
-        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
-    }
 
     public ImportDao(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -30,7 +25,7 @@ public class ImportDao {
 
 
 
-    public List<Import_Entity> getFilteredImports(LocalDateTime DATE_IMP, String typeDate, String ID_IMP, Boolean IS_AVAILABLE, Integer ID_REPLACE,Double TOTAL_PRICE, String sortField, String sortOrder, Integer offset, Integer setOff) {
+    public List<Import_Entity> getFilteredImports(LocalDateTime DATE_IMP, String typeDate, String ID_IMP, Boolean IS_AVAILABLE, Integer ID_REPLACE,Double TOTAL_PRICE,String typePrice, String sortField, String sortOrder, Integer offset, Integer setOff) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Import_Entity> query = cb.createQuery(Import_Entity.class);
         Root<Import_Entity> root = query.from(Import_Entity.class);
@@ -44,6 +39,17 @@ public class ImportDao {
                 case "=" -> cb.and(conditions, cb.equal(root.get("DATE_IMP"), DATE_IMP));
                 case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("DATE_IMP"), DATE_IMP));
                 case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("DATE_IMP"), DATE_IMP));
+                default -> conditions;
+            };
+            hasConditions = true;
+        }
+        if (typePrice != null) {
+            conditions = switch (typePrice) {
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("TOTAL_PRICE"), TOTAL_PRICE));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("TOTAL_PRICE"), TOTAL_PRICE));
+                case "=" -> cb.and(conditions, cb.equal(root.get("TOTAL_PRICE"), TOTAL_PRICE));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("TOTAL_PRICE"), TOTAL_PRICE));
+                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("TOTAL_PRICE"), TOTAL_PRICE));
                 default -> conditions;
             };
             hasConditions = true;
@@ -114,9 +120,5 @@ public class ImportDao {
             entityManager.merge(importToEdit);
     }
 
-    public static void shutdown() {
-        if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
-            entityManagerFactory.close();
-        }
-    }
+
 }

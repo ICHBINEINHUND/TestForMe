@@ -23,6 +23,9 @@ public class reflectField {
     }
 
     public static boolean isPropertyNameMatched(Class<?> clazz, String nameToCheck) {
+        if(nameToCheck == null) {
+            return true;
+        }
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
             if (field.isAnnotationPresent(Column.class)) {

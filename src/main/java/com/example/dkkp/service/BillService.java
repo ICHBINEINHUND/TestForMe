@@ -4,8 +4,7 @@ import com.example.dkkp.dao.BillDao;
 import com.example.dkkp.dao.BillDetailDao;
 import com.example.dkkp.model.*;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,12 +12,8 @@ import java.util.List;
 public class BillService {
     private final BillDao billDao;
     private final BillDetailDao billDetailDao;
-    private static final EntityManagerFactory entityManagerFactory;
     private final EntityManager entityManager;
 
-    static {
-        entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
-    }
 
     public BillService(EntityManager entityManager) {
         this.billDao = new BillDao(entityManager);
@@ -29,6 +24,7 @@ public class BillService {
     public List<Bill_Entity> getBillByCombinedCondition(
             Bill_Entity billEntity,
             String typeDate,
+            String typePrice,
             String sortField,
             String sortOrder,
             int setOff,
@@ -44,7 +40,7 @@ public class BillService {
         EnumType.Status_Bill statusBill = billEntity.getBILL_STATUS();
         if ((reflectField.isPropertyNameMatched(Bill_Entity.class, sortField) && sortOrder != null) || sortField == null) {
             List<Bill_Entity> results = billDao.getFilteredBills(
-                    dateExport, typeDate, id, phone, idUser, EMAIL_ACC,statusBill, add, totalPrice, sortField, sortOrder, offset, setOff);
+                    dateExport, typeDate, id, phone, idUser, EMAIL_ACC,statusBill, add, totalPrice,typePrice, sortField, sortOrder, offset, setOff);
             for (Bill_Entity bill : results) {
                 decryptBillSensitiveData(bill);
             }
@@ -55,6 +51,7 @@ public class BillService {
 
     public List<Bill_Detail_Entity> getBillDetailByCombinedCondition(
             Bill_Detail_Entity billDetailEntity,
+            String typeQuantity,
             String sortField,
             String sortOrder,
             int setOff,
@@ -70,7 +67,7 @@ public class BillService {
         String NAME_FINAL_PRODUCT = billDetailEntity.getNAME_FINAL_PRODUCT();
         if (reflectField.isPropertyNameMatched(Bill_Detail_Entity.class, sortField) || sortField == null) {
             return billDetailDao.getFilteredBillDetails(
-                    idBillDetail, totalPrice, unitPrice, idFinalProduct,NAME_FINAL_PRODUCT, quantityBill, idBill, available, sortField, sortOrder, offset, setOff);
+                    idBillDetail, totalPrice, unitPrice, idFinalProduct,NAME_FINAL_PRODUCT, quantityBill,typeQuantity, idBill, available, sortField, sortOrder, offset, setOff);
         }
         throw new RuntimeException("Erro with sort");
     }
@@ -92,8 +89,8 @@ public class BillService {
 
 
     public void minusProduct(String id) {
-        if (billDao.getFilteredBills(null, null, id, null,null, null, null, null, null, null, null, null, null) != null) {
-            List<Bill_Detail_Entity> listBillDetail = billDetailDao.getFilteredBillDetails(null, null, null,null, null, null, id, null, null, null, null, null);
+        if (billDao.getFilteredBills(null, null, id,null, null,null, null, null, null, null, null, null, null, null) != null) {
+            List<Bill_Detail_Entity> listBillDetail = billDetailDao.getFilteredBillDetails(null, null, null,null, null, null,null, id, null, null, null, null, null);
             for (Bill_Detail_Entity billDetail : listBillDetail) {
                 ProductFinalService productFinalService = new ProductFinalService(entityManager);
                 Product_Final_Entity productE = productFinalService.getProductByID(billDetail.getID_FINAL_PRODUCT());
@@ -110,7 +107,7 @@ public class BillService {
 
     public void plusBillProduct(String id) {
         System.out.println("day la " + id);
-        List<Bill_Detail_Entity> listBillDetail = billDetailDao.getFilteredBillDetails(null, null, null, null, null,null , id, null,null, null, null, null);
+        List<Bill_Detail_Entity> listBillDetail = billDetailDao.getFilteredBillDetails(null, null, null, null, null,null ,null, id, null,null, null, null, null);
         for (Bill_Detail_Entity billDetail : listBillDetail) {
             ProductFinalService productFinalService = new ProductFinalService(entityManager);
             Product_Final_Entity productE = productFinalService.getProductByID(billDetail.getID_FINAL_PRODUCT());
