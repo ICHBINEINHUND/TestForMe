@@ -4,15 +4,11 @@ import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class DashboardController {
-  @FXML
-  private DatePicker datePicker;
   @FXML
   private Label totalRevenueMonth;
   @FXML
@@ -25,7 +21,6 @@ public class DashboardController {
   private LineChart<Number, Number> revenueChart;
   @FXML
   private PieChart bestSellerChart;
-  private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("MMMM yyyy");
 
   @FXML
   public void initialize() {
@@ -67,19 +62,15 @@ public class DashboardController {
   private double getTotalRevenueForMonth() {
     return 5000;
   }
-
   private double getTotalRevenueForYear() {
     return 80000;
   }
-
   private String getBestSellerForMonth() {
     return "Samsung Galaxy S24";
   }
-
   private String getBestSellerForYear() {
     return "NVIDIA GeForce RTX 4090";
   }
-
   public record RevenueData(int time, double revenue) {}
   public record Product(String name, int quantity) {}
 }

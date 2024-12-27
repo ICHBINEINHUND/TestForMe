@@ -2,20 +2,23 @@ package com.example.dkkp.controller;
 
 import com.example.dkkp.util.ViewUtil;
 import com.example.dkkp.view.HomeView;
+import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.fxml.FXML;
+
 import java.util.Objects;
 
 import io.github.palexdev.materialfx.controls.MFXTextField;
+
 public class LoginController {
   @FXML
   private MFXTextField username;
   @FXML
-  private MFXTextField password;
+  private MFXPasswordField password;
 
   @FXML
   private void handleLogin(ActionEvent event) {
