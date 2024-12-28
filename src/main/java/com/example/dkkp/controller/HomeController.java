@@ -29,6 +29,12 @@ public class HomeController {
   private Button reportTab;
   private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
+  private ProductController productController;
+  private ImportController importController;
+  private BillController billController;
+  private ReportController reportController;
+  private DashboardController dashboardController;
+
   @FXML
   public void initialize() {
     loadDashboardView();
@@ -36,31 +42,46 @@ public class HomeController {
 
   @FXML
   public void loadDashboardView() {
-    setMainView("/com/example/dkkp/DashboardView.fxml");
+    if(dashboardController == null) {
+      dashboardController = new DashboardController();
+    }
+    setMainView("/com/example/dkkp/DashboardView.fxml",dashboardController);
     setActiveTab(dashboardTab);
   }
 
   @FXML
   public void loadProductView() {
+    if (productController == null) {
+      productController = new ProductController();
+    }
     setMainView("/com/example/dkkp/ProductView.fxml");
     setActiveTab(productTab);
   }
 
   @FXML
   public void loadImportView() {
-    setMainView("/com/example/dkkp/ImportView.fxml");
+    if (importController == null) {
+      importController = new ImportController();
+    }
+    setMainView("/com/example/dkkp/ImportView.fxml",importController);
     setActiveTab(importTab);
   }
 
   @FXML
   public void loadExportView() {
-    setMainView("/com/example/dkkp/ExportView.fxml");
+    if(billController == null) {
+      billController = new BillController();
+    }
+    setMainView("/com/example/dkkp/ExportView.fxml",billController);
     setActiveTab(exportTab);
   }
 
   @FXML
   public void loadReportView() {
-    setMainView("/com/example/dkkp/ReportView.fxml");
+    if(reportController == null) {
+      reportController = new ReportController();
+    }
+    setMainView("/com/example/dkkp/ReportView.fxml",reportController);
     setActiveTab(reportTab);
   }
 
@@ -68,6 +89,18 @@ public class HomeController {
     LoginView loginView = new LoginView();
     Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
     loginView.showLoginView(currentStage);
+  }
+
+  private void setMainView(String fxmlPath, Object controller) {
+    try {
+      FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+      loader.setController(controller); // Gán controller vào FXMLLoader
+
+      main.getChildren().clear();
+      main.getChildren().add(loader.load());
+    } catch (IOException e) {
+      logger.error("Loading FXML Failed!", e);
+    }
   }
 
   private void setMainView(String fxmlPath) {
@@ -79,6 +112,7 @@ public class HomeController {
       logger.error("Loading FXML Failed!", e);
     }
   }
+
 
   private void setActiveTab(Button activeTab) {
     dashboardTab.getStyleClass().remove("activeBtn");

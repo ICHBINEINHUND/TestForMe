@@ -1,8 +1,9 @@
-package com.example.dkkp.controller;
+package com.example.dkkp.controller.product;
 
 import com.example.dkkp.model.Product_Base_Entity;
 import io.github.palexdev.materialfx.controls.MFXPaginatedTableView;
 import io.github.palexdev.materialfx.controls.MFXTableColumn;
+import io.github.palexdev.materialfx.controls.MFXTableView;
 import io.github.palexdev.materialfx.controls.cell.MFXTableRowCell;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,9 +17,9 @@ import javafx.scene.layout.StackPane;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-public class ProductBaseController {
+public class ProductOptionController implements TableInterface {
   @FXML
-  private MFXPaginatedTableView<Product_Base_Entity> productTable;
+  private MFXTableView<Product_Base_Entity> productTable;
   @FXML
   private MFXTableColumn<Product_Base_Entity> ID_BASE_PRODUCT;
   @FXML
@@ -80,7 +81,7 @@ public class ProductBaseController {
 
   }
 
-  private void setWidth() {
+  public void setWidth() {
     ID_BASE_PRODUCT.prefWidthProperty().bind(productTable.widthProperty().multiply(0.14));
     NAME_PRODUCT.prefWidthProperty().bind(productTable.widthProperty().multiply(0.16));
     DES_PRODUCT.prefWidthProperty().bind(productTable.widthProperty().multiply(0.14));

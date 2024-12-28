@@ -140,11 +140,9 @@ public class BillDao {
         return typedQuery.getResultList();
     }
 
-
     public Bill_Entity findBill(String idBill) {
         return entityManager.find(Bill_Entity.class, idBill);
     }
-
     public void deleteBill(String idBill) {
 
             Bill_Entity billToDelete = entityManager.find(Bill_Entity.class, idBill);

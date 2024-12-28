@@ -21,7 +21,6 @@ public class UserService {
     public User_Entity getUsersByEmail(String Email) throws Exception {
         // chạy được
         User_Entity user = userDao.getUsersByMail(SecurityFunction.encrypt(Email));
-
 //        decryptUserSensitiveData(user);
         return user;
     }
