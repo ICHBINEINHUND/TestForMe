@@ -6,9 +6,9 @@
            fx:id="main" styleClass="productAP" maxWidth="7000">
   <HBox spacing="5">
     <VBox HBox.hgrow="ALWAYS" alignment="TOP_CENTER" spacing="5">
-      <MFXTableView fx:id="productTable" footerVisible="false" maxWidth="1000" minHeight="380">
+      <MFXTableView fx:id="productTable" footerVisible="false" minHeight="380">
         <tableColumns>
-          <MFXTableColumn fx:id="ID_BASE_PRODUCT" text="Id" styleClass="productBF" maxWidth="10"/>
+          <MFXTableColumn fx:id="ID_BASE_PRODUCT" text="Id" styleClass="productBF"/>
           <MFXTableColumn fx:id="NAME_PRODUCT" text="Name" styleClass="productBF"/>
           <MFXTableColumn fx:id="DES_PRODUCT" text="Description" styleClass="productBF"/>
           <MFXTableColumn fx:id="DATE_RELEASE" text="Date release" styleClass="productBF"/>
