@@ -59,12 +59,11 @@ public class ProductBaseController implements TableInterface {
 
     @FXML
     public void initialize() {
-//        vBox.prefWidthProperty().bind(main.widthProperty().multiply(0.7));
         observableList = getProducts();
         filteredList = new FilteredList<>(observableList, _ -> true);
         productTable.setItems(filteredList);
         setCol();
-//        setWidth(); // Cập nhật độ rộng khi bảng đã có chiều rộng
+        setWidth();
         crt();
         upd();
         del();
@@ -87,35 +86,16 @@ public class ProductBaseController implements TableInterface {
 
 
     public void setWidth() {
-        ID_BASE_PRODUCT.setMinWidth(100);
-        ID_BASE_PRODUCT.setMaxWidth(200);
-
-        NAME_PRODUCT.setMinWidth(150);
-        NAME_PRODUCT.setMaxWidth(250);
-
-        DES_PRODUCT.setMinWidth(200);
-        DES_PRODUCT.setMaxWidth(300);
-
-        DATE_RELEASE.setMinWidth(150);
-        DATE_RELEASE.setMaxWidth(250);
-
-        VIEW_COUNT.setMinWidth(100);
-        VIEW_COUNT.setMaxWidth(150);
-
-        TOTAL_QUANTITY.setMinWidth(100);
-        TOTAL_QUANTITY.setMaxWidth(150);
-
-        ID_CATEGORY.setMinWidth(150);
-        ID_CATEGORY.setMaxWidth(200);
-
-        NAME_CATEGORY.setMinWidth(150);
-        NAME_CATEGORY.setMaxWidth(250);
-
-        ID_BRAND.setMinWidth(150);
-        ID_BRAND.setMaxWidth(200);
-
-        NAME_BRAND.setMinWidth(200);
-        NAME_BRAND.setMaxWidth(300);
+        ID_BASE_PRODUCT.prefWidthProperty().bind(productTable.widthProperty().multiply(0.05));
+        NAME_PRODUCT.prefWidthProperty().bind(productTable.widthProperty().multiply(0.2));
+        DES_PRODUCT.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
+        DATE_RELEASE.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
+        VIEW_COUNT.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
+        TOTAL_QUANTITY.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
+        ID_CATEGORY.prefWidthProperty().bind(productTable.widthProperty().multiply(0.05));
+        NAME_CATEGORY.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
+        ID_BRAND.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
+        NAME_BRAND.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
     }
 
 
