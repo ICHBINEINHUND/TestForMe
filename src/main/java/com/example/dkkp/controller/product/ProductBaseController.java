@@ -64,7 +64,7 @@ public class ProductBaseController implements TableInterface {
         filteredList = new FilteredList<>(observableList, _ -> true);
         productTable.setItems(filteredList);
         setCol();
-//        setWidth(); // Cập nhật độ rộng khi bảng đã có chiều rộng
+        setWidth(); // Cập nhật độ rộng khi bảng đã có chiều rộng
         crt();
         upd();
         del();
