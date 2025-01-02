@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.geometry.Insets?>
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.dkkp.controller.ImportDetailController"
+           fx:id="main" styleClass="productAP">
+  <VBox spacing="10">
+    <MFXButton fx:id="bckBtn" buttonType="RAISED" mnemonicParsing="false" text="Back" prefWidth="70" styleClass="Btn"/>
+    <HBox spacing="5">
+      <VBox.margin>
+        <Insets left="90"/>
+      </VBox.margin>
+      <MFXButton buttonType="RAISED" mnemonicParsing="false" text="Image" styleClass="Btn"/>
+    </HBox>
+    <HBox spacing="5">
+      <VBox.margin>
+        <Insets left="90"/>
+      </VBox.margin>
+      <MFXTextField floatingText="ID FINAL PRODUCT" floatMode="BORDER" prefWidth="200"/>
+    </HBox>
+    <HBox spacing="5">
+      <VBox.margin>
+        <Insets left="90"/>
+      </VBox.margin>
+      <MFXTextField floatingText="ID BASE PRODUCT" floatMode="BORDER" prefWidth="200"/>
+    </HBox>
+    <HBox spacing="5">
+      <VBox.margin>
+        <Insets left="90"/>
+      </VBox.margin>
+      <MFXTextField floatingText="NAME PRODUCT" floatMode="BORDER" prefWidth="200"/>
+    </HBox>
+    <HBox spacing="5">
+      <VBox.margin>
+        <Insets left="90"/>
+      </VBox.margin>
+      <MFXTextField floatingText="QUANTITY" floatMode="BORDER" prefWidth="200"/>
+    </HBox>
+    <HBox spacing="5">
+      <VBox.margin>
+        <Insets left="90"/>
+      </VBox.margin>
+      <MFXTextField floatingText="DESCRIPTION" floatMode="BORDER" prefWidth="200"/>
+    </HBox>
+    <HBox spacing="5">
+      <VBox.margin>
+        <Insets left="90"/>
+      </VBox.margin>
+      <MFXTextField floatingText="PRICE" floatMode="BORDER" prefWidth="200"/>
+    </HBox>
+    <HBox spacing="5">
+      <VBox.margin>
+        <Insets left="90"/>
+      </VBox.margin>
+      <MFXTextField floatingText="DISCOUNT" floatMode="BORDER" prefWidth="200"/>
+    </HBox>
+    <HBox alignment="CENTER">
+      <MFXButton buttonType="RAISED" mnemonicParsing="false" text="Create" styleClass="Btn"/>
+    </HBox>
+  </VBox>
+</StackPane>

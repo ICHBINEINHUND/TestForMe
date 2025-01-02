@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.dkkp.controller.ProductController" spacing="20">
+  <HBox spacing="10" styleClass="productNav">
+    <VBox alignment="CENTER">
+      <MFXButton fx:id="productBase" buttonType="RAISED" mnemonicParsing="false" text="Product Base"
+                 onAction="#loadProductBase" styleClass="productNavBtn"/>
+    </VBox>
+    <VBox alignment="CENTER">
+      <MFXButton fx:id="productFinal" buttonType="RAISED" mnemonicParsing="false" text="Product Final"
+                 onAction="#loadProductFinal" styleClass="productNavBtn"/>
+    </VBox>
+    <VBox alignment="CENTER">
+      <MFXButton fx:id="productBrand" buttonType="RAISED" mnemonicParsing="false" text="Product Brand"
+                 onAction="#loadProductBrand" styleClass="productNavBtn"/>
+    </VBox>
+    <VBox alignment="CENTER">
+      <MFXButton fx:id="productCategory" buttonType="RAISED" mnemonicParsing="false" text="Product Category"
+                 onAction="#loadProductCategory" styleClass="productNavBtn"/>
+    </VBox>
+    <VBox alignment="CENTER">
+      <MFXButton fx:id="productAttribute" buttonType="RAISED" mnemonicParsing="false" text="Product Attribute"
+                 onAction="#loadProductAttribute" styleClass="productNavBtn"/>
+    </VBox>
+    <VBox alignment="CENTER">
+      <MFXButton fx:id="productAttributeValue" buttonType="RAISED" mnemonicParsing="false"
+                 text="Product Attribute Value"
+                 onAction="#loadProductAttributeValue" styleClass="productNavBtn"/>
+    </VBox>
+    <VBox alignment="CENTER">
+      <MFXButton fx:id="productOption" buttonType="RAISED" mnemonicParsing="false" text="Product Option"
+                 onAction="#loadProductOption" styleClass="productNavBtn"/>
+    </VBox>
+    <VBox alignment="CENTER">
+      <MFXButton fx:id="productOptionValue" buttonType="RAISED" mnemonicParsing="false" text="Product Option Value"
+                 onAction="#loadProductOptionValue" styleClass="productNavBtn"/>
+    </VBox>
+  </HBox>
+  <StackPane fx:id="main"/>
+</VBox>
