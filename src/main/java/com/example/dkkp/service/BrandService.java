@@ -23,15 +23,15 @@ public class BrandService {
     }
 
     public List<Brand_Entity> getFilteredBrand(
-            Category_Entity category,
+            Brand_Entity brand,
             String sortField,
             String sortOrder
     ) {
         // chạy được
         // không cần thêm check
         if (reflectField.isPropertyNameMatched(Brand_Entity.class, sortField)) {
-            Integer id = category.getID_CATEGORY();
-            String name = category.getNAME_CATEGORY();
+            Integer id = brand.getID_BRAND();
+            String name = brand.getNAME_BRAND();
 
             return brandDao.getFilteredBrand(
                     id, name, sortField, sortOrder

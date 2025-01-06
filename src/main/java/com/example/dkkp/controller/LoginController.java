@@ -3,6 +3,10 @@ package com.example.dkkp.controller;
 import com.example.dkkp.util.ViewUtil;
 import com.example.dkkp.view.HomeView;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Persistence;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -15,6 +19,10 @@ import java.util.Objects;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 
 public class LoginController {
+
+  static public EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
+  static public EntityManager entityManager = entityManagerFactory.createEntityManager();
+   static public EntityTransaction transaction = entityManager.getTransaction();
   @FXML
   private MFXTextField username;
   @FXML

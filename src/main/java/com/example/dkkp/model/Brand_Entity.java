@@ -49,7 +49,10 @@ public class Brand_Entity {
     this.NAME_BRAND = NAME_BRAND;
     this.DETAIL = DETAIL;
   }
-
   public Brand_Entity() {
+  }
+  @Override
+  public String toString() {
+    return "Id: " +ID_BRAND + " -  Name: " +  NAME_BRAND;  // Chỉ trả về tên danh mục
   }
 }

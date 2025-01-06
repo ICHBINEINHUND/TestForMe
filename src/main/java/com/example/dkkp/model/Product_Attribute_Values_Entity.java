@@ -17,9 +17,11 @@ public class Product_Attribute_Values_Entity {
   private Integer ID_ATTRIBUTE;
   @Column(name = "\"VALUE\"")
   private String VALUE;
+
   @ManyToOne
   @JoinColumn(name = "\"ID_ATTRIBUTE\"", referencedColumnName = "\"ID_ATTRIBUTE\"", insertable = false, updatable = false)
   private Product_Attribute_Entity product_attribute_entity;
+
   @ManyToOne
   @JoinColumn(name = "\"ID_BASE_PRODUCT\"", referencedColumnName = "\"ID_BASE_PRODUCT\"", insertable = false, updatable = false)
   private Product_Base_Entity product_base_entity;

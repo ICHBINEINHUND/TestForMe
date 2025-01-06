@@ -41,13 +41,9 @@ public class ProductFinalService {
         Integer ID_BASE_PRODUCT = product_Final_Entity.getID_BASE_PRODUCT();
         String NAME_PRODUCT_BASE = product_Final_Entity.getNAME_PRODUCT_BASE();
 
-        if (reflectField.isPropertyNameMatched(Product_Final_Entity.class, sortField) ) {
-            return productFinalDao.getFilteredProductFinal(
-                    ID_SP, ID_BASE_PRODUCT,NAME_PRODUCT_BASE, NAME_PRODUCT, PRICE_SP, typePrice, QUANTITY, DISCOUNT, typeDiscount,typeQuantity, sortField, sortOrder, setOff, offset
-            );
-        }
-        ;
-        throw new RuntimeException("Error with sort");
+        return productFinalDao.getFilteredProductFinal(
+                ID_SP, ID_BASE_PRODUCT, NAME_PRODUCT_BASE, NAME_PRODUCT, PRICE_SP, typePrice, QUANTITY, DISCOUNT, typeDiscount, typeQuantity, sortField, sortOrder, setOff, offset
+        );
     }
 
     public Product_Final_Entity getProductByID(Integer id) {
@@ -97,7 +93,7 @@ public class ProductFinalService {
         Integer ID = productOptionEntity.getID_OPTION();
         String NAME = productOptionEntity.getNAME_OPTION();
 
-        if (reflectField.isPropertyNameMatched(Product_Option_Entity.class, sortField) ) {
+        if (reflectField.isPropertyNameMatched(Product_Option_Entity.class, sortField)) {
             productOptionDao.getFilteredProductOption(ID, NAME, sortField, sortOrder, setOff, offset);
 
         }
@@ -142,7 +138,7 @@ public class ProductFinalService {
         String NAME_PRODUCT = productOptionValues.getNAME_FINAL_PRODUCT();
 
         if (reflectField.isPropertyNameMatched(Product_Option_Values_Entity.class, sortField)) {
-            productOptionValuesDao.getFilteredProductOptionValue(ID, ID_OPTION,NAME_OPTION, VALUE, ID_FINAL_PRODUCT,NAME_PRODUCT, sortField, sortOrder, setOff, offset);
+            productOptionValuesDao.getFilteredProductOptionValue(ID, ID_OPTION, NAME_OPTION, VALUE, ID_FINAL_PRODUCT, NAME_PRODUCT, sortField, sortOrder, setOff, offset);
         }
         throw new RuntimeException("Error with sort");
     }

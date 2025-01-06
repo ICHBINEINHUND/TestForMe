@@ -4,8 +4,6 @@ import com.example.dkkp.dao.ImportDao;
 import com.example.dkkp.dao.ImportDetailDao;
 import com.example.dkkp.model.*;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -124,7 +122,7 @@ public class ImportService {
                         ProductBaseService productBaseService = new ProductBaseService(entityManager);
                         Product_Base_Entity productE = productBaseService.getProductBaseByID(idSp);
                         if (productE == null) throw new RuntimeException("Error cant find product base to plus quantity in plus product form import process");
-                        productE.setQUANTITY(productE.getQUANTITY() + quantity);
+                        productE.setTOTAL_QUANTITY(productE.getTOTAL_QUANTITY() + quantity);
                         productBaseService.updateProductBase(productE);
                     } else  {
                         Integer idSp = importDetail.getID_FINAL_PRODUCT();
@@ -152,10 +150,10 @@ public class ImportService {
                         ProductBaseService productBaseService = new ProductBaseService(entityManager);
                         Product_Base_Entity productE = productBaseService.getProductBaseByID(idSp);
                         if (productE == null) throw new RuntimeException("Error cant find product base to plus quantity in plus product form import process");
-                        if(quantity > productE.getQUANTITY()) {
+                        if(quantity > productE.getTOTAL_QUANTITY()) {
                             throw new RuntimeException("Product base in storage is smaller to minus");
                         }
-                        productE.setQUANTITY(productE.getQUANTITY() - quantity);
+                        productE.setTOTAL_QUANTITY(productE.getTOTAL_QUANTITY() - quantity);
                         productBaseService.updateProductBase(productE);
                     } else  {
                         Integer idSp = importDetail.getID_FINAL_PRODUCT();

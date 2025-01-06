@@ -50,8 +50,8 @@ public class ProductAttributeValuesDao {
         CriteriaQuery<Product_Attribute_Values_Entity> query = cb.createQuery(Product_Attribute_Values_Entity.class);
         Root<Product_Attribute_Values_Entity> root = query.from(Product_Attribute_Values_Entity.class);
 
-        Join<Product_Attribute_Values_Entity, Product_Attribute_Entity> productAttributeJoin = root.join("product_attribute", JoinType.INNER);
-        Join<Product_Attribute_Values_Entity, Product_Base_Entity> productBasejoin = root.join("product_base", JoinType.INNER);
+        Join<Product_Attribute_Values_Entity, Product_Attribute_Entity> productAttributeJoin = root.join("product_attribute_entity", JoinType.LEFT);
+        Join<Product_Attribute_Values_Entity, Product_Base_Entity> productBasejoin = root.join("product_base_entity", JoinType.LEFT);
 
         Predicate conditions = cb.conjunction();
         boolean hasConditions = false;

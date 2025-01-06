@@ -4,6 +4,7 @@ import com.example.dkkp.controller.product.ProductBaseController;
 import com.example.dkkp.controller.product.ProductDetailController;
 import com.example.dkkp.controller.product.ProductOptionController;
 import com.example.dkkp.controller.product.TableInterface;
+import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -14,46 +15,50 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ProductController  {
+public class ProductController{
   @FXML
-  private StackPane main;
+  public StackPane main;
   @FXML
   private Button productDetail;
 
   @FXML
   private Button productOption;
+
+  @FXML
+  private MFXButton productDetailB;
+  @FXML
+  private MFXButton productOptionB;
   private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
-  private ProductBaseController productBaseController;
-  private ProductOptionController productOptionController;
+  public ProductBaseController productBaseController = new ProductBaseController();
+  public ProductOptionController productOptionController = new ProductOptionController();
 
   @FXML
   public void initialize() {
     loadProductBase();
+    productDetail.setOnMouseClicked(event -> {loadProductBase();});
+    productOption.setOnMouseClicked(event -> {loadProductOption();});
   }
 
   @FXML
   public void loadProductBase() {
 
-    setMainView("/com/example/dkkp/ProductBaseView.fxml");
+    productBaseController.getProductController(this);
+    setMainView("/com/example/dkkp/ProductBaseView.fxml",productBaseController);
     setActiveTab(productDetail);;
 
   }
 
   @FXML
   public void loadProductOption() {
-    if(productOptionController == null) {
-      productOptionController = new ProductOptionController();
-    }
     setMainView("/com/example/dkkp/ProductOptionView.fxml",productOptionController);
     setActiveTab(productOption);
   }
 
-  private void setMainView(String fxmlPath, TableInterface controller) {
+  public void setMainView(String fxmlPath, TableInterface controller) {
     try {
       FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
       loader.setController(controller); // Gán controller vào FXMLLoader
-
       main.getChildren().clear();
       main.getChildren().add(loader.load());
     } catch (IOException e) {
@@ -61,14 +66,8 @@ public class ProductController  {
     }
   }
 
-  private void setMainView(String fxmlPath) {
-    try {
-      FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+  public void clearMainView() {
       main.getChildren().clear();
-      main.getChildren().add(loader.load());
-    } catch (IOException e) {
-      logger.error("Loading FXML Failed!", e);
-    }
   }
 
   private void setActiveTab(Button activeTab) {

@@ -42,4 +42,9 @@ public class Category_Entity {
 
   public Category_Entity() {
   }
+
+  @Override
+  public String toString() {
+    return NAME_CATEGORY;  // Chỉ trả về tên danh mục
+  }
 }

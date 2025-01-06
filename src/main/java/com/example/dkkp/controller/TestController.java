@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.dkkp.controller.LoginController.entityManager;
+
 public class TestController {
 
     public static void main(String[] args) throws Exception {
@@ -19,19 +21,14 @@ public class TestController {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-
-//            Product_Base_Entity pd = new Product_Base_Entity(null,"Pd 3",20,LocalDateTime.now(),"des pd",20,1,5);
-            Product_Base_Entity pd = new Product_Base_Entity(null,null,null,null,"des pd",null,null,null,"Apple",null);
-            ProductBaseService productBaseService = new ProductBaseService(entityManager);
-//            productBaseService.createProductBase(pd);
-            List<Product_Base_Entity> o = productBaseService.getProductBaseByCombinedCondition(pd,null,null,null,null,null,null,null);
-            for(Product_Base_Entity p : o){
-                System.out.println(p.getID_BASE_PRODUCT());
-                System.out.println(p.getNAME_PRODUCT());
-                System.out.println(p.getID_CATEGORY());
-                System.out.println(p.getNAME_CATEGORY());
-                System.out.println("-----");
+            ProductFinalService productFinalService = new ProductFinalService(entityManager);
+            Product_Final_Entity finalProduct = new Product_Final_Entity(null, 5,null,null,null,null, null, null);
+            List<Product_Final_Entity> p = productFinalService.getProductFinalByCombinedCondition(finalProduct,null,null,null, "ID", "asc", null, null);
+            for (Product_Final_Entity item : p) {
+                System.out.println("ID " + item.getNAME_PRODUCT());
             }
+//           Boolean b = reflectField.isPropertyNameMatched(Product_Base_Entity.class, sortField);
+//            System.out.println(b);
             transaction.commit();
         } catch (Exception e) {
             if (transaction.isActive()) {

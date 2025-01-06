@@ -1,12 +1,8 @@
 package com.example.dkkp.model;
 
-import io.hypersistence.utils.hibernate.type.array.ListArrayType;
 import jakarta.persistence.*;
-import org.hibernate.annotations.Type;
 
 import java.time.LocalDateTime;
-import java.util.List;
-
 
 
 @Entity
@@ -20,7 +16,7 @@ public class Product_Base_Entity {
   @Column(name = "\"NAME_PRODUCT\"")
   private String NAME_PRODUCT;
   @Column(name = "\"TOTAL_QUANTITY\"")
-  private Integer QUANTITY;
+  private Integer TOTAL_QUANTITY;
   @Column(name = "\"DATE_RELEASE\"")
   private LocalDateTime DATE_RELEASE;
   @Column(name = "\"DES_PRODUCT\"")
@@ -62,12 +58,12 @@ public class Product_Base_Entity {
     this.NAME_PRODUCT = NAME_PRODUCT;
   }
 
-  public Integer getQUANTITY() {
-    return QUANTITY;
+  public Integer getTOTAL_QUANTITY() {
+    return TOTAL_QUANTITY;
   }
 
-  public void setQUANTITY(Integer QUANTITY) {
-    this.QUANTITY = QUANTITY;
+  public void setTOTAL_QUANTITY(Integer TOTAL_QUANTITY) {
+    this.TOTAL_QUANTITY = TOTAL_QUANTITY;
   }
 
   public LocalDateTime getDATE_RELEASE() {
@@ -126,10 +122,10 @@ public class Product_Base_Entity {
     this.NAME_CATEGORY = NAME_CATEGORY;
   }
 
-  public Product_Base_Entity(Integer ID_BASE_PRODUCT, String NAME_PRODUCT, Integer QUANTITY, LocalDateTime DATE_RELEASE, String DES_PRODUCT, Integer VIEW_COUNT, Integer ID_CATEGORY, Integer ID_BRAND, String NAME_BRAND, String NAME_CATEGORY) {
+  public Product_Base_Entity(Integer ID_BASE_PRODUCT, String NAME_PRODUCT, Integer TOTAL_QUANTITY, LocalDateTime DATE_RELEASE, String DES_PRODUCT, Integer VIEW_COUNT, Integer ID_CATEGORY, Integer ID_BRAND, String NAME_BRAND, String NAME_CATEGORY) {
     this.ID_BASE_PRODUCT = ID_BASE_PRODUCT;
     this.NAME_PRODUCT = NAME_PRODUCT;
-    this.QUANTITY = QUANTITY;
+    this.TOTAL_QUANTITY = TOTAL_QUANTITY;
     this.DATE_RELEASE = DATE_RELEASE;
     this.DES_PRODUCT = DES_PRODUCT;
     this.VIEW_COUNT = VIEW_COUNT;
@@ -139,10 +135,10 @@ public class Product_Base_Entity {
     this.NAME_CATEGORY = NAME_CATEGORY;
   }
 
-  public Product_Base_Entity(Integer ID_BASE_PRODUCT, String NAME_PRODUCT, Integer QUANTITY, LocalDateTime DATE_RELEASE, String DES_PRODUCT, Integer VIEW_COUNT, Integer ID_CATEGORY, Integer ID_BRAND) {
+  public Product_Base_Entity(Integer ID_BASE_PRODUCT, String NAME_PRODUCT, Integer TOTAL_QUANTITY, LocalDateTime DATE_RELEASE, String DES_PRODUCT, Integer VIEW_COUNT, Integer ID_CATEGORY, Integer ID_BRAND) {
     this.ID_BASE_PRODUCT = ID_BASE_PRODUCT;
     this.NAME_PRODUCT = NAME_PRODUCT;
-    this.QUANTITY = QUANTITY;
+    this.TOTAL_QUANTITY = TOTAL_QUANTITY;
     this.DATE_RELEASE = DATE_RELEASE;
     this.DES_PRODUCT = DES_PRODUCT;
     this.VIEW_COUNT = VIEW_COUNT;
@@ -151,5 +147,10 @@ public class Product_Base_Entity {
   }
 
   public Product_Base_Entity() {
+  }
+
+  @Override
+  public String toString() {
+    return  "ID_BASE_PRODUCT " + ID_BASE_PRODUCT;
   }
 }

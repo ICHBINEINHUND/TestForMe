@@ -1,24 +1,41 @@
 package com.example.dkkp.controller.product;
 
+import com.example.dkkp.controller.ProductController;
 import com.example.dkkp.model.Product_Base_Entity;
+import com.example.dkkp.service.ProductBaseService;
+import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTableColumn;
 import io.github.palexdev.materialfx.controls.MFXTableView;
 import io.github.palexdev.materialfx.controls.cell.MFXTableRowCell;
-import javafx.application.Platform;
+//import io.github.palexdev.mfxcore.controls.Label;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import static com.example.dkkp.controller.LoginController.entityManager;
+import static com.example.dkkp.controller.LoginController.transaction;
 
 public class ProductBaseController implements TableInterface {
+    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
     @FXML
     private MFXTableView<Product_Base_Entity> productTable;
     @FXML
@@ -43,7 +60,7 @@ public class ProductBaseController implements TableInterface {
     @FXML
     private MFXTableColumn<Product_Base_Entity> NAME_BRAND;
     @FXML
-    private TextField searchFld;
+    private Button searchFld;
     @FXML
     private Button crtBtn;
     @FXML
@@ -51,25 +68,172 @@ public class ProductBaseController implements TableInterface {
     @FXML
     private Button delBtn;
     @FXML
+    private Button refreshBtn;
+    @FXML
     private StackPane main;
     @FXML
     private VBox vBox;
+    @FXML
+    private HBox paginationHBox;
     private ObservableList<Product_Base_Entity> observableList;
     private FilteredList<Product_Base_Entity> filteredList;
 
+    public ProductController productController;
+    private ProductBaseCreateController productBaseCreateController = new ProductBaseCreateController();
+    private ProductBaseUpdateController productBaseUpdateController = new ProductBaseUpdateController();
+    private ProductBaseFilterController productBaseFilterController = new ProductBaseFilterController();
+
+    public ProductBaseService productBaseService = new ProductBaseService(entityManager);
+    Product_Base_Entity productBaseEntity = new Product_Base_Entity();
+    String sortField = "ID_BASE_PRODUCT";
+    String sortOrder = "desc";
+    String typeDate = null;
+    String typeQuantity = null;
+    String typeView = null;
+
+    Integer setOff = 2;
+    Integer offSet = 0;
+
+
+    @FXML
+    private MFXButton prevBtn, prevPageBtn, nextPageBtn, nextBtn;
+    @FXML
+    private Label pageLabel1, pageLabel2, pageLabel3;
+
+    public int currentPage = 1;
+    private int totalPages = 5; // Giả sử có 3 trang dữ liệu
+
     @FXML
     public void initialize() {
-//        vBox.prefWidthProperty().bind(main.widthProperty().multiply(0.7));
-        observableList = getProducts();
-        filteredList = new FilteredList<>(observableList, _ -> true);
-        productTable.setItems(filteredList);
+        System.out.println("----");
+        System.out.println("khoi tao tao");
+        System.out.println("----");
         setCol();
-        setWidth(); // Cập nhật độ rộng khi bảng đã có chiều rộng
+        setWidth();
+        observableList = getProducts();
+        productTable.setItems(observableList);
+        updateTotalPage();
         crt();
-        upd();
-        del();
-        setColumnResizableForAllColumns(true);
+        setSort();
+    }
 
+    public void getProductController(ProductController productController) {
+        this.productController = productController;
+    }
+
+    private void setSort() {
+
+        ID_BASE_PRODUCT.setOnMouseClicked(event -> handleSort("ID_BASE_PRODUCT"));
+        NAME_PRODUCT.setOnMouseClicked(event -> handleSort("NAME_PRODUCT"));
+        TOTAL_QUANTITY.setOnMouseClicked(event -> handleSort("TOTAL_QUANTITY"));
+        DATE_RELEASE.setOnMouseClicked(event -> handleSort("DATE_RELEASE"));
+        DES_PRODUCT.setOnMouseClicked(event -> handleSort("DES_PRODUCT"));
+        VIEW_COUNT.setOnMouseClicked(event -> handleSort("VIEW_COUNT"));
+        ID_CATEGORY.setOnMouseClicked(event -> handleSort("ID_CATEGORY"));
+        NAME_CATEGORY.setOnMouseClicked(event -> handleSort("NAME_CATEGORY"));
+        ID_BRAND.setOnMouseClicked(event -> handleSort("ID_BRAND"));
+        NAME_BRAND.setOnMouseClicked(event -> handleSort("NAME_BRAND"));
+    }
+
+    private void handleSort(String columnName) {
+        if (sortField == null || !sortField.equals(columnName)) {
+            sortField = columnName;
+            sortOrder = "asc";
+        } else {
+            sortOrder = sortOrder.equals("asc") ? "desc" : "asc";
+        }
+        refreshProductTable();
+    }
+
+    public void setPage(int page) {
+        if (page < 1 || page > totalPages || totalPages == 1) {
+            return; // Không cho phép chọn trang ngoài phạm vi
+        }
+        offSet = ((page - 1) * setOff);
+        currentPage = page;
+        updatePagination();
+        refreshProductTable();
+    }
+
+    private void updatePagination() {
+        if (totalPages < 3) {
+            if (totalPages == 1) {
+                System.out.println("total Page" + totalPages);
+                pageLabel2.setManaged(false);
+            }
+            pageLabel3.setManaged(false);
+            if (totalPages == 0) {
+                paginationHBox.setVisible(false);
+                paginationHBox.setManaged(false);
+            }
+        }
+        if (currentPage == 1) {
+            pageLabel1.setText("1");
+            pageLabel2.setText("2");
+            pageLabel3.setText("3");
+
+            pageLabel1.setDisable(true);
+            pageLabel2.setDisable(false);
+            pageLabel3.setDisable(false);
+            pageLabel2.setOnMouseClicked(event -> setPage(2));
+            pageLabel3.setOnMouseClicked(event -> setPage(3));
+        } else if (currentPage == totalPages && totalPages == 2) {
+            pageLabel1.setText("1");
+            pageLabel2.setText("2");
+
+            pageLabel2.setDisable(true);
+            pageLabel1.setDisable(false);
+
+            pageLabel1.setOnMouseClicked(event -> setPage(1));
+
+        } else if (currentPage == totalPages) {
+            pageLabel1.setText(String.valueOf(totalPages - 2));
+            pageLabel2.setText(String.valueOf(totalPages - 1));
+            pageLabel3.setText(String.valueOf(totalPages));
+
+            pageLabel1.setDisable(false);
+            pageLabel2.setDisable(false);
+            pageLabel3.setDisable(true);
+
+            pageLabel1.setOnMouseClicked(event -> setPage(totalPages - 2));
+            pageLabel2.setOnMouseClicked(event -> setPage(totalPages - 1));
+            pageLabel3.setOnMouseClicked(event -> setPage(totalPages));
+        } else {
+            pageLabel1.setText(String.valueOf(currentPage - 1));
+            pageLabel2.setText(String.valueOf(currentPage));
+            pageLabel3.setText(String.valueOf(currentPage + 1));
+
+            pageLabel1.setDisable(false);
+            pageLabel2.setDisable(true);
+            pageLabel3.setDisable(false);
+
+            pageLabel1.setOnMouseClicked(event -> setPage(currentPage - 1));
+            pageLabel2.setOnMouseClicked(event -> setPage(currentPage));
+            pageLabel3.setOnMouseClicked(event -> setPage(currentPage + 1));
+//            }
+
+            if (pageLabel1.isDisable()) {
+                pageLabel1.setStyle("-fx-text-fill: gray;");
+            } else {
+                pageLabel1.setStyle("-fx-text-fill: black;");
+            }
+            if (pageLabel2.isDisable()) {
+                pageLabel2.setStyle("-fx-text-fill: gray;");
+            } else {
+                pageLabel2.setStyle("-fx-text-fill: black;");
+            }
+            if (pageLabel3.isDisable()) {
+                pageLabel3.setStyle("-fx-text-fill: gray;");
+            } else {
+                pageLabel3.setStyle("-fx-text-fill: black;");
+            }
+
+        }
+
+        prevBtn.setDisable(currentPage == 1);
+        prevPageBtn.setDisable(currentPage == 1);
+        nextBtn.setDisable(currentPage == totalPages || totalPages == 3);
+        nextPageBtn.setDisable(currentPage == totalPages || totalPages == 3);
     }
 
     private void setCol() {
@@ -78,7 +242,7 @@ public class ProductBaseController implements TableInterface {
         DES_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Base_Entity::getID_CATEGORY));
         DATE_RELEASE.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Base_Entity::getDATE_RELEASE));
         VIEW_COUNT.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Base_Entity::getVIEW_COUNT));
-        TOTAL_QUANTITY.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Base_Entity::getQUANTITY));
+        TOTAL_QUANTITY.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Base_Entity::getTOTAL_QUANTITY));
         ID_CATEGORY.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Base_Entity::getID_CATEGORY));
         NAME_CATEGORY.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Base_Entity::getNAME_CATEGORY));
         ID_BRAND.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Base_Entity::getID_BRAND));
@@ -87,107 +251,155 @@ public class ProductBaseController implements TableInterface {
 
 
     public void setWidth() {
-        ID_BASE_PRODUCT.setMinWidth(100);
-        ID_BASE_PRODUCT.setMaxWidth(200);
-
-        NAME_PRODUCT.setMinWidth(150);
-        NAME_PRODUCT.setMaxWidth(250);
-
-        DES_PRODUCT.setMinWidth(200);
-        DES_PRODUCT.setMaxWidth(300);
-
-        DATE_RELEASE.setMinWidth(150);
-        DATE_RELEASE.setMaxWidth(250);
-
-        VIEW_COUNT.setMinWidth(100);
-        VIEW_COUNT.setMaxWidth(150);
-
-        TOTAL_QUANTITY.setMinWidth(100);
-        TOTAL_QUANTITY.setMaxWidth(150);
-
-        ID_CATEGORY.setMinWidth(150);
-        ID_CATEGORY.setMaxWidth(200);
-
-        NAME_CATEGORY.setMinWidth(150);
-        NAME_CATEGORY.setMaxWidth(250);
-
-        ID_BRAND.setMinWidth(150);
-        ID_BRAND.setMaxWidth(200);
-
-        NAME_BRAND.setMinWidth(200);
-        NAME_BRAND.setMaxWidth(300);
+        ID_BASE_PRODUCT.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
+        NAME_PRODUCT.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
+        DES_PRODUCT.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
+        DATE_RELEASE.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
+        VIEW_COUNT.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
+        TOTAL_QUANTITY.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
+        ID_CATEGORY.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
+        NAME_CATEGORY.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
+        ID_BRAND.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
+        NAME_BRAND.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
     }
 
 
     private void crt() {
-//        crtBtn.setOnAction(_ -> {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dkkp/ProductCrtView.fxml"));
-//            main.getChildren().clear();
-//            try {
-//                main.getChildren().add(loader.load());
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
+        crtBtn.setOnAction(_ -> {
+            productBaseCreateController.setProductBaseController(this);
+            setMainView("/com/example/dkkp/ProductCrtView.fxml", productBaseCreateController);
+        });
+
+        updatePagination();
+        refreshBtn.setOnMouseClicked(event -> {
+            ProductBaseController productBaseController = new ProductBaseController();
+            productBaseController.productController = this.productController;
+            productController.productBaseController = productBaseController;
+            productController.setMainView("/com/example/dkkp/ProductBaseView.fxml", productBaseController);
+        });
+
+        searchFld.setOnMouseClicked(event -> {
+            ProductBaseFilterController productBaseFilterController = new ProductBaseFilterController();
+            productBaseFilterController.setProductBaseController(this);
+            Stage popupStage = setPopView("/com/example/dkkp/BaseProductFilter.fxml", productBaseFilterController);
+            productBaseFilterController.setPopupStage(popupStage);  // Truyền Stage cho controller của popup
+        });
+        updBtn.setOnMouseClicked(event -> upd());
+        delBtn.setOnMouseClicked(event -> del());
+        setColumnResizableForAllColumns(true);
+
+        pageLabel1.setOnMouseClicked(event -> setPage(currentPage));
+        pageLabel2.setOnMouseClicked(event -> setPage(currentPage + 1));
+        pageLabel3.setOnMouseClicked(event -> setPage(currentPage + 2));
+        prevBtn.setOnAction(event -> setPage(1));
+        nextBtn.setOnAction(event -> setPage(totalPages));
+        prevPageBtn.setOnAction(event -> setPage(currentPage - 1));
+        nextPageBtn.setOnAction(event -> setPage(currentPage + 1));
     }
 
     private void upd() {
-        updBtn.setOnAction(_ -> {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dkkp/ProductUpdView.fxml"));
-            main.getChildren().clear();
-            try {
-                main.getChildren().add(loader.load());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        List<Product_Base_Entity> selectedItems = productTable.getSelectionModel().getSelectedValues();
+        if (selectedItems.size() == 1) {
+            productBaseUpdateController.setEntity(selectedItems.getFirst());
+            productBaseUpdateController.setProductBaseController(this);
+            Stage popupStageUpdate = setPopView("/com/example/dkkp/ProductUpdView.fxml", productBaseUpdateController);
+            productBaseUpdateController.setPopupStage(popupStageUpdate);
+        }
+        ;
     }
 
+    ;
+
+
     private void del() {
-        delBtn.setOnAction(_ -> {
-            Product_Base_Entity selected = productTable.getSelectionModel().getSelectedValue();
-            if (selected != null) {
-                observableList.remove(selected);
+        List<Product_Base_Entity> selectedItems = productTable.getSelectionModel().getSelectedValues();
+
+        if (selectedItems.size() > 0) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirm Deletion");
+            alert.setHeaderText("Are you sure you want to delete this item?");
+            alert.setContentText("This action cannot be undone.");
+
+
+            ButtonType yesButton = new ButtonType("Yes");
+            ButtonType noButton = new ButtonType("No");
+            alert.getButtonTypes().setAll(yesButton, noButton);
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == yesButton) {
+                try {
+                    transaction.begin();
+                    ProductBaseService productBaseService = new ProductBaseService(entityManager);
+                    for (Product_Base_Entity item : selectedItems) {
+                        productBaseService.deleteProductBase(item.getID_BASE_PRODUCT());
+                    }
+//                    transaction.commit();
+                } catch (Exception e) {
+                    transaction.rollback();
+                    throw e;
+                }
+                refreshProductTable();
             }
-        });
+        }
+    }
+
+
+    public void refreshProductTable() {
+        observableList = getProducts();
+        productTable.setItems(observableList);
+        updatePagination();
     }
 
     private void setColumnResizableForAllColumns(boolean resizable) {
         ID_BASE_PRODUCT.setColumnResizable(resizable);
-        NAME_PRODUCT.setColumnResizable(resizable);
-        DES_PRODUCT.setColumnResizable(resizable);
-        DATE_RELEASE.setColumnResizable(resizable);
-        VIEW_COUNT.setColumnResizable(resizable);
-        TOTAL_QUANTITY.setColumnResizable(resizable);
-        ID_CATEGORY.setColumnResizable(resizable);
-        NAME_CATEGORY.setColumnResizable(resizable);
-        ID_BRAND.setColumnResizable(resizable);
-        NAME_BRAND.setColumnResizable(resizable);
-        // Lặp qua tất cả các cột bạn có và thiết lập cho mỗi cột
-//        addResizeListener(ID_BASE_PRODUCT);
-//        addResizeListener(NAME_PRODUCT);
-//        addResizeListener(DES_PRODUCT);
-//        addResizeListener(DATE_RELEASE);
-//        addResizeListener(VIEW_COUNT);
-//        addResizeListener(TOTAL_QUANTITY);
-//        addResizeListener(ID_CATEGORY);
-//        addResizeListener(NAME_CATEGORY);
-//        addResizeListener(ID_BRAND);
-//        addResizeListener(NAME_BRAND);
-
+        ID_BASE_PRODUCT.setMaxWidth(300);
     }
 
-//    private void addResizeListener(MFXTableColumn<?> column) {
-//        column.widthProperty().addListener((observable, oldValue, newValue) -> {
-//            // In ra thông báo mỗi khi có thay đổi kích thước cột
-//            System.out.println("Column resized: " + column.getText() + " - New width: " + newValue);
-//            System.out.println(productTable.getWidth());
-//        });
-//    }
+    //
+
+    public void setMainView(String fxmlPath, TableInterface controller) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            loader.setController(controller); // Gán controller vào FXMLLoader
+            main.getChildren().clear();
+            main.getChildren().add(loader.load());
+        } catch (IOException e) {
+            logger.error("Loading FXML Failed!", e.getMessage());
+        }
+    }
+
+    public Stage setPopView(String fxmlPath, TableInterface controller) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            loader.setController(controller);  // Gán controller cho popup
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL);  // Cho phép Stage này hoạt động độc lập
+            popupStage.setTitle("Base product filter"); // Tiêu đề của popup
+            Scene scene = new Scene(loader.load());
+            popupStage.setScene(scene);
+            popupStage.setWidth(1000);
+            popupStage.setHeight(600);
+            popupStage.show();
+            return popupStage;
+        } catch (IOException e) {
+            logger.error("Loading FXML Failed!", e.getMessage());
+            return null;
+        }
+    }
+
+    public void closePopup(Stage popupStage) {
+        if (popupStage != null) {
+            popupStage.close();  // Đóng cửa sổ
+        }
+    }
 
 
     private ObservableList<Product_Base_Entity> getProducts() {
-        return FXCollections.observableArrayList( new Product_Base_Entity(1, "NVIDIA GeForce RTX 4090", 23, LocalDateTime.now(), "des", 2, 1, 5, "dcm brand", "dcm cate"));
+        List<Product_Base_Entity> p = productBaseService.getProductBaseByCombinedCondition(productBaseEntity, sortField, sortOrder, typeDate, typeQuantity, typeView, setOff, offSet);
+        return FXCollections.observableArrayList(p);
+    }
 
+    private void updateTotalPage() {
+        Integer number = productBaseService.getCountProductBase(productBaseEntity, typeDate, typeQuantity, typeView);
+        totalPages = (int) Math.ceil((double) number / setOff);
     }
 }

@@ -3,16 +3,16 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.StackPane?>
-<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.dkkp.controller.ProductController" spacing="20" maxWidth="7000">
-  <HBox spacing="10" styleClass="productNav">
-    <VBox alignment="CENTER">
-      <MFXButton fx:id="productDetail" buttonType="RAISED" mnemonicParsing="false" text="Product Detail"
-                 onAction="#loadProductBase" styleClass="productNavBtn"/>
-    </VBox>
-    <VBox alignment="CENTER">
-      <MFXButton fx:id="productOption" buttonType="RAISED" mnemonicParsing="false" text="Product Option"
-                 onAction="#loadProductOption" styleClass="productNavBtn"/>
-    </VBox>
-  </HBox>
-  <StackPane fx:id="main"/>
+<VBox xmlns:fx="http://javafx.com/fxml" spacing="20" maxWidth="7000">
+    <HBox spacing="10" styleClass="productNav">
+        <VBox alignment="CENTER">
+            <MFXButton fx:id="productDetail" buttonType="RAISED" mnemonicParsing="false" text="Product Detail"
+                       styleClass="productNavBtn"/>
+        </VBox>
+        <VBox alignment="CENTER">
+            <MFXButton fx:id="productOption" buttonType="RAISED" mnemonicParsing="false" text="Product Option"
+                       styleClass="productNavBtn"/>
+        </VBox>
+    </HBox>
+    <StackPane fx:id="main"/>
 </VBox>

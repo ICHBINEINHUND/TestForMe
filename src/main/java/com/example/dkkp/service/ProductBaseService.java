@@ -5,8 +5,6 @@ import com.example.dkkp.model.Product_Attribute_Entity;
 import com.example.dkkp.model.Product_Attribute_Values_Entity;
 import com.example.dkkp.model.Product_Base_Entity;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,7 +32,7 @@ public class ProductBaseService {
     ) {
         Integer idBaseProduct = product_BASE_entity.getID_BASE_PRODUCT();
         String NAME_PRODUCT = product_BASE_entity.getNAME_PRODUCT();
-        Integer TOTAL_QUANTITY = product_BASE_entity.getQUANTITY();
+        Integer TOTAL_QUANTITY = product_BASE_entity.getTOTAL_QUANTITY();
         LocalDateTime DATE_RELEASE = product_BASE_entity.getDATE_RELEASE();
 //        String DES_PRODUCT = product_BASE_entity.getDES_PRODUCT();
         Integer VIEW_COUNT = product_BASE_entity.getVIEW_COUNT();
@@ -43,14 +41,30 @@ public class ProductBaseService {
         String NAME_BRAND = product_BASE_entity.getNAME_BRAND();
         String NAME_CATEGORY = product_BASE_entity.getNAME_CATEGORY();
 
-        if ( sortField == null ||reflectField.isPropertyNameMatched(Product_Base_Entity.class, sortField) ) {
-
             return productBaseDao.getFilteredProductBase(
                     idBaseProduct, NAME_PRODUCT, ID_CATEGORY,NAME_CATEGORY, ID_BRAND,NAME_BRAND, TOTAL_QUANTITY,typeQuantity, DATE_RELEASE, typeDate,VIEW_COUNT,typeView, sortField, sortOrder, offset, setOff
+
             );
-        }
-        ;
-        throw new RuntimeException("Error with sort");
+    }
+    public Integer getCountProductBase(
+            Product_Base_Entity product_BASE_entity,
+            String typeDate,
+            String typeQuantity,
+            String typeView
+    ) {
+        Integer idBaseProduct = product_BASE_entity.getID_BASE_PRODUCT();
+        String NAME_PRODUCT = product_BASE_entity.getNAME_PRODUCT();
+        Integer TOTAL_QUANTITY = product_BASE_entity.getTOTAL_QUANTITY();
+        LocalDateTime DATE_RELEASE = product_BASE_entity.getDATE_RELEASE();
+//        String DES_PRODUCT = product_BASE_entity.getDES_PRODUCT();
+        Integer VIEW_COUNT = product_BASE_entity.getVIEW_COUNT();
+        Integer ID_CATEGORY = product_BASE_entity.getID_CATEGORY();
+        Integer ID_BRAND = product_BASE_entity.getID_BRAND();
+        String NAME_BRAND = product_BASE_entity.getNAME_BRAND();
+        String NAME_CATEGORY = product_BASE_entity.getNAME_CATEGORY();
+
+            return productBaseDao.getFilteredProductBaseCount(
+                    idBaseProduct, NAME_PRODUCT, ID_CATEGORY,NAME_CATEGORY, ID_BRAND,NAME_BRAND, TOTAL_QUANTITY,typeQuantity, DATE_RELEASE, typeDate,VIEW_COUNT,typeView);
     }
 
     public Product_Base_Entity getProductBaseByID(Integer id) {
@@ -64,7 +78,7 @@ public class ProductBaseService {
     public void updateProductBase(Product_Base_Entity product_BASE_entity) {
         Integer idBaseProduct = product_BASE_entity.getID_BASE_PRODUCT();
         String NAME_PRODUCT = product_BASE_entity.getNAME_PRODUCT();
-        Integer TOTAL_QUANTITY = product_BASE_entity.getQUANTITY();
+        Integer TOTAL_QUANTITY = product_BASE_entity.getTOTAL_QUANTITY();
         LocalDateTime DATE_RELEASE = product_BASE_entity.getDATE_RELEASE();
         String DES_PRODUCT = product_BASE_entity.getDES_PRODUCT();
         Integer VIEW_COUNT = product_BASE_entity.getVIEW_COUNT();
@@ -80,7 +94,7 @@ public class ProductBaseService {
 
         Integer idBaseProduct = product_BASE_entity.getID_BASE_PRODUCT();
         String NAME_PRODUCT = product_BASE_entity.getNAME_PRODUCT();
-        product_BASE_entity.setQUANTITY(0);
+        product_BASE_entity.setTOTAL_QUANTITY(0);
         LocalDateTime DATE_RELEASE = product_BASE_entity.getDATE_RELEASE();
         String DES_PRODUCT = product_BASE_entity.getDES_PRODUCT();
         Integer VIEW_COUNT = product_BASE_entity.getVIEW_COUNT();
@@ -148,11 +162,7 @@ public class ProductBaseService {
         String NAME_ATTRIBUTE = productAttributeValues.getNAME_ATTRIBUTE();
         String NAME_PRODUCT = productAttributeValues.getNAME_PRODUCT();
 
-
-        if (reflectField.isPropertyNameMatched(Product_Attribute_Values_Entity.class, sortField)) {
-                productAttributeValuesDao.getFilteredProductAttributeValues(ID,VALUE,ID_ATTRIBUTE,NAME_ATTRIBUTE,ID_BASE_PRODUCT,NAME_PRODUCT,sortField,sortOrder,setOff,offset);
-        }
-        throw new RuntimeException("Error with sort");
+           return productAttributeValuesDao.getFilteredProductAttributeValues(ID,VALUE,ID_ATTRIBUTE,NAME_ATTRIBUTE,ID_BASE_PRODUCT,NAME_PRODUCT,sortField,sortOrder,setOff,offset);
     }
 
     public void deleteProductAttributeValues(Integer id, Integer idAttribute, Integer idBaseProduct) {

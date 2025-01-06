@@ -1,9 +1,29 @@
 package com.example.dkkp.service;
 
+import javafx.scene.control.TextFormatter;
+import javafx.util.converter.DoubleStringConverter;
+import javafx.util.converter.IntegerStringConverter;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Validator {
+    public Validator() {
+    }
+
+    public  TextFormatter<Integer> formatterInteger = new TextFormatter<>(new IntegerStringConverter(), null, c -> {
+        if (c.getControlNewText().matches("[0-9]*")) {
+            return c;
+        } else {
+            return null;
+        }
+    });
+
+    public static TextFormatter<Double> formatterDouble = new TextFormatter<>(new DoubleStringConverter(), 0.0, c -> {
+        String newText = c.getControlNewText();
+        return newText.matches("-?\\d*(\\.\\d*)?") || newText.isEmpty() ? c : null;
+    });
+
     public static boolean isValidEmail(String email) {
         String regex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
         Pattern pattern = Pattern.compile(regex);
