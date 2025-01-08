@@ -20,7 +20,7 @@ public class ExportDetailController {
 
   private void bck() {
     bckBtn.setOnAction(_ -> {
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dkkp/ExportView.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dkkp/Bill/ExportView.fxml"));
       main.getChildren().clear();
       try {
         main.getChildren().add(loader.load());

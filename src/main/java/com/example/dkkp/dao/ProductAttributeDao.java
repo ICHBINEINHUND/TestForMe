@@ -77,6 +77,42 @@ public class ProductAttributeDao {
         typedQuery.setMaxResults(setOff);
         return entityManager.createQuery(query).getResultList();
     }
+    public Integer getFilteredProductAttributeCount(Integer ID_ATTRIBUTE, String NAME_ATTRIBUTE, Integer ID_CATEGORY, String NAME_CATEGORY) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<Product_Attribute_Entity> root = query.from(Product_Attribute_Entity.class);
+        Join<Product_Attribute_Entity, Category_Entity> categoryJoin = root.join("category", JoinType.INNER);
+
+        Predicate conditions = cb.conjunction();
+        boolean hasConditions = false;
+
+        if (NAME_CATEGORY != null) {
+            conditions = cb.and(conditions, cb.like(categoryJoin.get("NAME_CATEGORY"), "%" + NAME_CATEGORY + "%"));
+            hasConditions = true;
+        }
+        if (ID_ATTRIBUTE != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_ATTRIBUTE"), ID_ATTRIBUTE));
+            hasConditions = true;
+        }
+        if (NAME_ATTRIBUTE != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("NAME_ATTRIBUTE"), NAME_ATTRIBUTE));
+            hasConditions = true;
+        }
+        if (ID_CATEGORY != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_CATEGORY"), ID_CATEGORY));
+            hasConditions = true;
+        }
+
+        if (hasConditions) {
+            query.where(conditions);
+        }
+
+        query.select(cb.count(root));
+        TypedQuery<Long> typedQuery = entityManager.createQuery(query);
+        Long result = typedQuery.getSingleResult();
+        return result != null ? result.intValue() : 0;
+    }
+
 
     public void deleteProductAttributeById(Integer ID_ATTRIBUTE) {
 

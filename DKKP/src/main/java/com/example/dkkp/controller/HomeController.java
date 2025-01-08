@@ -48,19 +48,19 @@ public class HomeController {
 
   @FXML
   public void loadImportView() {
-    setMainView("/com/example/dkkp/ImportView.fxml");
+    setMainView("/com/example/dkkp/Import/ImportView.fxml");
     setActiveTab(importTab);
   }
 
   @FXML
   public void loadExportView() {
-    setMainView("/com/example/dkkp/ExportView.fxml");
+    setMainView("/com/example/dkkp/Bill/ExportView.fxml");
     setActiveTab(exportTab);
   }
 
   @FXML
   public void loadReportView() {
-    setMainView("/com/example/dkkp/ReportView.fxml");
+    setMainView("/com/example/dkkp/Report/ReportView.fxml");
     setActiveTab(reportTab);
   }
 

@@ -122,6 +122,73 @@ public class BillDetailDao {
 
         return typedQuery.getResultList();
     }
+    public Integer getFilteredBillDetailsCount(Integer ID_BILL_DETAIL,
+                                            Double TOTAL_DETAIL_PRICE,
+                                            Double UNIT_PRICE,
+                                            Integer ID_FINAL_PRODUCT,
+                                            String NAME_FINAL_PRODUCT,
+                                            Integer QUANTITY_SP,
+                                            String typeQuantity,
+                                            String ID_BILL,
+                                            Boolean AVAILABLE) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<Bill_Detail_Entity> root = query.from(Bill_Detail_Entity.class);
+
+        Join<Bill_Detail_Entity, Product_Final_Entity> productFinalJoin = root.join("product_final", JoinType.INNER);
+        Predicate conditions = cb.conjunction();
+        boolean hasConditions = false;
+
+        if (ID_BILL_DETAIL != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_BILL_DETAIL"), ID_BILL_DETAIL));
+            hasConditions = true;
+        }
+        if (TOTAL_DETAIL_PRICE != null) {
+            conditions = cb.and(conditions, cb.greaterThanOrEqualTo(root.get("TOTAL_DETAIL_PRICE"), TOTAL_DETAIL_PRICE));
+            hasConditions = true;
+        }
+        if (UNIT_PRICE != null) {
+            conditions = cb.and(conditions, cb.greaterThanOrEqualTo(root.get("UNIT_PRICE"), UNIT_PRICE));
+            hasConditions = true;
+        }
+        if (typeQuantity != null) {
+            conditions = switch (typeQuantity) {
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("QUANTITY_SP"), QUANTITY_SP));
+                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("QUANTITY_SP"), QUANTITY_SP));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("QUANTITY_SP"), QUANTITY_SP));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("QUANTITY_SP"), QUANTITY_SP));
+                case "=" -> cb.and(conditions, cb.equal(root.get("QUANTITY_SP"), QUANTITY_SP));
+                default -> conditions;
+            };
+            hasConditions = true;
+        }
+        if (ID_BILL != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_BILL"), ID_BILL));
+            hasConditions = true;
+        }
+        if (ID_FINAL_PRODUCT != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_FINAL_PRODUCT"), ID_FINAL_PRODUCT));
+            hasConditions = true;
+        }
+        if (NAME_FINAL_PRODUCT != null) {
+            conditions = cb.and(conditions, cb.like(productFinalJoin.get("NAME_PRODUCT"), "%" + NAME_FINAL_PRODUCT + "%"));
+            hasConditions = true;
+        }
+        if (AVAILABLE != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("AVAILABLE"), AVAILABLE));
+            hasConditions = true;
+        }
+
+        if (hasConditions) {
+            query.where(conditions);
+        }
+
+        query.select(cb.count(root));
+        TypedQuery<Long> typedQuery = entityManager.createQuery(query);
+        Long result = typedQuery.getSingleResult();
+        return result != null ? result.intValue() : 0;
+    }
+
 
 
     public void cancelBillDetail(String ID_BILL) {

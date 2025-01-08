@@ -30,7 +30,10 @@ public class ReportDao {
             LocalDateTime dateReport,
             String typeDate,
             String sortField,
-            String sortOrder
+            String sortOrder,
+            Integer offset,
+            Integer setOff
+
     ) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Report_Bug> query = cb.createQuery(Report_Bug.class);
@@ -99,8 +102,69 @@ public class ReportDao {
         ));
 
         TypedQuery<Report_Bug> typedQuery = entityManager.createQuery(query);
+        if (offset != null) typedQuery.setFirstResult(offset);
+        if (setOff != null) typedQuery.setMaxResults(setOff);
         return typedQuery.getResultList();
     }
+    public Integer getFilteredReportCount(
+            String userId,
+            String EMAIL_ACC,
+            Integer reportId,
+            EnumType.Bug_Type status,
+            LocalDateTime dateReport,
+            String typeDate
+    ) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<Report_Bug> root = query.from(Report_Bug.class);
+        Join<Report_Bug, User_Entity> userJoin = root.join("uzer", JoinType.INNER);
+        Predicate conditions = cb.conjunction();
+
+        boolean hasConditions = false;
+
+        if (userId != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_USER"), userId));
+            hasConditions = true;
+        }
+
+        if (EMAIL_ACC != null) {
+            conditions = cb.and(conditions, cb.like(userJoin.get("EMAIL_ACC"), "%" + EMAIL_ACC + "%"));
+            hasConditions = true;
+        }
+
+        if (reportId != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_REPORT"), reportId));
+            hasConditions = true;
+        }
+
+        if (status != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("TYPE_BUG"), status));
+            hasConditions = true;
+        }
+
+        if (dateReport != null && typeDate != null) {
+            conditions = switch (typeDate) {
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("DATE_REPORT"), dateReport));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("DATE_REPORT"), dateReport));
+                case "=" -> cb.and(conditions, cb.equal(root.get("DATE_REPORT"), dateReport));
+                case ">=" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("DATE_REPORT"), dateReport));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("DATE_REPORT"), dateReport));
+                default -> throw new IllegalArgumentException("Invalid typeDate: " + typeDate);
+            };
+            hasConditions = true;
+        }
+
+        if (hasConditions) {
+            query.where(conditions);
+        }
+
+        query.select(cb.count(root));
+        TypedQuery<Long> typedQuery = entityManager.createQuery(query);
+        Long result = typedQuery.getSingleResult();
+
+        return result != null ? result.intValue() : 0;
+    }
+
 
 
     public void deleteReportById(Integer reportId) {

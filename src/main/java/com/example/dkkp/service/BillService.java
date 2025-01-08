@@ -38,15 +38,28 @@ public class BillService {
         Double totalPrice = billEntity.getTOTAL_PRICE();
         String EMAIL_ACC = billEntity.getEMAIL_ACC();
         EnumType.Status_Bill statusBill = billEntity.getBILL_STATUS();
-        if ((reflectField.isPropertyNameMatched(Bill_Entity.class, sortField) && sortOrder != null) || sortField == null) {
             List<Bill_Entity> results = billDao.getFilteredBills(
                     dateExport, typeDate, id, phone, idUser, EMAIL_ACC,statusBill, add, totalPrice,typePrice, sortField, sortOrder, offset, setOff);
             for (Bill_Entity bill : results) {
                 decryptBillSensitiveData(bill);
             }
             return results;
-        }
-        throw new RuntimeException("Erro with sort");
+    }
+    public Integer getCountBillByCombinedCondition(
+            Bill_Entity billEntity,
+            String typeDate,
+            String typePrice
+    ) throws Exception {
+        LocalDateTime dateExport = billEntity.getDate_EXP();
+        String id = billEntity.getID_BILL();
+        String phone = SecurityFunction.encrypt(billEntity.getPHONE_BILL());
+        String add = SecurityFunction.encrypt(billEntity.getADD_BILL());
+        String idUser = billEntity.getID_USER();
+        Double totalPrice = billEntity.getTOTAL_PRICE();
+        String EMAIL_ACC = billEntity.getEMAIL_ACC();
+        EnumType.Status_Bill statusBill = billEntity.getBILL_STATUS();
+        return billDao.getFilteredBillCount(
+                    dateExport, typeDate, id, phone, idUser, EMAIL_ACC,statusBill, add, totalPrice,typePrice);
     }
 
     public List<Bill_Detail_Entity> getBillDetailByCombinedCondition(
@@ -56,7 +69,7 @@ public class BillService {
             String sortOrder,
             int setOff,
             int offset
-    ) throws Exception {
+    ){
         Integer idBillDetail = billDetailEntity.getID_BILL_DETAIL();
         String idBill = billDetailEntity.getID_BILL();
         Double totalPrice = billDetailEntity.getTOTAL_DETAIL_PRICE();
@@ -65,11 +78,24 @@ public class BillService {
         Integer idFinalProduct = billDetailEntity.getID_FINAL_PRODUCT();
         Integer quantityBill = billDetailEntity.getQUANTITY_BILL();
         String NAME_FINAL_PRODUCT = billDetailEntity.getNAME_FINAL_PRODUCT();
-        if (reflectField.isPropertyNameMatched(Bill_Detail_Entity.class, sortField) || sortField == null) {
             return billDetailDao.getFilteredBillDetails(
                     idBillDetail, totalPrice, unitPrice, idFinalProduct,NAME_FINAL_PRODUCT, quantityBill,typeQuantity, idBill, available, sortField, sortOrder, offset, setOff);
-        }
-        throw new RuntimeException("Erro with sort");
+    }
+
+    public Integer getCountBillDetailByCombinedCondition(
+            Bill_Detail_Entity billDetailEntity,
+            String typeQuantity
+    ) {
+        Integer idBillDetail = billDetailEntity.getID_BILL_DETAIL();
+        String idBill = billDetailEntity.getID_BILL();
+        Double totalPrice = billDetailEntity.getTOTAL_DETAIL_PRICE();
+        Double unitPrice = billDetailEntity.getUNIT_PRICE();
+        Boolean available = billDetailEntity.getAVAILABLE();
+        Integer idFinalProduct = billDetailEntity.getID_FINAL_PRODUCT();
+        Integer quantityBill = billDetailEntity.getQUANTITY_BILL();
+        String NAME_FINAL_PRODUCT = billDetailEntity.getNAME_FINAL_PRODUCT();
+            return billDetailDao.getFilteredBillDetailsCount(
+                    idBillDetail, totalPrice, unitPrice, idFinalProduct,NAME_FINAL_PRODUCT, quantityBill,typeQuantity, idBill, available);
     }
 
 

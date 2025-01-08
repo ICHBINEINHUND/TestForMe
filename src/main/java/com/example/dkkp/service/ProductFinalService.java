@@ -33,18 +33,35 @@ public class ProductFinalService {
     ) {
         Integer ID_SP = product_Final_Entity.getID_SP();
         String NAME_PRODUCT = product_Final_Entity.getNAME_PRODUCT();
-//        String DES_PRODUCT = product_Final_Entity.getDES_PRODUCT();
         Double PRICE_SP = product_Final_Entity.getPRICE_SP();
-//        String IMAGE_SP = product_Final_Entity.getIMAGE_SP();
         Integer QUANTITY = product_Final_Entity.getQUANTITY();
         Double DISCOUNT = product_Final_Entity.getDISCOUNT();
         Integer ID_BASE_PRODUCT = product_Final_Entity.getID_BASE_PRODUCT();
         String NAME_PRODUCT_BASE = product_Final_Entity.getNAME_PRODUCT_BASE();
 
         return productFinalDao.getFilteredProductFinal(
-                ID_SP, ID_BASE_PRODUCT, NAME_PRODUCT_BASE, NAME_PRODUCT, PRICE_SP, typePrice, QUANTITY, DISCOUNT, typeDiscount, typeQuantity, sortField, sortOrder, setOff, offset
+                ID_SP, ID_BASE_PRODUCT, NAME_PRODUCT_BASE, NAME_PRODUCT, PRICE_SP, typePrice, QUANTITY, DISCOUNT, typeDiscount, typeQuantity, sortField, sortOrder, offset, setOff
         );
     }
+
+    public Integer getCountProductFinalByCombinedCondition(
+            Product_Final_Entity product_Final_Entity,
+            String typePrice,
+            String typeDiscount,
+            String typeQuantity
+    ) {
+        Integer ID_SP = product_Final_Entity.getID_SP();
+        String NAME_PRODUCT = product_Final_Entity.getNAME_PRODUCT();
+        Double PRICE_SP = product_Final_Entity.getPRICE_SP();
+        Integer QUANTITY = product_Final_Entity.getQUANTITY();
+        Double DISCOUNT = product_Final_Entity.getDISCOUNT();
+        Integer ID_BASE_PRODUCT = product_Final_Entity.getID_BASE_PRODUCT();
+        String NAME_PRODUCT_BASE = product_Final_Entity.getNAME_PRODUCT_BASE();
+
+        return productFinalDao.getFilteredProductFinalCount(
+                ID_SP, ID_BASE_PRODUCT, NAME_PRODUCT_BASE, NAME_PRODUCT, PRICE_SP, typePrice, QUANTITY, DISCOUNT, typeDiscount, typeQuantity);
+    }
+
 
     public Product_Final_Entity getProductByID(Integer id) {
         return productFinalDao.getProductFinalById(id);
@@ -83,7 +100,7 @@ public class ProductFinalService {
 
     }
 
-    public List<Product_Attribute_Entity> getProductOptionCombinedCondition(
+    public List<Product_Option_Entity> getProductOptionCombinedCondition(
             Product_Option_Entity productOptionEntity,
             String sortField,
             String sortOrder,
@@ -93,11 +110,18 @@ public class ProductFinalService {
         Integer ID = productOptionEntity.getID_OPTION();
         String NAME = productOptionEntity.getNAME_OPTION();
 
-        if (reflectField.isPropertyNameMatched(Product_Option_Entity.class, sortField)) {
-            productOptionDao.getFilteredProductOption(ID, NAME, sortField, sortOrder, setOff, offset);
+        return productOptionDao.getFilteredProductOption(ID, NAME, sortField, sortOrder, setOff, offset);
 
-        }
-        throw new RuntimeException("Error with sort");
+    }
+
+    public Integer getCountProductOptionCombinedCondition(
+            Product_Option_Entity productOptionEntity
+    ) {
+        Integer ID = productOptionEntity.getID_OPTION();
+        String NAME = productOptionEntity.getNAME_OPTION();
+
+       return productOptionDao.getFilteredProductOptionCount(ID, NAME);
+
     }
 
     public void deleteProductOption(Integer id) {
@@ -137,10 +161,22 @@ public class ProductFinalService {
         String NAME_OPTION = productOptionValues.getName_Option();
         String NAME_PRODUCT = productOptionValues.getNAME_FINAL_PRODUCT();
 
-        if (reflectField.isPropertyNameMatched(Product_Option_Values_Entity.class, sortField)) {
-            productOptionValuesDao.getFilteredProductOptionValue(ID, ID_OPTION, NAME_OPTION, VALUE, ID_FINAL_PRODUCT, NAME_PRODUCT, sortField, sortOrder, setOff, offset);
-        }
-        throw new RuntimeException("Error with sort");
+          return  productOptionValuesDao.getFilteredProductOptionValue(ID, ID_OPTION, NAME_OPTION, VALUE, ID_FINAL_PRODUCT, NAME_PRODUCT, sortField, sortOrder, setOff, offset);
+
+    }
+    public Integer getCountProductOptionValuesCombinedCondition(
+            Product_Option_Values_Entity productOptionValues
+    ) {
+        //add check
+        Integer ID = productOptionValues.getID();
+        Integer ID_OPTION = productOptionValues.getID_OPTION();
+        String VALUE = productOptionValues.getVALUE();
+        Integer ID_FINAL_PRODUCT = productOptionValues.getID_FINAL_PRODUCT();
+        String NAME_OPTION = productOptionValues.getName_Option();
+        String NAME_PRODUCT = productOptionValues.getNAME_FINAL_PRODUCT();
+
+        return  productOptionValuesDao.getFilteredProductOptionValueCount(ID, ID_OPTION, NAME_OPTION, VALUE, ID_FINAL_PRODUCT, NAME_PRODUCT);
+
     }
 
     public void deleteProductOptionValues(Integer id, Integer idOption, Integer idFinalProduct) {

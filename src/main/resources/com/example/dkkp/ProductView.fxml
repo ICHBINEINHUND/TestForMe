@@ -6,11 +6,35 @@
 <VBox xmlns:fx="http://javafx.com/fxml" spacing="20" maxWidth="7000">
     <HBox spacing="10" styleClass="productNav">
         <VBox alignment="CENTER">
-            <MFXButton fx:id="productDetail" buttonType="RAISED" mnemonicParsing="false" text="Product Detail"
+            <MFXButton fx:id="productBase" buttonType="RAISED" mnemonicParsing="false" text="Base Product"
                        styleClass="productNavBtn"/>
         </VBox>
         <VBox alignment="CENTER">
-            <MFXButton fx:id="productOption" buttonType="RAISED" mnemonicParsing="false" text="Product Option"
+            <MFXButton fx:id="productFinal" buttonType="RAISED" mnemonicParsing="false" text="Final Product"
+                       styleClass="productNavBtn"/>
+        </VBox>
+        <VBox alignment="CENTER">
+            <MFXButton fx:id="productBrand" buttonType="RAISED" mnemonicParsing="false" text="Brand"
+                       styleClass="productNavBtn"/>
+        </VBox>
+        <VBox alignment="CENTER">
+            <MFXButton fx:id="productCategory" buttonType="RAISED" mnemonicParsing="false" text="Category"
+                       styleClass="productNavBtn"/>
+        </VBox>
+        <VBox alignment="CENTER">
+            <MFXButton fx:id="productAttribute" buttonType="RAISED" mnemonicParsing="false" text="Product's Attribute"
+                       styleClass="productNavBtn"/>
+        </VBox>
+        <VBox alignment="CENTER">
+            <MFXButton fx:id="productAttributeValue" buttonType="RAISED" mnemonicParsing="false" text="Product's Attribute Value"
+                       styleClass="productNavBtn"/>
+        </VBox>
+        <VBox alignment="CENTER">
+            <MFXButton fx:id="productOption" buttonType="RAISED" mnemonicParsing="false" text="Product's Option"
+                       styleClass="productNavBtn"/>
+        </VBox>
+        <VBox alignment="CENTER">
+            <MFXButton fx:id="productOptionValue" buttonType="RAISED" mnemonicParsing="false" text="Product's Option Value"
                        styleClass="productNavBtn"/>
         </VBox>
     </HBox>

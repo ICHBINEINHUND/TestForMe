@@ -20,10 +20,12 @@ public class TestController {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         try {
+
             transaction.begin();
             ProductFinalService productFinalService = new ProductFinalService(entityManager);
-            Product_Final_Entity finalProduct = new Product_Final_Entity(null, 5,null,null,null,null, null, null);
-            List<Product_Final_Entity> p = productFinalService.getProductFinalByCombinedCondition(finalProduct,null,null,null, "ID", "asc", null, null);
+            Product_Final_Entity finalProduct = new Product_Final_Entity();
+//            List<Product_Final_Entity> p = productFinalService.getProductFinalByCombinedCondition(productFinalEntity,typePrice, typeDiscount,  typeQuantity, sortField, sortOrder, setOff, offSet)
+            List<Product_Final_Entity> p = productFinalService.getProductFinalByCombinedCondition(finalProduct,null,null,null, null, null, null, null);
             for (Product_Final_Entity item : p) {
                 System.out.println("ID " + item.getNAME_PRODUCT());
             }

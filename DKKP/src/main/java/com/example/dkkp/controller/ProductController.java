@@ -38,49 +38,49 @@ public class ProductController {
 
   @FXML
   public void loadProductBase() {
-    setMainView("/com/example/dkkp/ProductBaseView.fxml");
+    setMainView("/com/example/dkkp/ProductBase/ProductBaseView.fxml");
     setActiveTab(productBase);
   }
 
   @FXML
   public void loadProductFinal() {
-    setMainView("/com/example/dkkp/ProductFinalView.fxml");
+    setMainView("/com/example/dkkp/ProductFinal/ProductFinalView.fxml");
     setActiveTab(productFinal);
   }
 
   @FXML
   public void loadProductBrand() {
-    setMainView("/com/example/dkkp/ProductBrandView.fxml");
+    setMainView("/com/example/dkkp/Brand/ProductBrandView.fxml");
     setActiveTab(productBrand);
   }
 
   @FXML
   public void loadProductCategory() {
-    setMainView("/com/example/dkkp/ProductCategoryView.fxml");
+    setMainView("/com/example/dkkp/Category/ProductCategoryView.fxml");
     setActiveTab(productCategory);
   }
 
   @FXML
   public void loadProductOption() {
-    setMainView("/com/example/dkkp/ProductOptionView.fxml");
+    setMainView("/com/example/dkkp/ProductOption/ProductOptionView.fxml");
     setActiveTab(productOption);
   }
 
   @FXML
   public void loadProductOptionValue() {
-    setMainView("/com/example/dkkp/ProductOptionValueView.fxml");
+    setMainView("/com/example/dkkp/ProductOptionValue/ProductOptionValueView.fxml");
     setActiveTab(productOptionValue);
   }
 
   @FXML
   public void loadProductAttribute() {
-    setMainView("/com/example/dkkp/ProductAttributeView.fxml");
+    setMainView("/com/example/dkkp/ProductAttribute/ProductAttributeView.fxml");
     setActiveTab(productAttribute);
   }
 
   @FXML
   public void loadProductAttributeValue() {
-    setMainView("/com/example/dkkp/ProductAttributeValueView.fxml");
+    setMainView("/com/example/dkkp/ProductAttributeValue/ProductAttributeValueView.fxml");
     setActiveTab(productAttributeValue);
   }
 

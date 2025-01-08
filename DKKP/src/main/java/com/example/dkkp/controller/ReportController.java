@@ -65,7 +65,7 @@ public class ReportController {
 
   private void ftr() {
     ftrBtn.setOnAction(_ -> {
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dkkp/ReportFilter.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dkkp/Report/ReportFilter.fxml"));
       main.getChildren().clear();
       try {
         main.getChildren().add(loader.load());

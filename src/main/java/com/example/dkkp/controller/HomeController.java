@@ -1,5 +1,6 @@
 package com.example.dkkp.controller;
 
+import com.example.dkkp.controller.product.ProductController;
 import com.example.dkkp.view.LoginView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -55,19 +56,19 @@ public class HomeController {
 
   @FXML
   public void loadImportView() {
-    setMainView("/com/example/dkkp/ImportView.fxml",importController);
+    setMainView("/com/example/dkkp/Import/ImportView.fxml",importController);
     setActiveTab(importTab);
   }
 
   @FXML
   public void loadExportView() {
-    setMainView("/com/example/dkkp/ExportView.fxml",billController);
+    setMainView("/com/example/dkkp/Bill/ExportView.fxml",billController);
     setActiveTab(exportTab);
   }
 
   @FXML
   public void loadReportView() {
-    setMainView("/com/example/dkkp/ReportView.fxml",reportController);
+    setMainView("/com/example/dkkp/Report/ReportView.fxml",reportController);
     setActiveTab(reportTab);
   }
 

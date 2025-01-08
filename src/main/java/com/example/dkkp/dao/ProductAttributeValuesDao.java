@@ -109,6 +109,51 @@ public class ProductAttributeValuesDao {
         if (setOff != null) typedQuery.setMaxResults(setOff);
         return typedQuery.getResultList();
     }
+    public Integer getFilteredProductAttributeValuesCount(Integer ID, String VALUE, Integer ID_ATTRIBUTE, String NAME_ATTRIBUTE, Integer ID_BASE_PRODUCT, String NAME_PRODUCT) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<Product_Attribute_Values_Entity> root = query.from(Product_Attribute_Values_Entity.class);
+
+        Join<Product_Attribute_Values_Entity, Product_Attribute_Entity> productAttributeJoin = root.join("product_attribute_entity", JoinType.LEFT);
+        Join<Product_Attribute_Values_Entity, Product_Base_Entity> productBasejoin = root.join("product_base_entity", JoinType.LEFT);
+
+        Predicate conditions = cb.conjunction();
+        boolean hasConditions = false;
+
+        if (ID != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID"), ID));
+            hasConditions = true;
+        }
+        if (VALUE != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("VALUE"), VALUE));
+            hasConditions = true;
+        }
+        if (ID_ATTRIBUTE != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_ATTRIBUTE"), ID_ATTRIBUTE));
+            hasConditions = true;
+        }
+        if (NAME_ATTRIBUTE != null) {
+            conditions = cb.and(conditions, cb.like(productAttributeJoin.get("NAME_ATTRIBUTE"), "%" + NAME_ATTRIBUTE + "%"));
+            hasConditions = true;
+        }
+        if (ID_BASE_PRODUCT != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_BASE_PRODUCT"), ID_BASE_PRODUCT));
+            hasConditions = true;
+        }
+        if (NAME_PRODUCT != null) {
+            conditions = cb.and(conditions, cb.like(productBasejoin.get("NAME_PRODUCT"), "%" + NAME_PRODUCT + "%"));
+            hasConditions = true;
+        }
+
+        if (hasConditions) {
+            query.where(conditions);
+        }
+
+        query.select(cb.count(root));
+        TypedQuery<Long> typedQuery = entityManager.createQuery(query);
+        Long result = typedQuery.getSingleResult();
+        return result != null ? result.intValue() : 0;
+    }
 
     public void deleteAttributeValues(Integer id, Integer ID_ATTRIBUTE, Integer ID_BASE_PRODUCT) {
         StringBuilder queryStr = new StringBuilder("SELECT po FROM Product_Attribute_Values_Entity po WHERE 1=1");

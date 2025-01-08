@@ -20,7 +20,7 @@ public class ReportDetailController {
 
   private void bck() {
     bckBtn.setOnAction(_ -> {
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dkkp/ReportView.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dkkp/Report/ReportView.fxml"));
       main.getChildren().clear();
       try {
         main.getChildren().add(loader.load());

@@ -19,7 +19,7 @@ public class BrandService {
     public void createNewBrand(Brand_Entity brand) {
         // chạy được
         //add check thông tin trước khi tạo brand mới
-         brandDao.createBrand(brand);
+        brandDao.createBrand(brand);
     }
 
     public List<Brand_Entity> getFilteredBrand(
@@ -29,16 +29,26 @@ public class BrandService {
     ) {
         // chạy được
         // không cần thêm check
-        if (reflectField.isPropertyNameMatched(Brand_Entity.class, sortField)) {
-            Integer id = brand.getID_BRAND();
-            String name = brand.getNAME_BRAND();
 
-            return brandDao.getFilteredBrand(
-                    id, name, sortField, sortOrder
-            );
-        }else{
-            throw new RuntimeException("Error with sort field category");
-        }
+        Integer id = brand.getID_BRAND();
+        String name = brand.getNAME_BRAND();
+
+        return brandDao.getFilteredBrand(
+                id, name, sortField, sortOrder
+        );
+
+    }
+
+    public Integer getCountFilteredBrand(
+            Brand_Entity brand
+    ) {
+        // chạy được
+        // không cần thêm check
+        Integer id = brand.getID_BRAND();
+        String name = brand.getNAME_BRAND();
+        return brandDao.getFilteredBrandCount(
+                id, name
+        );
 
     }
 
@@ -49,18 +59,15 @@ public class BrandService {
     ) {
         // chạy được
         // không cần kiểm tra sự hợp lệ của các tham số truyền vào khác như userId,...
-            if (reflectField.isPropertyNameMatched(Brand_Entity.class, sortField)) {
-                Integer ID_BRAND = brand.getID_BRAND();
-                String NAME_BRAND = brand.getNAME_BRAND();
-                return brandDao.getFilteredBrand(ID_BRAND, NAME_BRAND, sortField, sortOrder);
-            }
-            return null;
+        Integer ID_BRAND = brand.getID_BRAND();
+        String NAME_BRAND = brand.getNAME_BRAND();
+        return brandDao.getFilteredBrand(ID_BRAND, NAME_BRAND, sortField, sortOrder);
     }
 
     public void deleteBrand(Integer id) {
         // chạy được
         // không cần add check
-         brandDao.deleteBrandById(id);
+        brandDao.deleteBrandById(id);
     }
 
 
@@ -71,6 +78,6 @@ public class BrandService {
         Integer id = brand.getID_BRAND();
         String name = brand.getNAME_BRAND();
         String detail = brand.getDETAIL();
-         brandDao.updateBrand(id, name, detail);
+        brandDao.updateBrand(id, name, detail);
     }
 }

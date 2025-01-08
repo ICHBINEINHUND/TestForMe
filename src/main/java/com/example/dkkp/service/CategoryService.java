@@ -28,17 +28,22 @@ public class CategoryService {
     ) {
         // chạy được
         // không cần thêm check
-            if (reflectField.isPropertyNameMatched(Category_Entity.class, sortField)) {
                 Integer id = category.getID_CATEGORY();
                 String name = category.getNAME_CATEGORY();
 
                 return categoryDao.getFilteredCategories(
                         id, name, sortField, sortOrder
                 );
-            }else{
-                throw new RuntimeException("Error with sort field category");
-            }
+    }
 
+    public Integer getFilteredCategoriesCount(
+            Category_Entity category
+    ) {
+        // chạy được
+        // không cần thêm check
+                Integer id = category.getID_CATEGORY();
+                String name = category.getNAME_CATEGORY();
+                return categoryDao.getFilteredCategoriesCount(id, name );
     }
 
     public void deleteCategory(Integer id) {

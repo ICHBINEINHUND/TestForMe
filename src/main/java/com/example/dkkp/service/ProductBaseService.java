@@ -41,11 +41,12 @@ public class ProductBaseService {
         String NAME_BRAND = product_BASE_entity.getNAME_BRAND();
         String NAME_CATEGORY = product_BASE_entity.getNAME_CATEGORY();
 
-            return productBaseDao.getFilteredProductBase(
-                    idBaseProduct, NAME_PRODUCT, ID_CATEGORY,NAME_CATEGORY, ID_BRAND,NAME_BRAND, TOTAL_QUANTITY,typeQuantity, DATE_RELEASE, typeDate,VIEW_COUNT,typeView, sortField, sortOrder, offset, setOff
+        return productBaseDao.getFilteredProductBase(
+                idBaseProduct, NAME_PRODUCT, ID_CATEGORY, NAME_CATEGORY, ID_BRAND, NAME_BRAND, TOTAL_QUANTITY, typeQuantity, DATE_RELEASE, typeDate, VIEW_COUNT, typeView, sortField, sortOrder, offset, setOff
 
-            );
+        );
     }
+
     public Integer getCountProductBase(
             Product_Base_Entity product_BASE_entity,
             String typeDate,
@@ -63,8 +64,8 @@ public class ProductBaseService {
         String NAME_BRAND = product_BASE_entity.getNAME_BRAND();
         String NAME_CATEGORY = product_BASE_entity.getNAME_CATEGORY();
 
-            return productBaseDao.getFilteredProductBaseCount(
-                    idBaseProduct, NAME_PRODUCT, ID_CATEGORY,NAME_CATEGORY, ID_BRAND,NAME_BRAND, TOTAL_QUANTITY,typeQuantity, DATE_RELEASE, typeDate,VIEW_COUNT,typeView);
+        return productBaseDao.getFilteredProductBaseCount(
+                idBaseProduct, NAME_PRODUCT, ID_CATEGORY, NAME_CATEGORY, ID_BRAND, NAME_BRAND, TOTAL_QUANTITY, typeQuantity, DATE_RELEASE, typeDate, VIEW_COUNT, typeView);
     }
 
     public Product_Base_Entity getProductBaseByID(Integer id) {
@@ -117,11 +118,16 @@ public class ProductBaseService {
         Integer ID_CATEGORY = productAttribute.getID_CATEGORY();
         String NAME_CATEGORY = productAttribute.getNAME_CATEGORY();
 
-        if (reflectField.isPropertyNameMatched(Product_Attribute_Entity.class, sortField) ) {
-            productAttributeDao.getFilteredProductAttribute(ID_ATTRIBUTE, NAME_ATTRIBUTE, ID_CATEGORY,NAME_CATEGORY, sortField, sortOrder,setOff,offset);
+           return productAttributeDao.getFilteredProductAttribute(ID_ATTRIBUTE, NAME_ATTRIBUTE, ID_CATEGORY, NAME_CATEGORY, sortField, sortOrder, setOff, offset);
+    }
 
-        }
-        throw new RuntimeException("Error with sort");
+    public Integer getCountProductAttribute(Product_Attribute_Entity productAttribute) {
+
+        Integer ID_ATTRIBUTE = productAttribute.getID_ATTRIBUTE();
+        String NAME_ATTRIBUTE = productAttribute.getNAME_ATTRIBUTE();
+        Integer ID_CATEGORY = productAttribute.getID_CATEGORY();
+        String NAME_CATEGORY = productAttribute.getNAME_CATEGORY();
+        return productAttributeDao.getFilteredProductAttributeCount(ID_ATTRIBUTE, NAME_ATTRIBUTE, ID_CATEGORY, NAME_CATEGORY);
     }
 
     public void deleteProductAttribute(Integer id) {
@@ -134,7 +140,7 @@ public class ProductBaseService {
         Integer idCategory = productAttribute.getID_CATEGORY();
 
         //add check
-        productAttributeDao.updateProductAttribute(idAttribute,idCategory,nameAttribute);
+        productAttributeDao.updateProductAttribute(idAttribute, idCategory, nameAttribute);
     }
 
     public void createProductAttribute(Product_Attribute_Entity productAttribute) {
@@ -162,12 +168,22 @@ public class ProductBaseService {
         String NAME_ATTRIBUTE = productAttributeValues.getNAME_ATTRIBUTE();
         String NAME_PRODUCT = productAttributeValues.getNAME_PRODUCT();
 
-           return productAttributeValuesDao.getFilteredProductAttributeValues(ID,VALUE,ID_ATTRIBUTE,NAME_ATTRIBUTE,ID_BASE_PRODUCT,NAME_PRODUCT,sortField,sortOrder,setOff,offset);
+        return productAttributeValuesDao.getFilteredProductAttributeValues(ID, VALUE, ID_ATTRIBUTE, NAME_ATTRIBUTE, ID_BASE_PRODUCT, NAME_PRODUCT, sortField, sortOrder, setOff, offset);
+    }
+    public Integer getCountProductAttributeValue(Product_Attribute_Values_Entity productAttributeValues) {
+
+        Integer ID = productAttributeValues.getID();
+        Integer ID_ATTRIBUTE = productAttributeValues.getID_ATTRIBUTE();
+        String VALUE = productAttributeValues.getVALUE();
+        Integer ID_BASE_PRODUCT = productAttributeValues.getID_BASE_PRODUCT();
+        String NAME_ATTRIBUTE = productAttributeValues.getNAME_ATTRIBUTE();
+        String NAME_PRODUCT = productAttributeValues.getNAME_PRODUCT();
+        return productAttributeValuesDao.getFilteredProductAttributeValuesCount(ID,VALUE, ID_ATTRIBUTE, NAME_ATTRIBUTE, ID_BASE_PRODUCT, NAME_PRODUCT);
     }
 
     public void deleteProductAttributeValues(Integer id, Integer idAttribute, Integer idBaseProduct) {
         // add check
-        productAttributeValuesDao.deleteAttributeValues(id,idAttribute,idBaseProduct);
+        productAttributeValuesDao.deleteAttributeValues(id, idAttribute, idBaseProduct);
     }
 
     public void updateProductAttributeValues(Product_Attribute_Values_Entity productAttributeValues) {
@@ -177,7 +193,7 @@ public class ProductBaseService {
         Integer idBaseProduct = productAttributeValues.getID_BASE_PRODUCT();
 
         //add check
-        productAttributeValuesDao.updateProductAttributeValues(id,values,idBaseProduct,idAttribute);
+        productAttributeValuesDao.updateProductAttributeValues(id, values, idBaseProduct, idAttribute);
     }
 
     public void createProductAttributeValues(Product_Attribute_Values_Entity productAttributeValues) {

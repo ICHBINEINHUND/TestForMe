@@ -75,7 +75,7 @@ public class ImportController {
 
   private void ftr() {
     ftrBtn.setOnAction(_ -> {
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dkkp/ImportFilter.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dkkp/Import/ImportFilter.fxml"));
       main.getChildren().clear();
       try {
         main.getChildren().add(loader.load());
@@ -87,7 +87,7 @@ public class ImportController {
 
   private void crt() {
     crtBtn.setOnAction(_ -> {
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dkkp/ImportCreate.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dkkp/Import/ImportCreate.fxml"));
       main.getChildren().clear();
       try {
         main.getChildren().add(loader.load());

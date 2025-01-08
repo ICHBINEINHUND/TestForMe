@@ -45,19 +45,31 @@ public class ReportService {
             Report_Bug report,
             String typeDate,
             String sortField,
-            String sortOrder
+            String sortOrder,
+            Integer setOff,
+            Integer offSet
     ) {
         // chạy được
         // không cần kiểm tra sự hợp lệ của các tham số truyền vào khác như userId,...
-        if (  sortField == null || reflectField.isPropertyNameMatched(Report_Bug.class, sortField) ) {
             String userId = report.getID_USER();
             Integer reportId = report.getID_REPORT();
             LocalDateTime dateReport = report.getDATE_REPORT();
             EnumType.Bug_Type bugType = report.getTYPE_BUG();
             String EMAIL_ACC = report.getEMAIL_ACC();
-            return reportDao.getFilteredReports(userId,EMAIL_ACC, reportId, bugType, dateReport, typeDate, sortField, sortOrder);
-        }
-        return null;
+            return reportDao.getFilteredReports(userId,EMAIL_ACC, reportId, bugType, dateReport, typeDate, sortField, sortOrder,offSet,setOff);
+    }
+    public Integer getCountFilteredReports(
+            Report_Bug report,
+            String typeDate
+    ) {
+        // chạy được
+        // không cần kiểm tra sự hợp lệ của các tham số truyền vào khác như userId,...
+            String userId = report.getID_USER();
+            Integer reportId = report.getID_REPORT();
+            LocalDateTime dateReport = report.getDATE_REPORT();
+            EnumType.Bug_Type bugType = report.getTYPE_BUG();
+            String EMAIL_ACC = report.getEMAIL_ACC();
+            return reportDao.getFilteredReportCount(userId,EMAIL_ACC, reportId, bugType, dateReport, typeDate);
     }
 
 

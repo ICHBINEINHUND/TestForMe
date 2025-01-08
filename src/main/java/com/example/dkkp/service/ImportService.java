@@ -30,7 +30,6 @@ public class ImportService {
             int setOff, // Số bản ghi mỗi luồng xử lý
             int offset
     ) {
-        if ((reflectField.isPropertyNameMatched(Import_Entity.class, sortField) && sortOrder != null) || sortField == null) {
             LocalDateTime dateImport = import_entity.getDATE_IMP();
             String id = import_entity.getID_IMP();
             Boolean status = import_entity.getIS_AVAILABLE();
@@ -39,8 +38,19 @@ public class ImportService {
             return importDao.getFilteredImports(
                     dateImport, typeDate, id, status, idReplace, totalPrice,typePrice, sortField, sortOrder, offset, setOff
             );
-        }
-        throw new RuntimeException("Error with sort");
+    }
+    public Integer getCountImportByCombinedCondition(
+            Import_Entity import_entity,
+            String typeDate,
+            String typePrice
+    ) {
+            LocalDateTime dateImport = import_entity.getDATE_IMP();
+            String id = import_entity.getID_IMP();
+            Boolean status = import_entity.getIS_AVAILABLE();
+            Integer idReplace = import_entity.getID_REPLACE();
+            Double totalPrice = import_entity.getTOTAL_PRICE();
+            return importDao.getFilteredImportsCount(
+                    dateImport, typeDate, id, status, idReplace, totalPrice,typePrice);
     }
 
     public List<Import_Detail_Entity> getImportDetailByCombinedCondition(
@@ -63,12 +73,29 @@ public class ImportService {
         Double unitPrice = importQuery.getUNIT_PRICE();
         String NAME_FINAL_PRODUCT = importQuery.getNAME_PRODUCT_FINAL();
         String NAME_BASE_PRODUCT = importQuery.getNAME_PRODUCT_BASE();
-        if ((reflectField.isPropertyNameMatched(Import_Detail_Entity.class, sortField) && sortOrder != null) || sortField == null) {
             return importDetailDao.getFilteredImportDetails(
                     id, idImport, idFinalProduct,NAME_FINAL_PRODUCT, isAvailable, idBaseProduct,NAME_BASE_PRODUCT, quantity,typeQuantity,typeUPrice,typePPrice, unitPrice, totalPrice, sortField, sortOrder, offset, setOff
             );
-        }
-        throw new RuntimeException("Error with sort");
+    }
+    public Integer getCountImportDetailByCombinedConditionCount(
+            Import_Detail_Entity importQuery,
+            String typeUPrice,
+            String typeQuantity,
+            String typePPrice
+    ) {
+        Integer id = importQuery.getID_IMPD();
+        String idImport = importQuery.getID_IMPORT();
+        Integer idFinalProduct = importQuery.getID_FINAL_PRODUCT();
+        Integer idBaseProduct = importQuery.getID_BASE_PRODUCT();
+        Boolean isAvailable = importQuery.getIS_AVAILABLE();
+        Integer quantity = importQuery.getQUANTITY();
+        Double totalPrice = importQuery.getTOTAL_PRICE();
+        Double unitPrice = importQuery.getUNIT_PRICE();
+        String NAME_FINAL_PRODUCT = importQuery.getNAME_PRODUCT_FINAL();
+        String NAME_BASE_PRODUCT = importQuery.getNAME_PRODUCT_BASE();
+            return importDetailDao.getFilteredImportDetailsCount(
+                    id, idImport, idFinalProduct,NAME_FINAL_PRODUCT, isAvailable, idBaseProduct,NAME_BASE_PRODUCT, quantity,typeQuantity,typeUPrice,typePPrice, unitPrice, totalPrice
+            );
     }
 
 

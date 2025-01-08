@@ -107,6 +107,51 @@ public class ProductOptionValuesDao {
         if (setOff != null) typedQuery.setMaxResults(setOff);
         return typedQuery.getResultList();
     }
+    public Integer getFilteredProductOptionValueCount(Integer id, Integer idOption, String NAME_OPTION, String value, Integer idFinalProduct, String NAME_PRODUCT) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<Product_Option_Values_Entity> root = query.from(Product_Option_Values_Entity.class);
+
+        Join<Product_Option_Values_Entity, Product_Option_Entity> productOptionjoin = root.join("product_options", JoinType.INNER);
+        Join<Product_Option_Values_Entity, Product_Final_Entity> productFinaljoin = root.join("product_final", JoinType.INNER);
+
+        Predicate conditions = cb.conjunction();
+        boolean hasConditions = false;
+        if (id != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID"), id));
+            hasConditions = true;
+        }
+        if (idOption != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_OPTION"), idOption));
+            hasConditions = true;
+        }
+        if (NAME_OPTION != null) {
+            conditions = cb.and(conditions, cb.like(productOptionjoin.get("NAME_OPTION"), "%" + NAME_OPTION + "%"));
+            hasConditions = true;
+        }
+        if (value != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("VALUE"), value));
+            hasConditions = true;
+        }
+        if (idFinalProduct != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_FINAL_PRODUCT"), idFinalProduct));
+            hasConditions = true;
+        }
+        if (NAME_PRODUCT != null) {
+            conditions = cb.and(conditions, cb.like(productFinaljoin.get("NAME_PRODUCT"), "%" + NAME_PRODUCT + "%"));
+            hasConditions = true;
+        }
+
+        if (hasConditions) {
+            query.where(conditions);
+        }
+
+        query.select(cb.count(root));
+        TypedQuery<Long> typedQuery = entityManager.createQuery(query);
+        Long result = typedQuery.getSingleResult();
+        return result != null ? result.intValue() : 0;
+    }
+
 
     public void deleteOptionValues(Integer ID, Integer ID_OPTION, Integer ID_FINAL_PRODUCT) {
         // Bắt đầu xây dựng câu truy vấn

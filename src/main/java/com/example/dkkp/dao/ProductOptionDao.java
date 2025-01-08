@@ -58,6 +58,32 @@ public class ProductOptionDao {
 
         return entityManager.createQuery(query).getResultList();
     }
+    public Integer getFilteredProductOptionCount(Integer id, String name) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<Product_Option_Entity> root = query.from(Product_Option_Entity.class);
+
+        Predicate conditions = cb.conjunction();
+        boolean hasConditions = false;
+        if (id != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_OPTION"), id));
+            hasConditions = true;
+        }
+        if (name != null) {
+            conditions = cb.and(conditions, cb.like(root.get("NAME_OPTION"), "%" + name + "%"));
+            hasConditions = true;
+        }
+
+        if (hasConditions) {
+            query.where(conditions);
+        }
+
+        query.select(cb.count(root));
+        TypedQuery<Long> typedQuery = entityManager.createQuery(query);
+        Long result = typedQuery.getSingleResult();
+        return result != null ? result.intValue() : 0;
+    }
+
 
     public void deleteProductOptionById(Integer id) {
         Product_Option_Entity productOption = entityManager.find(Product_Option_Entity.class, id);

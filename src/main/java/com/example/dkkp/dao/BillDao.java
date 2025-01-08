@@ -139,6 +139,91 @@ public class BillDao {
 
         return typedQuery.getResultList();
     }
+    public Integer getFilteredBillCount(
+            LocalDateTime dateExport,
+            String typeDate,
+            String idBill,
+            String phone,
+            String idUser,
+            String EMAIL_ACC,
+            EnumType.Status_Bill Status,
+            String addBill,
+            Double totalPrice,
+            String typePrice
+    ) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<Bill_Entity> root = query.from(Bill_Entity.class);
+        Join<Bill_Entity, User_Entity> userJoin = root.join("uzer", JoinType.INNER);
+
+        Predicate conditions = cb.conjunction();
+        boolean hasConditions = false;
+
+        if (EMAIL_ACC != null) {
+            conditions = cb.and(conditions, cb.like(userJoin.get("EMAIL_ACC"), "%" + EMAIL_ACC + "%"));
+            hasConditions = true;
+        }
+
+        if (dateExport != null) {
+            conditions = switch (typeDate) {
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("DATE_EXP"), dateExport));
+                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("DATE_EXP"), dateExport));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("DATE_EXP"), dateExport));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("DATE_EXP"), dateExport));
+                case "=" -> cb.and(conditions, cb.equal(root.get("DATE_EXP"), dateExport));
+                default -> conditions;
+            };
+            hasConditions = true;
+        }
+
+        if (idBill != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_BILL"), idBill));
+            hasConditions = true;
+        }
+
+        if (idUser != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_USER"), idUser));
+            hasConditions = true;
+        }
+
+        if (Status != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("BILL_STATUS"), Status));
+            hasConditions = true;
+        }
+
+        if (phone != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("PHONE_BILL"), phone));
+            hasConditions = true;
+        }
+
+        if (addBill != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ADD_BILL"), addBill));
+            hasConditions = true;
+        }
+
+        if (typePrice != null) {
+            conditions = switch (typePrice) {
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("TOTAL_PRICE"), totalPrice));
+                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("TOTAL_PRICE"), totalPrice));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("TOTAL_PRICE"), totalPrice));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("TOTAL_PRICE"), totalPrice));
+                case "=" -> cb.and(conditions, cb.equal(root.get("TOTAL_PRICE"), totalPrice));
+                default -> conditions;
+            };
+            hasConditions = true;
+        }
+
+        if (hasConditions) {
+            query.where(conditions);
+        }
+
+        query.select(cb.count(root));
+        TypedQuery<Long> typedQuery = entityManager.createQuery(query);
+        Long result = typedQuery.getSingleResult();
+
+        return result != null ? result.intValue() : 0;
+    }
+
 
     public Bill_Entity findBill(String idBill) {
         return entityManager.find(Bill_Entity.class, idBill);

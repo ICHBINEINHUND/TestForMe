@@ -58,6 +58,36 @@ public class CategoryDao {
         TypedQuery<Category_Entity> typedQuery = entityManager.createQuery(query);
         return typedQuery.getResultList();
     }
+    public Integer getFilteredCategoriesCount(
+            Integer id,
+            String name
+    ) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<Category_Entity> root = query.from(Category_Entity.class);
+
+        Predicate conditions = cb.conjunction();
+        boolean hasConditions = false;
+
+        if (id != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_CATEGORY"), id));
+            hasConditions = true;
+        }
+        if (name != null && !name.trim().isEmpty()) {
+            conditions = cb.and(conditions, cb.equal(root.get("NAME_CATEGORY"), name));
+            hasConditions = true;
+        }
+
+        if (hasConditions) {
+            query.where(conditions);
+        }
+
+        query.select(cb.count(root));
+        TypedQuery<Long> typedQuery = entityManager.createQuery(query);
+        Long result = typedQuery.getSingleResult();
+        return result != null ? result.intValue() : 0;
+    }
+
 
 
     public void updateCategory(Integer id, String name) {

@@ -20,7 +20,7 @@ public class ImportDetailController {
 
   private void bck() {
     bckBtn.setOnAction(_ -> {
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dkkp/ImportView.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dkkp/Import/ImportView.fxml"));
       main.getChildren().clear();
       try {
         main.getChildren().add(loader.load());

@@ -86,6 +86,61 @@ public class ImportDao {
         if (setOff != null) typedQuery.setMaxResults(setOff); // Số lượng bản ghi mỗi lần
         return typedQuery.getResultList();
     }
+    public Integer getFilteredImportsCount(LocalDateTime DATE_IMP, String typeDate, String ID_IMP, Boolean IS_AVAILABLE, Integer ID_REPLACE, Double TOTAL_PRICE, String typePrice) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<Import_Entity> root = query.from(Import_Entity.class);
+
+        Predicate conditions = cb.conjunction();
+        boolean hasConditions = false;
+
+        if (typeDate != null) {
+            conditions = switch (typeDate) {
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("DATE_IMP"), DATE_IMP));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("DATE_IMP"), DATE_IMP));
+                case "=" -> cb.and(conditions, cb.equal(root.get("DATE_IMP"), DATE_IMP));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("DATE_IMP"), DATE_IMP));
+                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("DATE_IMP"), DATE_IMP));
+                default -> conditions;
+            };
+            hasConditions = true;
+        }
+
+        if (typePrice != null) {
+            conditions = switch (typePrice) {
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("TOTAL_PRICE"), TOTAL_PRICE));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("TOTAL_PRICE"), TOTAL_PRICE));
+                case "=" -> cb.and(conditions, cb.equal(root.get("TOTAL_PRICE"), TOTAL_PRICE));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("TOTAL_PRICE"), TOTAL_PRICE));
+                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("TOTAL_PRICE"), TOTAL_PRICE));
+                default -> conditions;
+            };
+            hasConditions = true;
+        }
+
+        if (ID_IMP != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_IMP"), ID_IMP));
+            hasConditions = true;
+        }
+        if (IS_AVAILABLE != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("STATUS"), IS_AVAILABLE));
+            hasConditions = true;
+        }
+        if (ID_REPLACE != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_REPLACE"), ID_REPLACE));
+            hasConditions = true;
+        }
+
+        if (hasConditions) {
+            query.where(conditions);
+        }
+
+        query.select(cb.count(root));
+        TypedQuery<Long> typedQuery = entityManager.createQuery(query);
+        Long result = typedQuery.getSingleResult();
+        return result != null ? result.intValue() : 0;
+    }
+
 
     public void addSumPrice(String ID_IMP, Double sumPrice) {
             Import_Entity importToAddSumPrice = entityManager.find(Import_Entity.class, ID_IMP);

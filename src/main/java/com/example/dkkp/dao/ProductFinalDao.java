@@ -6,6 +6,7 @@ import com.example.dkkp.model.Product_Final_Entity;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class ProductFinalDao {
@@ -142,6 +143,89 @@ public class ProductFinalDao {
         if (setOff != null) typedQuery.setMaxResults(setOff);
         return typedQuery.getResultList();
     }
+    public Integer getFilteredProductFinalCount(Integer ID_SP,
+                                                Integer ID_BASE_PRODUCT,
+                                                String NAME_PRODUCT_BASE,
+                                                String NAME_PRODUCT,
+                                                Double PRICE_SP,
+                                                String typePrice,
+                                                Integer QUANTITY,
+                                                Double DISCOUNT,
+                                                String typeDiscount,
+                                                String typeQuantity) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<Product_Final_Entity> root = query.from(Product_Final_Entity.class);
+        Join<Product_Final_Entity, Product_Base_Entity> baseProductJoin = root.join("product_base", JoinType.INNER);
+        Predicate conditions = cb.conjunction();
+        boolean hasConditions = false;
+
+        if (PRICE_SP != null) {
+            conditions = switch (typePrice) {
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("PRICE_SP"), PRICE_SP));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("PRICE_SP"), PRICE_SP));
+                case "=" -> cb.and(conditions, cb.equal(root.get("PRICE_SP"), PRICE_SP));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("PRICE_SP"), PRICE_SP));
+                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("PRICE_SP"), PRICE_SP));
+                default -> conditions;
+            };
+            hasConditions = true;
+        }
+
+        if (DISCOUNT != null) {
+            conditions = switch (typeDiscount) {
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("DISCOUNT"), DISCOUNT));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("DISCOUNT"), DISCOUNT));
+                case "=" -> cb.and(conditions, cb.equal(root.get("DISCOUNT"), DISCOUNT));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("DISCOUNT"), DISCOUNT));
+                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("DISCOUNT"), DISCOUNT));
+                default -> conditions;
+            };
+            hasConditions = true;
+        }
+
+        if (ID_SP != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_SP"), ID_SP));
+            hasConditions = true;
+        }
+
+        if (NAME_PRODUCT != null) {
+            conditions = cb.and(conditions, cb.like(root.get("NAME_PRODUCT"), "%" + NAME_PRODUCT + "%"));
+            hasConditions = true;
+        }
+
+        if (ID_BASE_PRODUCT != null) {
+            conditions = cb.and(conditions, cb.equal(root.get("ID_BASE_PRODUCT"), ID_BASE_PRODUCT));
+            hasConditions = true;
+        }
+
+        if (NAME_PRODUCT_BASE != null) {
+            conditions = cb.and(conditions, cb.like(baseProductJoin.get("NAME_PRODUCT"), "%" + NAME_PRODUCT_BASE + "%"));
+            hasConditions = true;
+        }
+
+        if (QUANTITY != null && typeQuantity != null) {
+            conditions = switch (typeQuantity) {
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("QUANTITY"), QUANTITY));
+                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("QUANTITY"), QUANTITY));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("QUANTITY"), QUANTITY));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("QUANTITY"), QUANTITY));
+                case "=" -> cb.and(conditions, cb.equal(root.get("QUANTITY"), QUANTITY));
+                default -> conditions;
+            };
+            hasConditions = true;
+        }
+
+        if (hasConditions) {
+            query.where(conditions);
+        }
+
+        query.select(cb.count(root));
+        TypedQuery<Long> typedQuery = entityManager.createQuery(query);
+        Long result = typedQuery.getSingleResult();
+        return result != null ? result.intValue() : 0;
+    }
+
 
     public void deleteProductFinal(Integer ID_SP) {
         Product_Final_Entity product = entityManager.find(Product_Final_Entity.class, ID_SP);
