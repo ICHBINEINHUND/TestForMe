@@ -7,6 +7,7 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Persistence;
 
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,15 +23,10 @@ public class TestController {
         try {
 
             transaction.begin();
-            ProductFinalService productFinalService = new ProductFinalService(entityManager);
-            Product_Final_Entity finalProduct = new Product_Final_Entity();
-//            List<Product_Final_Entity> p = productFinalService.getProductFinalByCombinedCondition(productFinalEntity,typePrice, typeDiscount,  typeQuantity, sortField, sortOrder, setOff, offSet)
-            List<Product_Final_Entity> p = productFinalService.getProductFinalByCombinedCondition(finalProduct,null,null,null, null, null, null, null);
-            for (Product_Final_Entity item : p) {
-                System.out.println("ID " + item.getNAME_PRODUCT());
-            }
 //           Boolean b = reflectField.isPropertyNameMatched(Product_Base_Entity.class, sortField);
 //            System.out.println(b);
+            Path currentDir = Path.of(System.getProperty("user.dir"));
+            System.out.println("Day la " + currentDir);
             transaction.commit();
         } catch (Exception e) {
             if (transaction.isActive()) {

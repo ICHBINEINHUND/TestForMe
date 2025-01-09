@@ -56,7 +56,7 @@ public class ProductBaseController implements TableInterface {
     private MFXTableColumn<Product_Base_Entity> DES_PRODUCT;
     @FXML
     private MFXTableColumn<Product_Base_Entity> VIEW_COUNT;
-//    @FXML
+    //    @FXML
 //    private MFXTableColumn<Product_Base_Entity> ID_CATEGORY;
     @FXML
     private MFXTableColumn<Product_Base_Entity> NAME_CATEGORY;
@@ -64,7 +64,7 @@ public class ProductBaseController implements TableInterface {
     private Label totalRowLabel;
     @FXML
     private Label numberSetOff;
-//    @FXML
+    //    @FXML
 //    private MFXTableColumn<Product_Base_Entity> ID_BRAND;
     @FXML
     private MFXTableColumn<Product_Base_Entity> NAME_BRAND;
@@ -154,11 +154,12 @@ public class ProductBaseController implements TableInterface {
     }
 
     public void setPage(int page) {
-        if (page < 1 || page > totalPages || totalPages == 1) {
+        if (page < 1 || page > totalPages) {
             return;
         }
-        offSet = ((page - 1) * setOff);
+        System.out.println("set page " + page);
         currentPage = page;
+        offSet = ((page - 1) * setOff);
         updatePagination();
         refreshProductTable();
     }
@@ -195,6 +196,7 @@ public class ProductBaseController implements TableInterface {
             pageLabel1.setOnMouseClicked(event -> setPage(1));
 
         } else if (currentPage == totalPages) {
+            System.out.println("dcm loi hoai");
             pageLabel1.setText(String.valueOf(totalPages - 2));
             pageLabel2.setText(String.valueOf(totalPages - 1));
             pageLabel3.setText(String.valueOf(totalPages));
@@ -203,7 +205,11 @@ public class ProductBaseController implements TableInterface {
             pageLabel2.setDisable(false);
             pageLabel3.setDisable(true);
 
-            pageLabel1.setOnMouseClicked(event -> setPage(totalPages - 2));
+            pageLabel1.setOnMouseClicked(event -> {
+                System.out.println("bam roi");
+                setPage(totalPages - 2);
+            });
+
             pageLabel2.setOnMouseClicked(event -> setPage(totalPages - 1));
             pageLabel3.setOnMouseClicked(event -> setPage(totalPages));
         } else {
@@ -325,15 +331,17 @@ public class ProductBaseController implements TableInterface {
     }
 
     private void handleKeyPress(KeyEvent event) {
-        // Kiểm tra nếu phím nhấn là Enter
         if (event.getCode() == KeyCode.ENTER) {
             setOff = Integer.parseInt(setOffField.getText().trim());
             updateTotalPage();
-            if(currentPage > totalPages) currentPage = totalPages;
-            productController.setMainView("/com/example/dkkp/ProductBase/ProductBaseView.fxml",this);
+            productController.setMainView("/com/example/dkkp/ProductBase/ProductBaseView.fxml", this);
+            if (currentPage > totalPages) {
+                setPage(totalPages);
+            } else {
+                setPage(currentPage);
+            }
         }
     }
-
 
 
     private void del() {
@@ -359,23 +367,23 @@ public class ProductBaseController implements TableInterface {
                     transaction.rollback();
                     throw e;
                 }
+                updatePagination();
                 refreshProductTable();
             }
         }
     }
 
     public void refreshProductTable() {
+        updateTotalPage();
         observableList = getProducts();
         productTable.setItems(observableList);
-        updatePagination();
-        updateTotalPage();
     }
-    public void refreshView(){
-        ProductBaseController productBaseControllerNew = new ProductBaseController();
-        productBaseControllerNew.productController = this.productController;
-        productController.productBaseController = productBaseControllerNew;
-        productController.setMainView("/com/example/dkkp/ProductBase/ProductBaseView.fxml", productBaseControllerNew);
-    }
+//    public void refreshView(){
+//        ProductBaseController productBaseControllerNew = new ProductBaseController();
+//        productBaseControllerNew.productController = this.productController;
+//        productController.productBaseController = productBaseControllerNew;
+//        productController.setMainView("/com/example/dkkp/ProductBase/ProductBaseView.fxml", productBaseControllerNew);
+//    }
 
     private void setColumnResizableForAllColumns(boolean resizable) {
         ID_BASE_PRODUCT.setColumnResizable(resizable);
@@ -404,8 +412,8 @@ public class ProductBaseController implements TableInterface {
             popupStage.setScene(scene);
             double screenWidth = Screen.getPrimary().getVisualBounds().getWidth();
             double screenHeight = Screen.getPrimary().getVisualBounds().getHeight();
-            popupStage.setWidth(screenWidth *0.8);
-            popupStage.setHeight(screenHeight *0.8);
+            popupStage.setWidth(screenWidth * 0.8);
+            popupStage.setHeight(screenHeight * 0.8);
             popupStage.show();
             return popupStage;
         } catch (IOException e) {
@@ -428,7 +436,7 @@ public class ProductBaseController implements TableInterface {
     private void updateTotalPage() {
         Integer number = productBaseService.getCountProductBase(productBaseEntity, typeDate, typeQuantity, typeView);
         totalPages = (int) Math.ceil((double) number / setOff);
-        totalRowLabel.setText("Total row : " +number);
-        numberSetOff.setText("Number row per page: " +setOff);
+        totalRowLabel.setText("Total row : " + number);
+        numberSetOff.setText("Number row per page: " + setOff);
     }
 }

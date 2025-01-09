@@ -112,7 +112,6 @@ public class ProductFinalController {
         observableList = getProducts();
         productTable.setItems(observableList);
         setCol();
-        System.out.println("da tan");
         setWidth();
         updateTotalPage();
         crt();
@@ -185,7 +184,7 @@ public class ProductFinalController {
 
     private void setSort() {
 
-        ID_FINAL_PRODUCT.setOnMouseClicked(event -> handleSort("ID_FINAL_PRODUCT"));
+        ID_FINAL_PRODUCT.setOnMouseClicked(event -> handleSort("ID_SP"));
         ID_BASE_PRODUCT.setOnMouseClicked(event -> handleSort("ID_BASE_PRODUCT"));
         NAME_PRODUCT.setOnMouseClicked(event -> handleSort("NAME_PRODUCT"));
         QUANTITY.setOnMouseClicked(event -> handleSort("QUANTITY"));
@@ -207,7 +206,9 @@ public class ProductFinalController {
         // Kiểm tra nếu phím nhấn là Enter
         if (event.getCode() == KeyCode.ENTER) {
             setOff = Integer.parseInt(setOffField.getText().trim());
+            updatePagination();
             updateTotalPage();
+            refreshProductTable();
             if(currentPage > totalPages) currentPage = totalPages;
             productController.setMainView("/com/example/dkkp/ProductFinal/ProductFinalView.fxml",this);
         }

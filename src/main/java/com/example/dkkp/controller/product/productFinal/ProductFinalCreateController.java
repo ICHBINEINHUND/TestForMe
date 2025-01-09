@@ -66,45 +66,45 @@ public class ProductFinalCreateController {
     public void createProduct() {
         String name = (NAME_PRODUCT.getText().isEmpty()) ? null : NAME_PRODUCT.getText();
         String des = (DES_PRODUCT.getText().isEmpty()) ? null : DES_PRODUCT.getText();
-        Double price = (DES_PRODUCT.getText().isEmpty()) ? null : Double.valueOf(DES_PRODUCT.getText());
-        Double discount = (DES_PRODUCT.getText().isEmpty()) ? null : Double.valueOf(DES_PRODUCT.getText());
+        Double price = (PRICE.getText().isEmpty()) ? null : Double.valueOf(PRICE.getText());
+        Double discount = (DISCOUNT.getText().isEmpty()) ? null : Double.valueOf(DISCOUNT.getText());
         Integer idBaseProduct = (ID_BASE_PRODUCT.getValue() != null) ? ID_BASE_PRODUCT.getValue().getID_BRAND() : null;
-//        String image = null;
         String imageName = null;
 //        if (true) {
             transaction.begin();
             try {
-
-                if (imagePath != null) {
-                    Path destinationDir = Path.of("C:/Users/bkdcd/Documents/IntelliJ/TestForMe/src/main/resources/com/example/dkkp/IMAGE");
-                    File sourceFile = new File(imagePath);
-
-                    if (!Files.exists(destinationDir)) {
-                        try {
-                            Files.createDirectories(destinationDir); // Tạo thư mục nếu chưa có
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            return;
-                        }
-                    }
-                    String fileExtension = getFileExtension(sourceFile.getName());
-                    String newFileName = System.currentTimeMillis() + fileExtension; // Tên file mới
-                    Path destinationPath = destinationDir.resolve(newFileName);
-
-                    try {
-                        Files.copy(sourceFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
-                        imageName = newFileName; // Lưu tên file vào cơ sở dữ liệu
-                        System.out.println("Image has been saved: " + destinationPath);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                Product_Final_Entity product = new Product_Final_Entity(null, idBaseProduct, name, 0, des, price, discount, imageName);
-                ProductFinalService producFinalService = new ProductFinalService(entityManager);
-                producFinalService.createProductFinal(product);
+//
+//                if (imagePath != null) {
+//                    Path currentDir = Path.of(System.getProperty("user.dir"));
+//                    Path destinationDir = currentDir.resolve("src/main/resources/com/example/dkkp/IMAGE");
+//                    File sourceFile = new File(imagePath);
+//
+//                    if (!Files.exists(destinationDir)) {
+//                        try {
+//                            Files.createDirectories(destinationDir); // Tạo thư mục nếu chưa có
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                            return;
+//                        }
+//                    }
+//                    String fileExtension = getFileExtension(sourceFile.getName());
+//                    String newFileName = System.currentTimeMillis() + fileExtension; // Tên file mới
+//                    Path destinationPath = destinationDir.resolve(newFileName);
+//
+//                    try {
+//                        Files.copy(sourceFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
+//                        imageName = newFileName; // Lưu tên file vào cơ sở dữ liệu
+//                        System.out.println("Image has been saved: " + destinationPath);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//
+//                Product_Final_Entity product = new Product_Final_Entity(null, idBaseProduct, name, 0, des, price, discount, imageName);
+//                ProductFinalService producFinalService = new ProductFinalService(entityManager);
+//                producFinalService.createProductFinal(product);
                 transaction.commit();
-                productFinalController.setMainView("/com/example/dkkp/ProductBase/ProductBaseView.fxml", productFinalController);
+                productFinalController.productController.setMainView("/com/example/dkkp/ProductFinal/ProductFinalView.fxml", productFinalController);
             } catch (Exception e) {
                 transaction.rollback();
             }

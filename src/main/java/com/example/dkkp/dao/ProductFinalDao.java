@@ -53,7 +53,7 @@ public class ProductFinalDao {
         CriteriaQuery<Product_Final_Entity> query = cb.createQuery(Product_Final_Entity.class);
         Root<Product_Final_Entity> root = query.from(Product_Final_Entity.class);
 
-        Join<Product_Final_Entity, Product_Base_Entity> baseProductJoin = root.join("product_base", JoinType.INNER);
+        Join<Product_Final_Entity, Product_Base_Entity> baseProductJoin = root.join("product_base", JoinType.LEFT);
 
         Predicate conditions = cb.conjunction();
         boolean hasConditions = false;
@@ -156,7 +156,7 @@ public class ProductFinalDao {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Long> query = cb.createQuery(Long.class);
         Root<Product_Final_Entity> root = query.from(Product_Final_Entity.class);
-        Join<Product_Final_Entity, Product_Base_Entity> baseProductJoin = root.join("product_base", JoinType.INNER);
+        Join<Product_Final_Entity, Product_Base_Entity> baseProductJoin = root.join("product_base", JoinType.LEFT);
         Predicate conditions = cb.conjunction();
         boolean hasConditions = false;
 

@@ -2,6 +2,7 @@
 <?import io.github.palexdev.materialfx.controls.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:id="main" styleClass="productAP">
   <HBox spacing="5">
@@ -21,6 +22,7 @@
                    styleClass="Btn"/>
         <MFXTextField fx:id="setOffField"   style="-fx-font-size: 10px;" prefWidth="150" promptText="Enter number row per page"  prefHeight="30" minHeight="1"> </MFXTextField>
       </HBox>
+
       <MFXTableView fx:id="productTable" footerVisible="false" minWidth="1000"  minHeight="380">
         <tableColumns>
           <MFXTableColumn fx:id="ID_BASE_PRODUCT" text="Id" styleClass="productBF" maxWidth="10"/>
