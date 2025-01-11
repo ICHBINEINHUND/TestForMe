@@ -7,9 +7,11 @@ import com.example.dkkp.model.Product_Base_Entity;
 import com.example.dkkp.model.Product_Final_Entity;
 import com.example.dkkp.service.BrandService;
 import com.example.dkkp.service.CategoryService;
+import com.example.dkkp.service.ProductBaseService;
 import com.example.dkkp.service.Validator;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
+import io.github.palexdev.materialfx.controls.MFXFilterComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
@@ -22,29 +24,25 @@ import java.time.LocalTime;
 import static com.example.dkkp.controller.LoginController.entityManager;
 
 
-public class ProductFinalFilterController implements TableInterface {
+public class ProductFinalFilterController {
     @FXML
-    private MFXComboBox<Brand_Entity> brandComboBox;
+    private MFXFilterComboBox<Product_Base_Entity> productBase;
     @FXML
-    private MFXComboBox<Category_Entity> categoryCombobox;
+    private MFXComboBox<String> priceField;
     @FXML
-    private MFXComboBox<String> dateOperatorComboBox;
+    private MFXComboBox<String> discountField;
     @FXML
-    private MFXComboBox<String> viewCountOperatorComboBox;
-    @FXML
-    private MFXComboBox<String> quantityOperatorComboBox;
-
+    private MFXComboBox<String> quantityField;
     @FXML
     private MFXTextField idTextField;
     @FXML
     private MFXTextField nameTextField;
     @FXML
-    private MFXTextField viewCountTextField;
+    private MFXTextField priceTextField;
+    @FXML
+    private MFXTextField discountTextField;
     @FXML
     private MFXTextField quantityTextField;
-
-    @FXML
-    private DatePicker datePicker;
     @FXML
     private MFXButton back;
     @FXML
@@ -57,22 +55,18 @@ public class ProductFinalFilterController implements TableInterface {
 
     @FXML
     public void createFilter() {
-        String name = nameTextField.getText().trim().isEmpty() ? null : nameTextField.getText();
         Integer id = idTextField.getText().trim().isEmpty() ? null : Integer.parseInt(idTextField.getText());
-        Integer view = viewCountTextField.getText().trim().isEmpty() ? null : Integer.parseInt(viewCountTextField.getText());
+        Integer productBaseID = productBase.getValue() != null ? productBase.getValue().getID_BASE_PRODUCT() : null;
+        String name = nameTextField.getText().trim().isEmpty() ? null : nameTextField.getText();
+        Double price = priceTextField.getText().trim().isEmpty() ? null : Double.parseDouble(priceTextField.getText());
         Integer quantity = quantityTextField.getText().trim().isEmpty() ? null : Integer.parseInt(quantityTextField.getText());
-        Integer brandId = brandComboBox.getValue() != null ? brandComboBox.getValue().getID_BRAND() : null;
-        Integer categoryId = categoryCombobox.getValue() != null ? categoryCombobox.getValue().getID_CATEGORY() : null;
-        LocalDate releaseDate = datePicker.getValue() != null ? datePicker.getValue() : null;
-        LocalTime time = LocalTime.MIDNIGHT;
-        LocalDateTime date = releaseDate != null ? releaseDate.atTime(time) : null;
-
-        if (dateOperatorComboBox != null) {productFinalController.typeDiscount = getValueOperator(dateOperatorComboBox.getValue());}
-        if (quantityOperatorComboBox!= null) {productFinalController.typeQuantity = getValueOperator(quantityOperatorComboBox.getValue());}
-        if (viewCountOperatorComboBox != null) {productFinalController.typePrice = getValueOperator(viewCountOperatorComboBox.getValue());}
-//        productFinalController.productFinalEntity = new Product_Final_Entity(id,name,quantity,date,null,view,categoryId,brandId);
+        Double discount = discountTextField.getText().trim().isEmpty() ? null : Double.parseDouble(discountTextField.getText());
+        if (discountField != null) {productFinalController.typeDiscount = getValueOperator(discountField.getValue());}
+        if (quantityField!= null) {productFinalController.typeQuantity = getValueOperator(quantityField.getValue());}
+        if (priceField != null) {productFinalController.typePrice = getValueOperator(priceField.getValue());}
+        productFinalController.productFinalEntity = new Product_Final_Entity(id,productBaseID,name,quantity,price,discount,null,null,null);
         productFinalController.setPage(1);
-        productFinalController.productController.setMainView("/com/example/dkkp/ProductBase/ProductBaseView.fxml",productFinalController);
+        productFinalController.productController.setMainView("/com/example/dkkp/ProductFinal/ProductFinalView.fxml",productFinalController);
         productFinalController.closePopup(popupStage);
     }
 
@@ -92,7 +86,7 @@ public class ProductFinalFilterController implements TableInterface {
     public void setPopupStage(Stage popupStage) {
         this.popupStage = popupStage;
     }
-
+//
     @FXML
     public void initialize() {
         setTextFormatter();
@@ -102,27 +96,24 @@ public class ProductFinalFilterController implements TableInterface {
         });
 
 //
-        CategoryService categoryService = new CategoryService(entityManager);
-        BrandService brandService = new BrandService(entityManager);
-        Brand_Entity brandEntity = new Brand_Entity();
-        Category_Entity categoryEntity = new Category_Entity();
-        brandComboBox.getItems().addAll(brandService.getFilteredBrand(brandEntity, null, null));
-        categoryCombobox.getItems().addAll(categoryService.getFilteredCategories(categoryEntity, null, null));
+        ProductBaseService productBaseService = new ProductBaseService(entityManager);
+        Product_Base_Entity productBaseEntity = new Product_Base_Entity();
+
+        productBase.getItems().addAll(
+                productBaseService.getProductBaseByCombinedCondition(productBaseEntity,null,null,null,null,null,null,null)
+        );
     }
     private void setTextFormatter(){
         Validator validator1 = new Validator();
         Validator validator2 = new Validator();
         Validator validator3 = new Validator();
+        Validator validator4 = new Validator();
         idTextField.delegateSetTextFormatter(validator1.formatterInteger);
-        viewCountTextField.delegateSetTextFormatter(validator2.formatterInteger);
-        quantityTextField.delegateSetTextFormatter(validator3.formatterInteger);
+        quantityTextField.delegateSetTextFormatter(validator2.formatterInteger);
+        discountTextField.delegateSetTextFormatter(validator3.formatterDouble);
+        priceTextField.delegateSetTextFormatter(validator4.formatterDouble);
     }
 
-
-    @Override
-    public void setWidth() {
-
-    }
 
 
     public void setProductFinalController(ProductFinalController productFinalController) {

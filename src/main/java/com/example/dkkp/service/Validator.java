@@ -11,7 +11,7 @@ public class Validator {
     public Validator() {
     }
 
-    public  TextFormatter<Integer> formatterInteger = new TextFormatter<>(new IntegerStringConverter(), null, c -> {
+    public   TextFormatter<Integer> formatterInteger = new TextFormatter<>(new IntegerStringConverter(), null, c -> {
         if (c.getControlNewText().matches("[0-9]*")) {
             return c;
         } else {
@@ -19,7 +19,7 @@ public class Validator {
         }
     });
 
-    public static TextFormatter<Double> formatterDouble = new TextFormatter<>(new DoubleStringConverter(), 0.0, c -> {
+    public  TextFormatter<Double> formatterDouble = new TextFormatter<>(new DoubleStringConverter(), null, c -> {
         String newText = c.getControlNewText();
         return newText.matches("-?\\d*(\\.\\d*)?") || newText.isEmpty() ? c : null;
     });

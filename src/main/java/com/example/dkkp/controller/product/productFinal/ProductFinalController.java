@@ -137,13 +137,13 @@ public class ProductFinalController {
             ProductFinalController productFinalControllerNew = new ProductFinalController();
             productFinalControllerNew.productController = this.productController;
             productController.productFinalController = productFinalControllerNew;
-            productController.setMainView("//com/example/dkkp/ProductFinal/ProductFinalView.fxml", productFinalControllerNew);
+            productController.setMainView("/com/example/dkkp/ProductFinal/ProductFinalView.fxml", productFinalControllerNew);
         });
 
         searchFld.setOnMouseClicked(event -> {
-            ProductFinalFilterController productFinalFilterController = new ProductFinalFilterController();
+//            ProductFinalFilterController productFinalFilterController = new ProductFinalFilterController();
             productFinalFilterController.setProductFinalController(this);
-            Stage popupStage = setPopView("/com/example/dkkp/ProductFinal/ProductBaseFilter.fxml", productFinalFilterController);
+            Stage popupStage = setPopView("/com/example/dkkp/ProductFinal/ProductFinalFilter.fxml", productFinalFilterController);
             productFinalFilterController.setPopupStage(popupStage);  // Truyền Stage cho controller của popup
         });
         updBtn.setOnMouseClicked(event -> upd());
@@ -203,22 +203,22 @@ public class ProductFinalController {
         refreshProductTable();
     }
     private void handleKeyPress(KeyEvent event) {
-        // Kiểm tra nếu phím nhấn là Enter
         if (event.getCode() == KeyCode.ENTER) {
             setOff = Integer.parseInt(setOffField.getText().trim());
-            updatePagination();
             updateTotalPage();
-            refreshProductTable();
-            if(currentPage > totalPages) currentPage = totalPages;
-            productController.setMainView("/com/example/dkkp/ProductFinal/ProductFinalView.fxml",this);
+            productController.setMainView("/com/example/dkkp/ProductFinal/ProductFinalView.fxml", this);
+            if (currentPage > totalPages) {
+                setPage(totalPages);
+            } else {
+                setPage(currentPage);
+            }
         }
     }
 
     public void refreshProductTable() {
         observableList = getProducts();
         productTable.setItems(observableList);
-        updatePagination();
-        updateTotalPage();
+
     }
     public void setPage(int page) {
         if (page < 1 || page > totalPages || totalPages == 1) {
@@ -325,13 +325,14 @@ public class ProductFinalController {
                     transaction.begin();
                     ProductFinalService productFinalService = new ProductFinalService(entityManager);
                     for (Product_Final_Entity item : selectedItems) {
-                        productFinalService.deleteProductFinal(item.getID_BASE_PRODUCT());
+                        productFinalService.deleteProductFinal(item.getID_SP());
                     }
                     transaction.commit();
                 } catch (Exception e) {
                     transaction.rollback();
                     throw e;
                 }
+                updateTotalPage();
                 refreshProductTable();
             }
         }
@@ -344,15 +345,13 @@ public class ProductFinalController {
             productFinalUpdateController.setProductFinalController(this);
             Stage popupStageUpdate = setPopView("/com/example/dkkp/ProductFinal/ProductFinalUpdate.fxml", productFinalUpdateController);
             productFinalUpdateController.setPopupStage(popupStageUpdate);
+
         }
         ;
     }
 
     private ObservableList<Product_Final_Entity> getProducts() {
         List<Product_Final_Entity> p = productFinalService.getProductFinalByCombinedCondition(productFinalEntity,typePrice, typeDiscount,  typeQuantity, sortField, sortOrder, setOff, offSet);
-        for(Product_Final_Entity item : p) {
-            System.out.println("Day la "+ item.getNAME_PRODUCT());
-        }
         return FXCollections.observableArrayList(p);
     }
     private void updateTotalPage() {
@@ -389,7 +388,7 @@ public class ProductFinalController {
             popupStage.show();
             return popupStage;
         } catch (IOException e) {
-            logger.error("Loading FXML Failed!", e.getMessage());
+            logger.error("dcm buc minh Loading FXML Failed!", e.getMessage());
             return null;
         }
     }

@@ -108,7 +108,8 @@ public class ProductController{
       main.getChildren().clear();
       main.getChildren().add(loader.load());
     } catch (IOException e) {
-      logger.error("Loading FXML Failed!" + e.getMessage()) ;
+      System.out.printf("Loi " +e.getMessage());
+//      logger.error("Loading FXML Failed!" + e.getMessage()) ;
     }
   }
 

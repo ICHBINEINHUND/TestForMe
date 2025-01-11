@@ -6,67 +6,64 @@
 <?import io.github.palexdev.materialfx.controls.MFXComboBox?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 
-<VBox alignment="CENTER" spacing="10" xmlns:fx="http://javafx.com/fxml" maxWidth="450" styleClass="loginVB">
-  <GridPane alignment="CENTER" hgap="10" vgap="10">
-    <columnConstraints>
-      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" prefWidth="150"/>
-      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" prefWidth="150"/>
-    </columnConstraints>
-    <MFXTextField floatingText="ID Product" floatMode="BORDER" prefWidth="150" GridPane.columnIndex="0"
-                  GridPane.rowIndex="0"/>
-    <MFXTextField floatingText="Name Product" floatMode="BORDER" prefWidth="150" GridPane.columnIndex="0"
-                  GridPane.rowIndex="1"/>
-    <MFXTextField floatingText="Base Product" floatMode="BORDER" prefWidth="150" GridPane.columnIndex="0"
-                  GridPane.rowIndex="2"/>
-    <MFXTextField floatingText="Price" floatMode="BORDER" prefWidth="150" GridPane.columnIndex="0"
-                  GridPane.rowIndex="3"/>
-    <MFXComboBox floatingText="Operator" floatMode="BORDER" GridPane.columnIndex="1" GridPane.rowIndex="3">
-      <items>
-        <FXCollections fx:factory="observableArrayList">
-          <String fx:value="Equal"/>
-          <String fx:value="More"/>
-          <String fx:value="Less"/>
-          <String fx:value="Equal | More"/>
-          <String fx:value="Equal | Less"/>
-        </FXCollections>
-      </items>
-    </MFXComboBox>
-    <MFXTextField floatingText="Discount" floatMode="BORDER" prefWidth="150" GridPane.columnIndex="0"
-                  GridPane.rowIndex="4"/>
-    <MFXComboBox floatingText="Operator" floatMode="BORDER" GridPane.columnIndex="1" GridPane.rowIndex="4">
-      <items>
-        <FXCollections fx:factory="observableArrayList">
-          <String fx:value="Equal"/>
-          <String fx:value="More"/>
-          <String fx:value="Less"/>
-          <String fx:value="Equal | More"/>
-          <String fx:value="Equal | Less"/>
-        </FXCollections>
-      </items>
-    </MFXComboBox>
-    <MFXTextField floatingText="Quantity" floatMode="BORDER" prefWidth="150" GridPane.columnIndex="0"
-                  GridPane.rowIndex="5"/>
-    <MFXComboBox floatingText="Operator" floatMode="BORDER" GridPane.columnIndex="1" GridPane.rowIndex="5">
-      <items>
-        <FXCollections fx:factory="observableArrayList">
-          <String fx:value="Equal"/>
-          <String fx:value="More"/>
-          <String fx:value="Less"/>
-          <String fx:value="Equal | More"/>
-          <String fx:value="Equal | Less"/>
-        </FXCollections>
-      </items>
-    </MFXComboBox>
-    <rowConstraints>
-      <RowConstraints/>
-      <RowConstraints/>
-      <RowConstraints/>
-      <RowConstraints/>
-      <RowConstraints/>
-      <RowConstraints/>
-    </rowConstraints>
-  </GridPane>
-  <HBox alignment="CENTER">
-    <MFXButton buttonType="RAISED" mnemonicParsing="false" text="Submit" styleClass="Btn"/>
+<?import io.github.palexdev.materialfx.controls.MFXFilterComboBox?>
+<VBox prefHeight="500.0" prefWidth="350.0" spacing="15" xmlns="http://javafx.com/javafx/17.0.12"
+       xmlns:fx="http://javafx.com/fxml/1" styleClass="productAP" stylesheets="@../DKKP.css">
+  <MFXButton buttonType="RAISED" fx:id="back" mnemonicParsing="false" text="Back" prefWidth="50" prefHeight="25" styleClass="Btn"/>
+  <HBox alignment="TOP_CENTER" prefHeight="60.0" prefWidth="350.0">
+    <VBox spacing="10" alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
+      <VBox spacing="10">
+        <MFXTextField floatingText="ID" fx:id="idTextField" prefWidth="250" prefHeight="40"/>
+        <MFXTextField floatingText="NAME" fx:id="nameTextField" prefWidth="250" prefHeight="40"/>
+        <MFXFilterComboBox fx:id="productBase" floatingText="BASE PRODUCT" prefWidth="250" prefHeight="40"/>
+      </VBox>
+      <HBox spacing="10" alignment="CENTER_LEFT">
+        <MFXComboBox fx:id="priceField" prefWidth="250" prefHeight="40" promptText="PRICE">
+          <items>
+            <FXCollections fx:factory="observableArrayList">
+              <String fx:value="Equal"/>
+              <String fx:value="Before"/>
+              <String fx:value="After"/>
+              <String fx:value="Equal or After"/>
+              <String fx:value="Equal or Before"/>
+            </FXCollections>
+          </items>
+        </MFXComboBox>
+        <MFXTextField fx:id="priceTextField" floatingText="ENTER PRICE" prefWidth="100" prefHeight="40"/>
+      </HBox>
+      <HBox spacing="10" alignment="CENTER_LEFT">
+        <MFXComboBox fx:id="discountField" prefWidth="250" prefHeight="40" promptText="DISCOUNT">
+          <items>
+            <FXCollections fx:factory="observableArrayList">
+              <String fx:value="Equal"/>
+              <String fx:value="Before"/>
+              <String fx:value="After"/>
+              <String fx:value="Equal or After"/>
+              <String fx:value="Equal or Before"/>
+            </FXCollections>
+          </items>
+        </MFXComboBox>
+        <MFXTextField fx:id="discountTextField" floatingText="ENTER PRICE" prefWidth="100" prefHeight="40"/>
+      </HBox>
+      <HBox spacing="10" alignment="CENTER_LEFT">
+        <MFXComboBox fx:id="quantityField" prefWidth="250" prefHeight="40" promptText="QUANTITY">
+          <items>
+            <FXCollections fx:factory="observableArrayList">
+              <String fx:value="Equal"/>
+              <String fx:value="Before"/>
+              <String fx:value="After"/>
+              <String fx:value="Equal or After"/>
+              <String fx:value="Equal or Before"/>
+            </FXCollections>
+          </items>
+        </MFXComboBox>
+        <MFXTextField fx:id="quantityTextField" floatingText="ENTER PRICE" prefWidth="100" prefHeight="40"/>
+      </HBox>
+
+    </VBox>
+  </HBox>
+  <HBox alignment="CENTER" prefHeight="60.0" prefWidth="350.0">
+    <MFXButton fx:id="applyButton" buttonType="RAISED" mnemonicParsing="false" text="Create" prefWidth="80" prefHeight="40"
+               styleClass="Btn"/>
   </HBox>
 </VBox>

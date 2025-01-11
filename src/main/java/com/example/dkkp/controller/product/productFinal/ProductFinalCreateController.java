@@ -73,36 +73,36 @@ public class ProductFinalCreateController {
 //        if (true) {
             transaction.begin();
             try {
-//
-//                if (imagePath != null) {
-//                    Path currentDir = Path.of(System.getProperty("user.dir"));
-//                    Path destinationDir = currentDir.resolve("src/main/resources/com/example/dkkp/IMAGE");
-//                    File sourceFile = new File(imagePath);
-//
-//                    if (!Files.exists(destinationDir)) {
-//                        try {
-//                            Files.createDirectories(destinationDir); // Tạo thư mục nếu chưa có
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                            return;
-//                        }
-//                    }
-//                    String fileExtension = getFileExtension(sourceFile.getName());
-//                    String newFileName = System.currentTimeMillis() + fileExtension; // Tên file mới
-//                    Path destinationPath = destinationDir.resolve(newFileName);
-//
-//                    try {
-//                        Files.copy(sourceFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
-//                        imageName = newFileName; // Lưu tên file vào cơ sở dữ liệu
-//                        System.out.println("Image has been saved: " + destinationPath);
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//
-//                Product_Final_Entity product = new Product_Final_Entity(null, idBaseProduct, name, 0, des, price, discount, imageName);
-//                ProductFinalService producFinalService = new ProductFinalService(entityManager);
-//                producFinalService.createProductFinal(product);
+
+                if (imagePath != null) {
+                    Path currentDir = Path.of(System.getProperty("user.dir"));
+                    Path destinationDir = currentDir.resolve("src/main/resources/com/example/dkkp/IMAGE");
+                    File sourceFile = new File(imagePath);
+
+                    if (!Files.exists(destinationDir)) {
+                        try {
+                            Files.createDirectories(destinationDir); // Tạo thư mục nếu chưa có
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            return;
+                        }
+                    }
+                    String fileExtension = getFileExtension(sourceFile.getName());
+                    String newFileName = System.currentTimeMillis() + fileExtension; // Tên file mới
+                    Path destinationPath = destinationDir.resolve(newFileName);
+
+                    try {
+                        Files.copy(sourceFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
+                        imageName = newFileName; // Lưu tên file vào cơ sở dữ liệu
+                        System.out.println("Image has been saved: " + destinationPath);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                Product_Final_Entity product = new Product_Final_Entity(null, idBaseProduct, name, 0, des, price, discount, imageName);
+                ProductFinalService producFinalService = new ProductFinalService(entityManager);
+                producFinalService.createProductFinal(product);
                 transaction.commit();
                 productFinalController.productController.setMainView("/com/example/dkkp/ProductFinal/ProductFinalView.fxml", productFinalController);
             } catch (Exception e) {
@@ -149,9 +149,6 @@ public class ProductFinalCreateController {
             imageView.setImage(selectedImage);
 
             imagePath = selectedFile.getAbsolutePath();
-            System.out.println("Selected image path: " + imagePath);
-        } else {
-            System.out.println("No image file selected.");
         }
     }
 

@@ -301,7 +301,7 @@ public class ProductBaseController implements TableInterface {
         });
 
         searchFld.setOnMouseClicked(event -> {
-            ProductBaseFilterController productBaseFilterController = new ProductBaseFilterController();
+//            ProductBaseFilterController productBaseFilterController = new ProductBaseFilterController();
             productBaseFilterController.setProductBaseController(this);
             Stage popupStage = setPopView("/com/example/dkkp/ProductBase/ProductBaseFilter.fxml", productBaseFilterController);
             productBaseFilterController.setPopupStage(popupStage);  // Truyền Stage cho controller của popup
