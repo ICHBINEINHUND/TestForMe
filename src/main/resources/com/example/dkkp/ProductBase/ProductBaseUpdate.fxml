@@ -36,7 +36,6 @@
                                                 style="-fx-font-size: 10px;"/>
                                 <MFXTableColumn fx:id="VALUE" text="VALUE" styleClass="productBF"
                                                 style="-fx-font-size: 10px;"/>
-                                <!--                            <MFXTableColumn text="Actions" styleClass="productBF" style="-fx-font-size: 10px;" />-->
                             </tableColumns>
                         </MFXTableView>
                     </StackPane>

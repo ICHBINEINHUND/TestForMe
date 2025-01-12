@@ -39,7 +39,6 @@
           </StackPane>
         </VBox>
         <VBox spacing="10">
-          <MFXButton fx:id="back" buttonType="RAISED" mnemonicParsing="false" text="Back" prefWidth="70" styleClass="Btn"/>
           <HBox spacing="5">
             <MFXButton fx:id="image" buttonType="RAISED" mnemonicParsing="false" text="Image" styleClass="Btn"/>
           </HBox>

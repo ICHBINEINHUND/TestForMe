@@ -345,6 +345,7 @@ public class ProductFinalController {
             productFinalUpdateController.setProductFinalController(this);
             Stage popupStageUpdate = setPopView("/com/example/dkkp/ProductFinal/ProductFinalUpdate.fxml", productFinalUpdateController);
             productFinalUpdateController.setPopupStage(popupStageUpdate);
+            productFinalUpdateController.setImageView();
 
         }
         ;

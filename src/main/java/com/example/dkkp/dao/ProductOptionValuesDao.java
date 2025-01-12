@@ -49,8 +49,8 @@ public class ProductOptionValuesDao {
         CriteriaQuery<Product_Option_Values_Entity> query = cb.createQuery(Product_Option_Values_Entity.class);
         Root<Product_Option_Values_Entity> root = query.from(Product_Option_Values_Entity.class);
 
-        Join<Product_Option_Values_Entity, Product_Option_Entity> productOptionjoin = root.join("product_options", JoinType.INNER);
-        Join<Product_Option_Values_Entity, Product_Final_Entity> productFinaljoin = root.join("product_final", JoinType.INNER);
+        Join<Product_Option_Values_Entity, Product_Option_Entity> productOptionjoin = root.join("product_options", JoinType.LEFT);
+        Join<Product_Option_Values_Entity, Product_Final_Entity> productFinaljoin = root.join("product_final", JoinType.LEFT);
 
         Predicate conditions = cb.conjunction();
         boolean hasConditions = false;
@@ -100,7 +100,7 @@ public class ProductOptionValuesDao {
                 root.get("VALUE"),
                 root.get("ID_FINAL_PRODUCT"),
                 productOptionjoin.get("NAME_OPTION"),
-                productOptionjoin.get("NAME_PRODUCT")
+                productFinaljoin .get("NAME_PRODUCT")
         ));
         TypedQuery<Product_Option_Values_Entity> typedQuery = entityManager.createQuery(query);
         if (offset != null) typedQuery.setFirstResult(offset);

@@ -151,6 +151,6 @@ public class Product_Base_Entity {
 
   @Override
   public String toString() {
-    return  "ID_BASE_PRODUCT " + ID_BASE_PRODUCT;
+    return  "ID" + ID_BASE_PRODUCT;
   }
 }

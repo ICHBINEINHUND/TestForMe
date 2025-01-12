@@ -19,27 +19,20 @@ public class Product_Option_Values_Entity {
 
   @ManyToOne
   @JoinColumn(name = "\"ID_FINAL_PRODUCT\"", referencedColumnName = "\"ID_FINAL_PRODUCT\"", insertable = false, updatable = false)
-  private Product_Final_Entity product_final_entity;
+  private Product_Final_Entity product_final;
 
   @ManyToOne
   @JoinColumn(name = "\"ID_OPTION\"", referencedColumnName = "\"ID_OPTION\"", insertable = false, updatable = false)
-  private Product_Option_Entity product_option_entity;
+  private Product_Option_Entity product_options;
 
   @Transient
   private String Name_Option;
-
   @Transient
   private String NAME_FINAL_PRODUCT;
 
   public String getNAME_FINAL_PRODUCT() {
     return NAME_FINAL_PRODUCT;
   }
-
-  public void setNAME_FINAL_PRODUCT(String NAME_FINAL_PRODUCT) {
-    this.NAME_FINAL_PRODUCT = NAME_FINAL_PRODUCT;
-  }
-
-
 
   public String getName_Option() {
     return Name_Option;

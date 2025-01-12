@@ -23,10 +23,12 @@ public class TestController {
         try {
 
             transaction.begin();
-//           Boolean b = reflectField.isPropertyNameMatched(Product_Base_Entity.class, sortField);
-//            System.out.println(b);
-            Path currentDir = Path.of(System.getProperty("user.dir"));
-            System.out.println("Day la " + currentDir);
+            ProductFinalService productFinalService = new ProductFinalService(entityManager);
+            Product_Option_Values_Entity optionValueEntity = new Product_Option_Values_Entity(null, null, null, 1);
+            List<Product_Option_Values_Entity> p = productFinalService.getProductOptionValuesCombinedCondition(optionValueEntity, null, null, null, null);
+            for (Product_Option_Values_Entity item : p) {
+                System.out.println("ID " + item.getVALUE());
+            }
             transaction.commit();
         } catch (Exception e) {
             if (transaction.isActive()) {
