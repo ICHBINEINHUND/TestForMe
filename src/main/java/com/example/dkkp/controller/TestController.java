@@ -23,12 +23,8 @@ public class TestController {
         try {
 
             transaction.begin();
-            ProductFinalService productFinalService = new ProductFinalService(entityManager);
-            Product_Option_Values_Entity optionValueEntity = new Product_Option_Values_Entity(null, null, null, 1);
-            List<Product_Option_Values_Entity> p = productFinalService.getProductOptionValuesCombinedCondition(optionValueEntity, null, null, null, null);
-            for (Product_Option_Values_Entity item : p) {
-                System.out.println("ID " + item.getVALUE());
-            }
+            Path currentDir = Path.of(System.getProperty("user.dir"));
+            System.out.println(currentDir + "fiel");
             transaction.commit();
         } catch (Exception e) {
             if (transaction.isActive()) {

@@ -6,10 +6,7 @@ import com.example.dkkp.model.Brand_Entity;
 import com.example.dkkp.model.Category_Entity;
 import com.example.dkkp.model.Product_Base_Entity;
 import com.example.dkkp.model.Product_Final_Entity;
-import com.example.dkkp.service.BrandService;
-import com.example.dkkp.service.CategoryService;
-import com.example.dkkp.service.ProductBaseService;
-import com.example.dkkp.service.ProductFinalService;
+import com.example.dkkp.service.*;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXFilterComboBox;
@@ -73,15 +70,14 @@ public class ProductFinalCreateController {
 //        if (true) {
             transaction.begin();
             try {
-
                 if (imagePath != null) {
                     Path currentDir = Path.of(System.getProperty("user.dir"));
-                    Path destinationDir = currentDir.resolve("src/main/resources/com/example/dkkp/IMAGE");
+                    Path destinationDir = currentDir.resolve("src/main/IMAGE");
                     File sourceFile = new File(imagePath);
 
                     if (!Files.exists(destinationDir)) {
                         try {
-                            Files.createDirectories(destinationDir); // Tạo thư mục nếu chưa có
+                            Files.createDirectories(destinationDir);
                         } catch (IOException e) {
                             e.printStackTrace();
                             return;
@@ -93,8 +89,7 @@ public class ProductFinalCreateController {
 
                     try {
                         Files.copy(sourceFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
-                        imageName = newFileName; // Lưu tên file vào cơ sở dữ liệu
-                        System.out.println("Image has been saved: " + destinationPath);
+                        imageName = newFileName;
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -119,9 +114,10 @@ public class ProductFinalCreateController {
         back.setOnMouseClicked(event -> {
             productFinalController.productController.setMainView("/com/example/dkkp/ProductFinal/ProductFinalView.fxml", productFinalController);
         });
-
-        Image defaultImage = new Image(getClass().getResource("/com/example/dkkp/IMAGE/default.png").toExternalForm());
-        imageView.setImage(defaultImage);
+        Path currentDir = Path.of(System.getProperty("user.dir"));
+        Path imageDir = currentDir.resolve("src/main/IMAGE");
+        File defaultImageFile = imageDir.resolve("default.png").toFile();
+        imageView.setImage(new Image(defaultImageFile.toURI().toString()));
         ProductBaseService productBaseService = new ProductBaseService(entityManager);
         Product_Base_Entity productBaseEntity = new Product_Base_Entity();
 
@@ -147,16 +143,23 @@ public class ProductFinalCreateController {
             }
             Image selectedImage = new Image(selectedFile.toURI().toString());
             imageView.setImage(selectedImage);
-
             imagePath = selectedFile.getAbsolutePath();
         }
     }
 
 
-    // Phương thức lấy phần mở rộng file
     private String getFileExtension(String fileName) {
         int dotIndex = fileName.lastIndexOf('.');
         return (dotIndex >= 0) ? fileName.substring(dotIndex) : "";
+    }
+
+    private void setTextFormatter(){
+        Validator validator2 = new Validator();
+        Validator validator3 = new Validator();
+        Validator validator4 = new Validator();
+        QUANTITY.delegateSetTextFormatter(validator2.formatterInteger);
+        PRICE.delegateSetTextFormatter(validator3.formatterDouble);
+        DISCOUNT.delegateSetTextFormatter(validator4.formatterDouble);
     }
 
 

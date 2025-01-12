@@ -15,15 +15,13 @@ import io.github.palexdev.materialfx.controls.MFXTableColumn;
 import io.github.palexdev.materialfx.controls.MFXTableView;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.controls.cell.MFXTableRowCell;
+import jakarta.persistence.PersistenceException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
@@ -328,9 +326,24 @@ public class ProductFinalController {
                         productFinalService.deleteProductFinal(item.getID_SP());
                     }
                     transaction.commit();
+                } catch (PersistenceException e) {
+                    transaction.rollback();
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.setTitle("Deletion Error");
+                    errorAlert.setHeaderText("Unable to delete item(s).");
+                    TextArea textArea = new TextArea("The selected item(s) cannot be deleted due to foreign key constraints. "
+                            + "Please ensure the item(s) are not referenced elsewhere before attempting to delete.");
+                    textArea.setEditable(false);
+                    textArea.setWrapText(true);
+                    errorAlert.getDialogPane().setContent(textArea);
+                    errorAlert.showAndWait();
                 } catch (Exception e) {
                     transaction.rollback();
-                    throw e;
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.setTitle("Error");
+                    errorAlert.setHeaderText("An unexpected error occurred.");
+                    errorAlert.setContentText("Please try again later.");
+                    errorAlert.showAndWait();
                 }
                 updateTotalPage();
                 refreshProductTable();
@@ -344,8 +357,8 @@ public class ProductFinalController {
             productFinalUpdateController.setEntity(selectedItems.getFirst());
             productFinalUpdateController.setProductFinalController(this);
             Stage popupStageUpdate = setPopView("/com/example/dkkp/ProductFinal/ProductFinalUpdate.fxml", productFinalUpdateController);
-            productFinalUpdateController.setPopupStage(popupStageUpdate);
             productFinalUpdateController.setImageView();
+            productFinalUpdateController.setPopupStage(popupStageUpdate);
 
         }
         ;

@@ -3,10 +3,7 @@ package com.example.dkkp.controller.product.productFinal;
 import com.example.dkkp.controller.product.TableInterface;
 import com.example.dkkp.controller.product.productBase.ProductBaseController;
 import com.example.dkkp.model.*;
-import com.example.dkkp.service.BrandService;
-import com.example.dkkp.service.CategoryService;
-import com.example.dkkp.service.ProductBaseService;
-import com.example.dkkp.service.ProductFinalService;
+import com.example.dkkp.service.*;
 import io.github.palexdev.materialfx.controls.*;
 import io.github.palexdev.materialfx.controls.cell.MFXTableRowCell;
 import javafx.collections.FXCollections;
@@ -27,6 +24,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.example.dkkp.controller.LoginController.entityManager;
@@ -89,7 +87,7 @@ public class ProductFinalUpdateController {
         image.setOnAction(event -> handleOpenFile());
         updateBtn.setOnAction(event -> updateFinalProduct());
         backBtn.setOnMouseClicked(event -> productFinalController.closePopup(popupStage));
-
+        setTextFormatter();
         Product_Base_Entity productBase = new Product_Base_Entity();
         ProductBaseService productBaseService = new ProductBaseService(entityManager);
         baseProductField.getItems().addAll(productBaseService.getProductBaseByCombinedCondition(productBase, null, null, null, null, null, null, null));
@@ -102,14 +100,18 @@ public class ProductFinalUpdateController {
     }
 
     public void setImageView() {
-        String imagePath1;
-        if (productEntity.getIMAGE_SP() == null) {
-            imagePath1 = "/com/example/dkkp/IMAGE/default.png";
-        } else {
-            imagePath1 = "/com/example/dkkp/IMAGE/" + productEntity.getIMAGE_SP();
+            Path currentDir = Path.of(System.getProperty("user.dir"));
+            Path imageDir = currentDir.resolve("src/main/IMAGE");
+        try {
+            Path imagePath;
+             imagePath = imageDir.resolve(productEntity.getIMAGE_SP());
+            File imageFile = imagePath.toFile();
+                Image image = new Image(imageFile.toURI().toString());
+                imageView.setImage(image);
+        } catch (Exception e) {
+                File defaultImageFile = imageDir.resolve("default.png").toFile();
+                imageView.setImage(new Image(defaultImageFile.toURI().toString()));
         }
-        Image image = new Image(getClass().getResource(imagePath1).toExternalForm());
-        imageView.setImage(image);
     }
 
     private void updateFinalProduct() {
@@ -139,7 +141,7 @@ public class ProductFinalUpdateController {
                     productEntity.setIMAGE_SP(productEntity.getIMAGE_SP());
                 } else {
                     Path currentDir = Path.of(System.getProperty("user.dir"));
-                    Path destinationDir = currentDir.resolve("src/main/resources/com/example/dkkp/IMAGE");
+                    Path destinationDir = currentDir.resolve("src/main/IMAGE");
                     File sourceFile = new File(imagePath);
 
                     if (!Files.exists(destinationDir)) {
@@ -164,6 +166,8 @@ public class ProductFinalUpdateController {
                 ProductFinalService productFinalService = new ProductFinalService(entityManager);
                 productFinalService.updateProductFinal(productEntity);
                 transaction.commit();
+                productFinalController.setMainView("/com/example/dkkp/ProductFinal/ProductFinalView.fxml", productFinalController);
+                productFinalController.closePopup(popupStage);
             } catch (Exception e) {
                 transaction.rollback();
             }
@@ -215,6 +219,15 @@ public class ProductFinalUpdateController {
         NAME_OPTION.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Option_Values_Entity::getName_Option));
     }
 
+    private void setTextFormatter(){
+        Validator validator2 = new Validator();
+        Validator validator3 = new Validator();
+        Validator validator4 = new Validator();
+        QUANTITY.delegateSetTextFormatter(validator2.formatterInteger);
+        PRICE.delegateSetTextFormatter(validator3.formatterDouble);
+        DISCOUNT.delegateSetTextFormatter(validator4.formatterDouble);
+    }
+
     public void pushEntity() {
         if (productEntity != null) {
             ID_FINAL_PRODUCT.setText(productEntity.getID_SP().toString());
@@ -230,9 +243,6 @@ public class ProductFinalUpdateController {
         ProductFinalService productFinalService = new ProductFinalService(entityManager);
         Product_Option_Values_Entity optionValueEntity = new Product_Option_Values_Entity(null, null, null, productEntity.getID_SP());
         List<Product_Option_Values_Entity> p = productFinalService.getProductOptionValuesCombinedCondition(optionValueEntity, null, null, null, null);
-        for (Product_Option_Values_Entity item : p) {
-            System.out.println("ID " + item.getVALUE());
-        }
         return FXCollections.observableArrayList(p);
     }
 

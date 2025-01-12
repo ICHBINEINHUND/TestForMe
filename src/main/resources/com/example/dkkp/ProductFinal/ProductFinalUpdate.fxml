@@ -46,7 +46,7 @@
             <ImageView fx:id="imageView" fitWidth="300" fitHeight="200" preserveRatio="true"/>
           </HBox>
           <HBox spacing="5">
-            <MFXTextField floatingText="FINAL PRODUCT" fx:id="ID_FINAL_PRODUCT" floatMode="BORDER" prefWidth="250" prefHeight="40"/>
+            <MFXTextField editable="false" floatingText="FINAL PRODUCT" fx:id="ID_FINAL_PRODUCT" floatMode="BORDER" prefWidth="250" prefHeight="40"/>
           </HBox>
           <HBox spacing="5">
             <MFXFilterComboBox floatingText="BASE PRODUCT" fx:id="baseProductField" floatMode="BORDER" prefWidth="250" prefHeight="40"/>

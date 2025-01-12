@@ -21,7 +21,7 @@ public class Validator {
 
     public  TextFormatter<Double> formatterDouble = new TextFormatter<>(new DoubleStringConverter(), null, c -> {
         String newText = c.getControlNewText();
-        return newText.matches("-?\\d*(\\.\\d*)?") || newText.isEmpty() ? c : null;
+        return newText.matches("-?\\d*(\\.\\d*)?") && !newText.startsWith(".") || newText.isEmpty() ? c : null;
     });
 
     public static boolean isValidEmail(String email) {
