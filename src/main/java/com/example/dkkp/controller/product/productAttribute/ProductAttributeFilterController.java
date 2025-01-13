@@ -60,7 +60,7 @@ public class ProductAttributeFilterController {
         Validator validator1 = new Validator();
         ID_ATTRIBUTE.delegateSetTextFormatter(validator1.formatterInteger);
     }
-    public void setProductCategoryController(ProductAttributeController productAttributeController) {
+    public void setProductAttributeController(ProductAttributeController productAttributeController) {
         this.productAttributeController = productAttributeController;
     }
 }

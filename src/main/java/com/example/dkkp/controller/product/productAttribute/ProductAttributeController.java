@@ -165,7 +165,7 @@ public class ProductAttributeController {
             productController.setMainView("/com/example/dkkp/ProductAttribute/ProductAttributeView.fxml", productAttributeController);
         });
         searchFld.setOnMouseClicked(event -> {
-            productAttributeFilterController.setProductCategoryController(this);
+            productAttributeFilterController.setProductAttributeController(this);
             Stage popupStage = setPopView("/com/example/dkkp/ProductAttribute/ProductAttributeFilter.fxml", productAttributeFilterController);
             productAttributeFilterController.setPopupStage(popupStage);
         });

@@ -19,10 +19,10 @@ public class ProductOptionDao {
     }
 
     public void createProductOption(Product_Option_Entity productOption) {
-            entityManager.persist(productOption);
+        entityManager.persist(productOption);
     }
 
-    public List<Product_Option_Entity> getFilteredProductOption(Integer id, String name, String sortField, String sortOrder,Integer setOff,Integer offSet) {
+    public List<Product_Option_Entity> getFilteredProductOption(Integer id, String name, String sortField, String sortOrder, Integer setOff, Integer offSet) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Product_Option_Entity> query = cb.createQuery(Product_Option_Entity.class);
         Root<Product_Option_Entity> root = query.from(Product_Option_Entity.class);
@@ -53,11 +53,12 @@ public class ProductOptionDao {
             }
         }
         TypedQuery<Product_Option_Entity> typedQuery = entityManager.createQuery(query);
-        typedQuery.setFirstResult(offSet);
-        typedQuery.setMaxResults(setOff);
+        if (offSet != null) typedQuery.setFirstResult(offSet);
+        if (setOff != null) typedQuery.setMaxResults(setOff);
 
         return entityManager.createQuery(query).getResultList();
     }
+
     public Integer getFilteredProductOptionCount(Integer id, String name) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Long> query = cb.createQuery(Long.class);
@@ -100,12 +101,12 @@ public class ProductOptionDao {
 
 
     public void updateProductOption(Integer id, String name) {
-            Product_Option_Entity productOption = entityManager.find(Product_Option_Entity.class, id);
-            if (productOption == null) {
-                throw new RuntimeException("Cant not find Product Option to update with ID: " + id);
-            }
-            productOption.setNAME_OPTION(name);
-            entityManager.merge(productOption);
+        Product_Option_Entity productOption = entityManager.find(Product_Option_Entity.class, id);
+        if (productOption == null) {
+            throw new RuntimeException("Cant not find Product Option to update with ID: " + id);
+        }
+        productOption.setNAME_OPTION(name);
+        entityManager.merge(productOption);
     }
 
 

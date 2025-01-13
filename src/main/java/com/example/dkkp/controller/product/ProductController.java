@@ -95,6 +95,7 @@ public class ProductController{
     });
     productOption.setOnMouseClicked(event -> {
       setActiveTab(productOption);
+      productOptionController.setProductController(this);
       setMainView("/com/example/dkkp/ProductOption/ProductOptionView.fxml/", productOptionController);
     });
     productOptionValue.setOnMouseClicked(event -> {
