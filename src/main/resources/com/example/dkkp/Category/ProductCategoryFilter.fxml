@@ -2,21 +2,17 @@
 <?import javafx.scene.layout.*?>
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
-<VBox alignment="CENTER" spacing="10" maxWidth="450" styleClass="loginVB">
-  <GridPane alignment="CENTER" hgap="10" vgap="10">
-    <columnConstraints>
-      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" prefWidth="150"/>
-    </columnConstraints>
-    <MFXTextField floatingText="ID Category" floatMode="BORDER" prefWidth="150" GridPane.columnIndex="0"
-                  GridPane.rowIndex="0"/>
-    <MFXTextField floatingText="Name Category" floatMode="BORDER" prefWidth="150" GridPane.columnIndex="0"
-                  GridPane.rowIndex="1"/>
-    <rowConstraints>
-      <RowConstraints/>
-      <RowConstraints/>
-    </rowConstraints>
-  </GridPane>
-  <HBox alignment="CENTER">
-    <MFXButton buttonType="RAISED" mnemonicParsing="false" text="Submit" styleClass="Btn"/>
-  </HBox>
+<VBox stylesheets="@../DKKP.css" alignment="CENTER" spacing="10" maxWidth="450" xmlns:fx="http://javafx.com/fxml"
+      fx:id="main" styleClass="productAP">
+    <VBox>
+        <MFXButton buttonType="RAISED" fx:id="back" mnemonicParsing="false" text="Back" prefWidth="50" prefHeight="25"
+                   styleClass="Btn"/>
+        <MFXTextField fx:id="ID_CATEGORY" floatingText="ID Category" floatMode="BORDER" prefWidth="150" GridPane.columnIndex="0"
+                      GridPane.rowIndex="0"/>
+        <MFXTextField fx:id="NAME_CATEGORY" floatingText="Name Category" floatMode="BORDER" prefWidth="150" GridPane.columnIndex="0"
+                      GridPane.rowIndex="1"/>
+        <HBox alignment="CENTER">
+            <MFXButton fx:id="applyButton" buttonType="RAISED" mnemonicParsing="false" text="Submit" styleClass="Btn"/>
+        </HBox>
+    </VBox>
 </VBox>

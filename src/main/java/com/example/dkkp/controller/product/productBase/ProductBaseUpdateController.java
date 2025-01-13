@@ -83,14 +83,14 @@ public class ProductBaseUpdateController implements TableInterface {
         CategoryService categoryService = new CategoryService(entityManager);
         BrandService brandService = new BrandService(entityManager);
         Brand_Entity brandEntity = new Brand_Entity();
-        Brand_Entity brandEntityDefault = brandService.getFilteredBrand(new Brand_Entity(productEntity.getID_BRAND(), null, null), null, null).getFirst();
+        Brand_Entity brandEntityDefault = brandService.getFilteredBrand(new Brand_Entity(productEntity.getID_BRAND(), null, null), null, null, null, null).getFirst();
         Category_Entity categoryEntity = new Category_Entity();
         pushEntity();
         backBtn.setOnMouseClicked(event -> productBaseController.closePopup(popupStage));
         updateBtn.setOnMouseClicked(event -> upDateEntity());
-        Category_Entity categoryEntityDefault = categoryService.getFilteredCategories(new Category_Entity(productEntity.getID_CATEGORY(), null), null, null).getFirst();
-        brandField.getItems().addAll(brandService.getFilteredBrand(brandEntity, null, null));
-        cateField.getItems().addAll(categoryService.getFilteredCategories(categoryEntity, null, null));
+        Category_Entity categoryEntityDefault = categoryService.getFilteredCategories(new Category_Entity(productEntity.getID_CATEGORY(), null), null, null, null, null).getFirst();
+        brandField.getItems().addAll(brandService.getFilteredBrand(brandEntity, null, null, null, null));
+        cateField.getItems().addAll(categoryService.getFilteredCategories(categoryEntity, null, null, null, null));
         cateField.setText(categoryEntityDefault.toString());
         brandField.setText(brandEntityDefault.toString());
 

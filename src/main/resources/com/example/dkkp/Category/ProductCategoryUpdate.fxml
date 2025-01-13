@@ -5,24 +5,16 @@
 <?import javafx.geometry.Insets?>
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
-<StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.dkkp.controller.ImportDetailController"
+<StackPane stylesheets="@../DKKP.css" xmlns:fx="http://javafx.com/fxml"
            fx:id="main" styleClass="productAP">
   <VBox spacing="10">
-    <MFXButton fx:id="bckBtn" buttonType="RAISED" mnemonicParsing="false" text="Back" prefWidth="70" styleClass="Btn"/>
+    <MFXButton fx:id="backBtn" buttonType="RAISED" mnemonicParsing="false" text="Back" prefWidth="70" styleClass="Btn"/>
     <HBox spacing="5">
-      <VBox.margin>
-        <Insets left="90"/>
-      </VBox.margin>
-      <MFXTextField floatingText="ID CATEGORY" floatMode="BORDER" value="0" prefWidth="200"/>
+      <MFXTextField fx:id="ID_CATEGORY" floatingText="ID CATEGORY" floatMode="BORDER"  prefWidth="200"/>
     </HBox>
     <HBox spacing="5">
-      <VBox.margin>
-        <Insets left="90"/>
-      </VBox.margin>
-      <MFXTextField floatingText="CATEGORY NAME" floatMode="BORDER" value="0" prefWidth="200"/>
+      <MFXTextField fx:id="NAME_CATEGORY" floatingText="CATEGORY NAME" floatMode="BORDER" prefWidth="200"/>
     </HBox>
-    <HBox alignment="CENTER">
-      <MFXButton buttonType="RAISED" mnemonicParsing="false" text="Update" styleClass="Btn"/>
-    </HBox>
+      <MFXButton fx:id="updateBtn" buttonType="RAISED" mnemonicParsing="false" text="Update" styleClass="Btn"/>
   </VBox>
 </StackPane>

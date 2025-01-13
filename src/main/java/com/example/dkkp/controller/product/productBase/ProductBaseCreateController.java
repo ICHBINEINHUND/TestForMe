@@ -77,8 +77,8 @@ public class ProductBaseCreateController implements TableInterface {
         BrandService brandService = new BrandService(entityManager);
         Brand_Entity brandEntity = new Brand_Entity();
         Category_Entity categoryEntity = new Category_Entity();
-        brandField.getItems().addAll(brandService.getFilteredBrand(brandEntity, null, null));
-        cateField.getItems().addAll(categoryService.getFilteredCategories(categoryEntity, null, null));
+        brandField.getItems().addAll(brandService.getFilteredBrand(brandEntity, null, null, null, null));
+        cateField.getItems().addAll(categoryService.getFilteredCategories(categoryEntity, null, null, null, null));
     }
 
     @Override

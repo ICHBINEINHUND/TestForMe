@@ -19,7 +19,7 @@ public class BrandDao {
             entityManager.persist(brand);
     }
 
-    public List<Brand_Entity> getFilteredBrand(Integer id, String name, String sortField, String sortOrder) {
+    public List<Brand_Entity> getFilteredBrand(Integer id, String name, String sortField, String sortOrder,Integer setOff,Integer offSet) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Brand_Entity> query = cb.createQuery(Brand_Entity.class);
         Root<Brand_Entity> root = query.from(Brand_Entity.class);
@@ -53,6 +53,8 @@ public class BrandDao {
         }
 
         TypedQuery<Brand_Entity> typedQuery = entityManager.createQuery(query);
+        if (offSet != null) typedQuery.setFirstResult(offSet);
+        if (setOff != null) typedQuery.setMaxResults(setOff);
         return typedQuery.getResultList();
     }
     public Integer getFilteredBrandCount(Integer id, String name) {

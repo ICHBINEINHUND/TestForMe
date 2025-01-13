@@ -25,7 +25,9 @@ public class BrandService {
     public List<Brand_Entity> getFilteredBrand(
             Brand_Entity brand,
             String sortField,
-            String sortOrder
+            String sortOrder,
+            Integer setOff,
+            Integer offSet
     ) {
         // chạy được
         // không cần thêm check
@@ -34,7 +36,7 @@ public class BrandService {
         String name = brand.getNAME_BRAND();
 
         return brandDao.getFilteredBrand(
-                id, name, sortField, sortOrder
+                id, name, sortField, sortOrder,setOff, offSet
         );
 
     }
@@ -55,13 +57,15 @@ public class BrandService {
     public List<Brand_Entity> getBrandBy(
             Brand_Entity brand,
             String sortField,
-            String sortOrder
+            String sortOrder,
+            Integer setOff,
+            Integer offSet
     ) {
         // chạy được
         // không cần kiểm tra sự hợp lệ của các tham số truyền vào khác như userId,...
         Integer ID_BRAND = brand.getID_BRAND();
         String NAME_BRAND = brand.getNAME_BRAND();
-        return brandDao.getFilteredBrand(ID_BRAND, NAME_BRAND, sortField, sortOrder);
+        return brandDao.getFilteredBrand(ID_BRAND, NAME_BRAND, sortField, sortOrder,setOff,offSet);
     }
 
     public void deleteBrand(Integer id) {

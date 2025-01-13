@@ -24,7 +24,9 @@ public class CategoryService {
     public List<Category_Entity> getFilteredCategories(
             Category_Entity category,
             String sortField,
-            String sortOrder
+            String sortOrder,
+            Integer setOff,
+            Integer offSet
     ) {
         // chạy được
         // không cần thêm check
@@ -32,7 +34,7 @@ public class CategoryService {
                 String name = category.getNAME_CATEGORY();
 
                 return categoryDao.getFilteredCategories(
-                        id, name, sortField, sortOrder
+                        id, name, sortField, sortOrder,setOff,offSet
                 );
     }
 

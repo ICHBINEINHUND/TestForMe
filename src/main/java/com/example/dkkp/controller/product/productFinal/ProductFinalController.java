@@ -66,6 +66,8 @@ public class ProductFinalController {
     @FXML
     private Label numberSetOff;
     @FXML
+    private Label numberTotalPage;
+    @FXML
     private Button searchFld;
     @FXML
     private Button crtBtn;
@@ -87,15 +89,15 @@ public class ProductFinalController {
     public ProductFinalFilterController productFinalFilterController = new ProductFinalFilterController() ;
     public ProductFinalUpdateController productFinalUpdateController = new ProductFinalUpdateController() ;
 
-    String sortField = null;
-    String sortOrder = null;
+    String sortField = "ID_SP";
+    String sortOrder = "desc";
+    Integer setOff = 2;
+    Integer offSet = 0;
 
     String typePrice = null;
     String typeDiscount = null;
     String typeQuantity = null;
 
-    Integer setOff = 2;
-    Integer offSet = 0;
 
     @FXML
     private MFXButton prevBtn, prevPageBtn, nextPageBtn, nextBtn;
@@ -373,6 +375,7 @@ public class ProductFinalController {
         totalPages = (int) Math.ceil((double) number / setOff);
         totalRowLabel.setText("Total row : " +number);
         numberSetOff.setText("Number row per page: " +setOff);
+        numberTotalPage.setText("Number pages: " + totalPages );
     }
 
     public void setMainView(String fxmlPath, Object controller) {

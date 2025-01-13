@@ -22,7 +22,9 @@ public class CategoryDao {
             Integer id,
             String name,
             String sortField,
-            String sortOrder
+            String sortOrder,
+            Integer setOff,
+            Integer offSet
     ) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Category_Entity> query = cb.createQuery(Category_Entity.class);
@@ -56,6 +58,8 @@ public class CategoryDao {
         }
 
         TypedQuery<Category_Entity> typedQuery = entityManager.createQuery(query);
+        if (offSet != null) typedQuery.setFirstResult(offSet);
+        if (setOff != null) typedQuery.setMaxResults(setOff);
         return typedQuery.getResultList();
     }
     public Integer getFilteredCategoriesCount(

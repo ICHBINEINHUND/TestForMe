@@ -107,8 +107,8 @@ public class ProductBaseFilterController implements TableInterface {
         BrandService brandService = new BrandService(entityManager);
         Brand_Entity brandEntity = new Brand_Entity();
         Category_Entity categoryEntity = new Category_Entity();
-        brandComboBox.getItems().addAll(brandService.getFilteredBrand(brandEntity, null, null));
-        categoryCombobox.getItems().addAll(categoryService.getFilteredCategories(categoryEntity, null, null));
+        brandComboBox.getItems().addAll(brandService.getFilteredBrand(brandEntity, null, null, null, null));
+        categoryCombobox.getItems().addAll(categoryService.getFilteredCategories(categoryEntity, null, null, null, null));
     }
     private void setTextFormatter(){
         Validator validator1 = new Validator();

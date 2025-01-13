@@ -75,10 +75,12 @@ public class ProductController{
       setMainView("/com/example/dkkp/ProductFinal/ProductFinalView.fxml",productFinalController);
     });
     productBrand.setOnMouseClicked(event -> {
+      productBrandController.setProductController(this);
       setActiveTab(productBrand);
       setMainView("/com/example/dkkp/Brand/ProductBrandView.fxml/", productBrandController);
     });
     productCategory.setOnMouseClicked(event -> {
+      productCategoryController.setProductController(this);
       setActiveTab(productCategory);
       setMainView("/com/example/dkkp/Category/ProductCategoryView.fxml/", productCategoryController);
     });

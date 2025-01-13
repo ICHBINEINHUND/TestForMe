@@ -8,9 +8,12 @@
   <HBox spacing="5">
     <VBox HBox.hgrow="ALWAYS" alignment="TOP_CENTER" spacing="5">
       <HBox spacing="5">
+        <VBox>
         <Label fx:id="totalRowLabel" text=" " />
         <Region prefWidth="10" />
         <Label fx:id="numberSetOff" text=" " />
+        <Label fx:id="numberTotalPage" text=" " />
+        </VBox>
         <MFXButton buttonType="RAISED" fx:id="searchFld" mnemonicParsing="false" text="⚙ Filter" prefWidth="70" styleClass="Btn"/>
         <MFXButton fx:id="crtBtn" buttonType="RAISED" mnemonicParsing="false" text="+ Create" prefWidth="70"
                    styleClass="Btn"/>

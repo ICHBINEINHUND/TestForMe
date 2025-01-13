@@ -63,6 +63,8 @@ public class ProductBaseController implements TableInterface {
     @FXML
     private Label totalRowLabel;
     @FXML
+    private Label numberTotalPage;
+    @FXML
     private Label numberSetOff;
     //    @FXML
 //    private MFXTableColumn<Product_Base_Entity> ID_BRAND;
@@ -438,5 +440,6 @@ public class ProductBaseController implements TableInterface {
         totalPages = (int) Math.ceil((double) number / setOff);
         totalRowLabel.setText("Total row : " + number);
         numberSetOff.setText("Number row per page: " + setOff);
+        numberTotalPage.setText("Number pages: " + totalPages );
     }
 }
