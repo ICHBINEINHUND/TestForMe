@@ -86,6 +86,7 @@ public class ProductController{
     });
     productAttribute.setOnMouseClicked(event -> {
       setActiveTab(productAttribute);
+      productAttributeController.setProductController(this);
       setMainView("/com/example/dkkp/ProductAttribute/ProductAttributeView.fxml/", productAttributeController);
     });
     productAttributeValue.setOnMouseClicked(event -> {

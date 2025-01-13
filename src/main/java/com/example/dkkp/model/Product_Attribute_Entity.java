@@ -21,7 +21,7 @@ public class Product_Attribute_Entity {
 
     @ManyToOne
     @JoinColumn(name = "\"ID_CATEGORY\"", referencedColumnName = "\"ID_CATEGORY\"", insertable = false, updatable = false)
-    private Category_Entity categoryEntity;
+    private Category_Entity category;
 
     public Product_Attribute_Entity(Integer ID_ATTRIBUTE, String NAME_ATTRIBUTE, Integer ID_CATEGORY, String NAME_CATEGORY) {
         this.ID_ATTRIBUTE = ID_ATTRIBUTE;
@@ -39,11 +39,11 @@ public class Product_Attribute_Entity {
     }
 
     public Category_Entity getCategoryEntity() {
-        return categoryEntity;
+        return category;
     }
 
     public void setCategoryEntity(Category_Entity categoryEntity) {
-        this.categoryEntity = categoryEntity;
+        this.category = categoryEntity;
     }
 
     public Integer getID_ATTRIBUTE() {
