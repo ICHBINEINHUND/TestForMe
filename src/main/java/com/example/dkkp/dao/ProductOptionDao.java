@@ -56,7 +56,7 @@ public class ProductOptionDao {
         if (offSet != null) typedQuery.setFirstResult(offSet);
         if (setOff != null) typedQuery.setMaxResults(setOff);
 
-        return entityManager.createQuery(query).getResultList();
+        return typedQuery.getResultList();
     }
 
     public Integer getFilteredProductOptionCount(Integer id, String name) {

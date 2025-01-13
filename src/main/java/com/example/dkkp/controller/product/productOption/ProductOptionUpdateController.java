@@ -59,7 +59,7 @@ public class ProductOptionUpdateController {
                 productFinalService.updateProductOption(productOptionEntity);
 
                 transaction.commit();
-                productOptionController.setMainView("/com/example/dkkp/ProductAttribute/ProductAttributeView.fxml", productOptionController);
+                productOptionController.setMainView("/com/example/dkkp/ProductOption/ProductOptionView.fxml", productOptionController);
                 productOptionController.closePopup(popupStage);
             } catch (Exception e) {
                 transaction.rollback();

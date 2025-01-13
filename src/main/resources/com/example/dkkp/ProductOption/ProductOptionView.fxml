@@ -25,7 +25,8 @@
                    styleClass="Btn"/>
         <MFXButton fx:id="refreshBtn" buttonType="RAISED" mnemonicParsing="false" text="🔄 Refresh" prefWidth="100"
                    styleClass="Btn"/>
-        <MFXTextField fx:id="setOffField"   style="-fx-font-size: 10px;" prefWidth="150" promptText="Enter number row per page"  prefHeight="30" minHeight="1"> </MFXTextField>
+        <MFXTextField fx:id="setOffField"   style="-fx-font-size: 10px;" prefWidth="150" promptText="Enter number row per page"  prefHeight="30" minHeight="1">
+        </MFXTextField>
       </HBox>
       <MFXTableView fx:id="productTable" footerVisible="false" minHeight="380">
         <tableColumns>

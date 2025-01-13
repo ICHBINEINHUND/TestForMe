@@ -1,8 +1,9 @@
-package com.example.dkkp.controller.product.productOption;
+package com.example.dkkp.controller.product.productAttributeValue;
 
 import com.example.dkkp.controller.product.ProductController;
-import com.example.dkkp.model.Product_Option_Entity;
-import com.example.dkkp.service.ProductFinalService;
+import com.example.dkkp.controller.product.productAttribute.ProductAttributeController;
+import com.example.dkkp.model.Product_Attribute_Values_Entity;
+import com.example.dkkp.service.ProductBaseService;
 import com.example.dkkp.service.Validator;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTableColumn;
@@ -33,14 +34,21 @@ import java.util.Optional;
 import static com.example.dkkp.controller.LoginController.entityManager;
 import static com.example.dkkp.controller.LoginController.transaction;
 
-public class ProductOptionController{
+public class ProductAttributeValuesController {
     @FXML
-    private MFXTableView<Product_Option_Entity> productTable;
+    private MFXTableView<Product_Attribute_Values_Entity> productTable;
     @FXML
-    private MFXTableColumn<Product_Option_Entity> ID_OPTION;
+    private MFXTableColumn<Product_Attribute_Values_Entity> ID;
     @FXML
-    private MFXTableColumn<Product_Option_Entity> NAME_OPTION;
-
+    private MFXTableColumn<Product_Attribute_Values_Entity> ID_BASE_PRODUCT;
+    @FXML
+    private MFXTableColumn<Product_Attribute_Values_Entity> NAME_PRODUCT;
+    @FXML
+    private MFXTableColumn<Product_Attribute_Values_Entity> ID_ATTRIBUTE;
+    @FXML
+    private MFXTableColumn<Product_Attribute_Values_Entity> NAME_ATTRIBUTE;
+    @FXML
+    private MFXTableColumn<Product_Attribute_Values_Entity> VALUE;
 
     @FXML
     private MFXButton searchFld;
@@ -65,7 +73,7 @@ public class ProductOptionController{
     private StackPane main;
     @FXML
     private HBox paginationHBox;
-    private ObservableList<Product_Option_Entity> observableList;
+    private ObservableList<Product_Attribute_Values_Entity> observableList;
 
     @FXML
     private MFXButton prevBtn, prevPageBtn, nextPageBtn, nextBtn;
@@ -75,18 +83,19 @@ public class ProductOptionController{
     public int currentPage = 1;
     private int totalPages = 5;
 
-    String sortField = "ID_OPTION";
+    String sortField = "ID";
     String sortOrder = "desc";
     Integer setOff = 2;
     Integer offSet = 0;
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
-    public ProductFinalService productFinalService = new ProductFinalService(entityManager);
-    Product_Option_Entity productOptionEntity = new Product_Option_Entity();
+    public ProductBaseService productBaseService = new ProductBaseService(entityManager);
+    Product_Attribute_Values_Entity productAttributeValuesEntity = new Product_Attribute_Values_Entity();
     public ProductController productController;
 
-    public ProductOptionCreateController productOptionCreateController = new ProductOptionCreateController();
-    public ProductOptionFilterController productOptionFilterController = new ProductOptionFilterController();
-    public ProductOptionUpdateController productOptionUpdateController = new ProductOptionUpdateController();
+    public ProductAttributeValuesCreateController productAttributeValuesCreateController = new ProductAttributeValuesCreateController();
+    public ProductAttributeValuesFilterController productAttributeValuesFilterController = new ProductAttributeValuesFilterController();
+    public ProductAttributeValuesUpdateController productAttributeValuesUpdateController = new ProductAttributeValuesUpdateController();
+
     @FXML
     public void initialize() {
         observableList = getProducts();
@@ -102,18 +111,30 @@ public class ProductOptionController{
     }
 
     private void setCol() {
-        ID_OPTION.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Option_Entity::getID_OPTION));
-        NAME_OPTION.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Option_Entity::getNAME_OPTION));
+        ID.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Attribute_Values_Entity::getID));
+        ID_BASE_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Attribute_Values_Entity::getID_BASE_PRODUCT));
+        NAME_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Attribute_Values_Entity::getNAME_PRODUCT));
+        ID_ATTRIBUTE.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Attribute_Values_Entity::getID_ATTRIBUTE));
+        NAME_ATTRIBUTE.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Attribute_Values_Entity::getNAME_ATTRIBUTE));
+        VALUE.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Attribute_Values_Entity::getVALUE));
     }
+
     public void setWidth() {
-        ID_OPTION.prefWidthProperty().bind(productTable.widthProperty().multiply(0.2));
-        NAME_OPTION.prefWidthProperty().bind(productTable.widthProperty().multiply(0.4));
+        ID.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
+        ID_BASE_PRODUCT.prefWidthProperty().bind(productTable.widthProperty().multiply(0.2));
+        NAME_PRODUCT.prefWidthProperty().bind(productTable.widthProperty().multiply(0.2));
+        ID_ATTRIBUTE.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
+        NAME_ATTRIBUTE.prefWidthProperty().bind(productTable.widthProperty().multiply(0.2));
+        VALUE.prefWidthProperty().bind(productTable.widthProperty().multiply(0.2));
     }
 
     private void setSort() {
-
-        ID_OPTION.setOnMouseClicked(event -> handleSort("ID_OPTION"));
-        NAME_OPTION.setOnMouseClicked(event -> handleSort("NAME_OPTION"));
+        ID.setOnMouseClicked(event -> handleSort("ID"));
+        ID_BASE_PRODUCT.setOnMouseClicked(event -> handleSort("ID_BASE_PRODUCT"));
+        NAME_PRODUCT.setOnMouseClicked(event -> handleSort("NAME_PRODUCT"));
+        ID_ATTRIBUTE.setOnMouseClicked(event -> handleSort("ID_ATTRIBUTE"));
+        NAME_ATTRIBUTE.setOnMouseClicked(event -> handleSort("NAME_ATTRIBUTE"));
+        VALUE.setOnMouseClicked(event -> handleSort("VALUE"));
     }
 
     private void handleSort(String columnName) {
@@ -132,11 +153,11 @@ public class ProductOptionController{
     }
 
     private void updateTotalPage() {
-        Integer number = productFinalService.getCountProductOptionCombinedCondition(productOptionEntity);
+        Integer number = productBaseService.getCountProductAttributeValue(productAttributeValuesEntity);
         totalPages = (int) Math.ceil((double) number / setOff);
-        totalRowLabel.setText("Total row : " +number);
-        numberSetOff.setText("Number row per page: " +setOff);
-        numberTotalPage.setText("Number pages: " + totalPages );
+        totalRowLabel.setText("Total row : " + number);
+        numberSetOff.setText("Number row per page: " + setOff);
+        numberTotalPage.setText("Number pages: " + totalPages);
     }
 
     private void crt() {
@@ -146,21 +167,21 @@ public class ProductOptionController{
         });
         setOffField.setOnKeyPressed(event -> handleKeyPress(event));
         crtBtn.setOnAction(_ -> {
-            productOptionCreateController.setProductOptionController(this);
-            setMainView("/com/example/dkkp/ProductOption/ProductOptionCreate.fxml", productOptionCreateController);
+            productAttributeValuesCreateController.setProductAttributeValuesController(this);
+            setMainView("/com/example/dkkp/ProductAttributeValue/ProductAttributeValueCreate.fxml", productAttributeValuesCreateController);
         });
 
         updatePagination();
         refreshBtn.setOnMouseClicked(event -> {
-            ProductOptionController productOptionController = new ProductOptionController();
-            productOptionController.productController = this.productController;
-            productController.productOptionController = productOptionController;
-            productController.setMainView("/com/example/dkkp/ProductOption/ProductOptionView.fxml", productOptionController);
+            ProductAttributeController productAttributeController = new ProductAttributeController();
+            productAttributeController.productController = this.productController;
+            productController.productAttributeController = productAttributeController;
+            productController.setMainView("/com/example/dkkp/ProductAttributeValue/ProductAttributeValueView.fxml", productAttributeController);
         });
         searchFld.setOnMouseClicked(event -> {
-            productOptionFilterController.setProductOptionController(this);
-            Stage popupStage = setPopView("/com/example/dkkp/ProductOption/ProductOptionFilter.fxml", productOptionFilterController);
-            productOptionFilterController.setPopupStage(popupStage);
+            productAttributeValuesFilterController.setProductAttributeValuesController(this);
+            Stage popupStage = setPopView("/com/example/dkkp/ProductAttributeValue/ProductAttributeValueFilter.fxml", productAttributeValuesFilterController);
+            productAttributeValuesFilterController.setPopupStage(popupStage);
         });
         updBtn.setOnMouseClicked(event -> upd());
         delBtn.setOnMouseClicked(event -> del());
@@ -173,6 +194,7 @@ public class ProductOptionController{
         prevPageBtn.setOnAction(event -> setPage(currentPage - 1));
         nextPageBtn.setOnAction(event -> setPage(currentPage + 1));
     }
+
     private void handleKeyPress(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             setOff = Integer.parseInt(setOffField.getText().trim());
@@ -182,18 +204,19 @@ public class ProductOptionController{
             } else {
                 setPage(currentPage);
             }
-            productController.setMainView("/com/example/dkkp/ProductOption/ProductOptionView.fxml", this);
+            productController.setMainView("/com/example/dkkp/ProductAttributeValue/ProductAttributeValueView.fxml", this);
         }
     }
+
     private void upd() {
-        List<Product_Option_Entity> selectedItems = productTable.getSelectionModel().getSelectedValues();
+        List<Product_Attribute_Values_Entity> selectedItems = productTable.getSelectionModel().getSelectedValues();
         if (selectedItems.size() == 1) {
-            productOptionUpdateController.setEntity(selectedItems.getFirst());
-            productOptionUpdateController.setProductOptionController(this);
+            productAttributeValuesUpdateController.setEntity(selectedItems.getFirst());
+            productAttributeValuesUpdateController.setProductAttributeValuesController(this);
 
-            Stage popupStageUpdate = setPopView("/com/example/dkkp/ProductOption/ProductOptionUpdate.fxml", productOptionUpdateController);
+            Stage popupStageUpdate = setPopView("/com/example/dkkp/ProductAttributeValue/ProductAttributeValueUpdate.fxml", productAttributeValuesUpdateController);
 
-            productOptionUpdateController.setPopupStage(popupStageUpdate);
+            productAttributeValuesUpdateController.setPopupStage(popupStageUpdate);
         }
         ;
     }
@@ -207,6 +230,7 @@ public class ProductOptionController{
         updatePagination();
         refreshProductTable();
     }
+
     private void updatePagination() {
         if (totalPages < 3) {
             if (totalPages == 1) {
@@ -279,6 +303,7 @@ public class ProductOptionController{
             } else {
                 pageLabel3.setStyle("-fx-text-fill: black;");
             }
+
         }
 
         prevBtn.setDisable(currentPage == 1);
@@ -288,7 +313,7 @@ public class ProductOptionController{
     }
 
     private void del() {
-        List<Product_Option_Entity> selectedItems = productTable.getSelectionModel().getSelectedValues();
+        List<Product_Attribute_Values_Entity> selectedItems = productTable.getSelectionModel().getSelectedValues();
         if (!selectedItems.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Confirm Deletion");
@@ -301,9 +326,9 @@ public class ProductOptionController{
             if (result.isPresent() && result.get() == yesButton) {
                 try {
                     transaction.begin();
-                    ProductFinalService productFinalService = new ProductFinalService(entityManager);
-                    for (Product_Option_Entity item : selectedItems) {
-                        productFinalService.deleteProductOption(item.getID_OPTION());
+                    ProductBaseService productBaseService = new ProductBaseService(entityManager);
+                    for (Product_Attribute_Values_Entity item : selectedItems) {
+                        productBaseService.deleteProductAttribute(item.getID_ATTRIBUTE());
                     }
                     transaction.commit();
                 } catch (PersistenceException e) {
@@ -331,10 +356,10 @@ public class ProductOptionController{
         }
     }
 
-    private ObservableList<Product_Option_Entity> getProducts() {
-        List<Product_Option_Entity> p =  productFinalService.getProductOptionCombinedCondition(productOptionEntity,sortField,sortOrder,setOff,offSet);
-        for(Product_Option_Entity item : p) {
-            System.out.println("San pham " + item.getNAME_OPTION());
+    private ObservableList<Product_Attribute_Values_Entity> getProducts() {
+        List<Product_Attribute_Values_Entity> p = productBaseService.getProductAttributeValuesCombinedCondition(productAttributeValuesEntity, sortField, sortOrder, setOff, offSet);
+        for(Product_Attribute_Values_Entity item : p) {
+            System.out.println("san pham " + item.getVALUE());
         }
         return FXCollections.observableArrayList(p);
     }
@@ -342,6 +367,7 @@ public class ProductOptionController{
     public void setProductController(ProductController productController) {
         this.productController = productController;
     }
+
 
     public void setMainView(String fxmlPath, Object controller) {
         try {
@@ -367,18 +393,19 @@ public class ProductOptionController{
             popupStage.setScene(scene);
             double screenWidth = Screen.getPrimary().getVisualBounds().getWidth();
             double screenHeight = Screen.getPrimary().getVisualBounds().getHeight();
-            popupStage.setWidth(screenWidth *0.8);
-            popupStage.setHeight(screenHeight *0.8);
+            popupStage.setWidth(screenWidth * 0.8);
+            popupStage.setHeight(screenHeight * 0.8);
             popupStage.show();
             return popupStage;
         } catch (IOException e) {
-            logger.error( e.getMessage());
+            logger.error(e.getMessage());
             return null;
         }
     }
+
     public void closePopup(Stage popupStage) {
         if (popupStage != null) {
             popupStage.close();
         }
-    } 
+    }
 }

@@ -22,12 +22,20 @@ public class TestController {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-       ProductFinalService productFinalService = new ProductFinalService(entityManager);
-       Product_Option_Entity productOption_Entity = new Product_Option_Entity();
-     List<Product_Option_Entity> p =  productFinalService.getProductOptionCombinedCondition(productOption_Entity,null,null,null,null);
-               for(Product_Option_Entity item: p){
-                   System.out.println("San pham: " + item.getNAME_OPTION());
-               }
+//       ProductFinalService productFinalService = new ProductFinalService(entityManager);
+//       Product_Option_Entity productOption_Entity = new Product_Option_Entity();
+//     List<Product_Option_Entity> p =  productFinalService.getProductOptionCombinedCondition(productOption_Entity,null,null,null,null);
+//               for(Product_Option_Entity item: p){
+//                   System.out.println("San pham: " + item.getNAME_OPTION());
+//               }
+
+            ProductBaseService productBaseService = new ProductBaseService(entityManager);
+            Product_Attribute_Values_Entity product = new Product_Attribute_Values_Entity();
+           List<Product_Attribute_Values_Entity> p = productBaseService.getProductAttributeValuesCombinedCondition(product,null,null,2,null);
+                   for(Product_Attribute_Values_Entity item:p){
+                       System.out.println("day la " + item.getVALUE());
+                   }
+
             transaction.commit();
         } catch (Exception e) {
             if (transaction.isActive()) {

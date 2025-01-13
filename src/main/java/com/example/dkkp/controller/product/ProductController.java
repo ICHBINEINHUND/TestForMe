@@ -7,7 +7,7 @@ import com.example.dkkp.controller.product.productCategory.ProductCategoryContro
 import com.example.dkkp.controller.product.productFinal.ProductFinalController;
 import com.example.dkkp.controller.product.productOption.ProductOptionController;
 import com.example.dkkp.controller.product.productOptionValue.ProductOptionValueController;
-import com.example.dkkp.controller.product.productAttributeValue.ProductAttributeValueController;
+import com.example.dkkp.controller.product.productAttributeValue.ProductAttributeValuesController;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -51,7 +51,7 @@ public class ProductController{
   public ProductOptionController productOptionController = new ProductOptionController();
   public ProductOptionValueController productOptionValueController = new ProductOptionValueController();
   public ProductAttributeController productAttributeController = new ProductAttributeController();
-  public ProductAttributeValueController productAttributeValueController = new ProductAttributeValueController();
+  public ProductAttributeValuesController productAttributeValuesController = new ProductAttributeValuesController();
   public ProductBrandController productBrandController = new ProductBrandController();
   public ProductCategoryController productCategoryController = new ProductCategoryController();
 
@@ -91,7 +91,8 @@ public class ProductController{
     });
     productAttributeValue.setOnMouseClicked(event -> {
       setActiveTab(productAttributeValue);
-      setMainView("/com/example/dkkp/ProductAttributeValue/ProductAttributeValueView.fxml/", productAttributeValueController);
+      productAttributeValuesController.setProductController(this);
+      setMainView("/com/example/dkkp/ProductAttributeValue/ProductAttributeValueView.fxml/", productAttributeValuesController);
     });
     productOption.setOnMouseClicked(event -> {
       setActiveTab(productOption);
