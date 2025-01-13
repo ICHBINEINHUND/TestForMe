@@ -73,11 +73,11 @@ public class ProductBaseCreateController implements TableInterface {
             productBaseController.setMainView("/com/example/dkkp/ProductBase/ProductBaseView.fxml", productBaseController);
         });
 //        getToComboBox();
-        CategoryService categoryService = new CategoryService(entityManager);
         BrandService brandService = new BrandService(entityManager);
         Brand_Entity brandEntity = new Brand_Entity();
-        Category_Entity categoryEntity = new Category_Entity();
         brandField.getItems().addAll(brandService.getFilteredBrand(brandEntity, null, null, null, null));
+        CategoryService categoryService = new CategoryService(entityManager);
+        Category_Entity categoryEntity = new Category_Entity();
         cateField.getItems().addAll(categoryService.getFilteredCategories(categoryEntity, null, null, null, null));
     }
 

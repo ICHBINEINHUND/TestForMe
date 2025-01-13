@@ -10,9 +10,9 @@
       <property name="jakarta.persistence.jdbc.user" value="postgres"/>
       <property name="jakarta.persistence.jdbc.password" value="1"/>
       <property name="hibernate.hbm2ddl.auto" value="update"/>
-      <property name="hibernate.show_sql" value="false"/>
-      <property name="hibernate.format_sql" value="false"/>
-      <property name="hibernate.use_sql_comments" value="false"/>
+      <property name="hibernate.show_sql" value="true"/>
+      <property name="hibernate.format_sql" value="true"/>
+      <property name="hibernate.use_sql_comments" value="true"/>
       <property name="hibernate.jdbc.lob.non_contextual_creation" value="true"/>
       <property name="hibernate.cache.use_second_level_cache" value="false"/>
       <property name="hibernate.hikari.maximumPoolSize" value="20"/>

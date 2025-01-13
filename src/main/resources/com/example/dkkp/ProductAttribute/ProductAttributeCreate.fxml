@@ -2,39 +2,20 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.geometry.Insets?>
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
-<StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.dkkp.controller.ImportDetailController"
+<?import io.github.palexdev.materialfx.controls.MFXFilterComboBox?>
+<StackPane xmlns:fx="http://javafx.com/fxml"
            fx:id="main" styleClass="productAP">
   <VBox spacing="10">
-    <MFXButton fx:id="bckBtn" buttonType="RAISED" mnemonicParsing="false" text="Back" prefWidth="70" styleClass="Btn"/>
+    <MFXButton fx:id="back" buttonType="RAISED" mnemonicParsing="false" text="Back" prefWidth="70" styleClass="Btn"/>
     <HBox spacing="5">
-      <VBox.margin>
-        <Insets left="90"/>
-      </VBox.margin>
-      <MFXTextField floatingText="ID ATTRIBUTE" floatMode="BORDER" prefWidth="200"/>
+      <MFXTextField fx:id="NAME_ATTRIBUTE" floatingText="NAME ATTRIBUTE" floatMode="BORDER" prefWidth="200"/>
     </HBox>
-    <HBox spacing="5">
-      <VBox.margin>
-        <Insets left="90"/>
-      </VBox.margin>
-      <MFXTextField floatingText="NAME ATTRIBUTE" floatMode="BORDER" prefWidth="200"/>
-    </HBox>
-    <HBox spacing="5">
-      <VBox.margin>
-        <Insets left="90"/>
-      </VBox.margin>
-      <MFXTextField floatingText="ID CATEGORY" floatMode="BORDER" prefWidth="200"/>
-    </HBox>
-    <HBox spacing="5">
-      <VBox.margin>
-        <Insets left="90"/>
-      </VBox.margin>
-      <MFXTextField floatingText="CATEGORY NAME" floatMode="BORDER" prefWidth="200"/>
-    </HBox>
+    <MFXFilterComboBox floatingText="CATEGORY" fx:id="cateField" floatMode="BORDER" prefWidth="250" prefHeight="40">
+    </MFXFilterComboBox>
     <HBox alignment="CENTER">
-      <MFXButton buttonType="RAISED" mnemonicParsing="false" text="Create" styleClass="Btn"/>
+      <MFXButton fx:id="createBtn" buttonType="RAISED" mnemonicParsing="false" text="Create" styleClass="Btn"/>
     </HBox>
   </VBox>
 </StackPane>

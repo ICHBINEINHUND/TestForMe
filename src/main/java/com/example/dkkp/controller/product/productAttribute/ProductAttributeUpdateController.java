@@ -1,9 +1,12 @@
 package com.example.dkkp.controller.product.productAttribute;
 
+import com.example.dkkp.model.Category_Entity;
 import com.example.dkkp.model.Product_Attribute_Entity;
 import com.example.dkkp.model.Product_Attribute_Entity;
+import com.example.dkkp.service.CategoryService;
 import com.example.dkkp.service.ProductBaseService;
 import io.github.palexdev.materialfx.controls.MFXButton;
+import io.github.palexdev.materialfx.controls.MFXFilterComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -21,9 +24,11 @@ public class ProductAttributeUpdateController {
     private ProductAttributeController productAttributeController;
 
     @FXML
-    private MFXTextField ID_CATEGORY;
+    private MFXTextField ID_ATTRIBUTE;
     @FXML
-    private MFXTextField NAME_CATEGORY;
+    private MFXTextField NAME_ATTRIBUTE;
+    @FXML
+    private MFXFilterComboBox<Category_Entity> cateField;
 
     @FXML
     private MFXButton updateBtn;
@@ -36,6 +41,8 @@ public class ProductAttributeUpdateController {
         pushEntity();
         updateBtn.setOnAction(event -> updateCategory());
         backBtn.setOnMouseClicked(event -> productAttributeController.closePopup(popupStage));
+
+
     }
 
     private void updateCategory() {
@@ -51,12 +58,15 @@ public class ProductAttributeUpdateController {
         if (result.isPresent() && result.get() == yesButton) {
             try {
                 transaction.begin();
-                productAttributeEntity.setNAME_CATEGORY(NAME_CATEGORY.getText());
+                if (cateField.getSelectionModel().getSelectedItem() != null) {
+                    productAttributeEntity.setID_CATEGORY(cateField.getSelectionModel().getSelectedItem().getID_CATEGORY());
+                }
+                productAttributeEntity.setNAME_ATTRIBUTE(NAME_ATTRIBUTE.getText());
                 ProductBaseService productBaseService = new ProductBaseService(entityManager);
                 productBaseService.updateProductAttribute(productAttributeEntity);
 
                 transaction.commit();
-                productAttributeController.setMainView("/com/example/dkkp/Category/ProductCategoryView.fxml", productAttributeController);
+                productAttributeController.setMainView("/com/example/dkkp/ProductAttribute/ProductAttributeView.fxml", productAttributeController);
                 productAttributeController.closePopup(popupStage);
             } catch (Exception e) {
                 transaction.rollback();
@@ -65,11 +75,17 @@ public class ProductAttributeUpdateController {
     }
     public void pushEntity() {
         if (productAttributeEntity != null) {
-            ID_CATEGORY.setText(productAttributeEntity.getID_CATEGORY().toString());
-            NAME_CATEGORY.setText(productAttributeEntity.getNAME_CATEGORY());
+            ID_ATTRIBUTE.setText(productAttributeEntity.getID_CATEGORY().toString());
+            NAME_ATTRIBUTE.setText(productAttributeEntity.getNAME_ATTRIBUTE());
+
+            CategoryService categoryService = new CategoryService(entityManager);
+            Category_Entity categoryEntityDefault = categoryService.getFilteredCategories(new Category_Entity(productAttributeEntity.getID_CATEGORY(), null), null, null, null, null).getFirst();
+            Category_Entity categoryEntity = new Category_Entity();
+            cateField.getItems().addAll(categoryService.getFilteredCategories(categoryEntity, null, null, null, null));
+            cateField.setText(categoryEntityDefault.toString());
         }
     }
-    public void setProductCategoryController(ProductAttributeController productAttributeController) {
+    public void setProductAttributeController(ProductAttributeController productAttributeController) {
         this.productAttributeController = productAttributeController;
 
     }

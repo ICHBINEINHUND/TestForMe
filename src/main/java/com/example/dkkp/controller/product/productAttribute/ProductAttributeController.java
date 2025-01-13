@@ -162,12 +162,11 @@ public class ProductAttributeController {
             ProductAttributeController productAttributeController = new ProductAttributeController();
             productAttributeController.productController = this.productController;
             productController.productAttributeController = productAttributeController;
-            productController.setMainView("/com/example/dkkp/Category/ProductCategoryView.fxml", productAttributeController);
+            productController.setMainView("/com/example/dkkp/ProductAttribute/ProductAttributeView.fxml", productAttributeController);
         });
-
         searchFld.setOnMouseClicked(event -> {
             productAttributeFilterController.setProductCategoryController(this);
-            Stage popupStage = setPopView("/com/example/dkkp/Category/ProductCategoryFilter.fxml", productAttributeFilterController);
+            Stage popupStage = setPopView("/com/example/dkkp/ProductAttribute/ProductAttributeFilter.fxml", productAttributeFilterController);
             productAttributeFilterController.setPopupStage(popupStage);
         });
         updBtn.setOnMouseClicked(event -> upd());
@@ -185,19 +184,19 @@ public class ProductAttributeController {
         if (event.getCode() == KeyCode.ENTER) {
             setOff = Integer.parseInt(setOffField.getText().trim());
             updateTotalPage();
-            productController.setMainView("/com/example/dkkp/ProductAttribute/ProductAttributeView.fxml", this);
             if (currentPage > totalPages) {
                 setPage(totalPages);
             } else {
                 setPage(currentPage);
             }
+            productController.setMainView("/com/example/dkkp/ProductAttribute/ProductAttributeView.fxml", this);
         }
     }
     private void upd() {
         List<Product_Attribute_Entity> selectedItems = productTable.getSelectionModel().getSelectedValues();
         if (selectedItems.size() == 1) {
             productAttributeUpdateController.setEntity(selectedItems.getFirst());
-            productAttributeUpdateController.setProductCategoryController(this);
+            productAttributeUpdateController.setProductAttributeController(this);
 
             Stage popupStageUpdate = setPopView("/com/example/dkkp/ProductAttribute/ProductAttributeUpdate.fxml", productAttributeUpdateController);
 

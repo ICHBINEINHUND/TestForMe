@@ -75,7 +75,7 @@ public class ProductAttributeDao {
         TypedQuery<Product_Attribute_Entity> typedQuery = entityManager.createQuery(query);
         if (offSet != null) typedQuery.setFirstResult(offSet);
         if (setOff != null) typedQuery.setMaxResults(setOff);
-        return entityManager.createQuery(query).getResultList();
+        return typedQuery.getResultList();
     }
     public Integer getFilteredProductAttributeCount(Integer ID_ATTRIBUTE, String NAME_ATTRIBUTE, Integer ID_CATEGORY, String NAME_CATEGORY) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
