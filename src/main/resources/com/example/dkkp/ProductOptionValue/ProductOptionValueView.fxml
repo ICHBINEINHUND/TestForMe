@@ -10,9 +10,12 @@
   <HBox spacing="5">
     <VBox HBox.hgrow="ALWAYS" alignment="TOP_CENTER" spacing="5">
       <HBox spacing="5">
-        <Label fx:id="totalRowLabel" text=" " />
-        <Region prefWidth="10" />
-        <Label fx:id="numberSetOff" text=" " />
+        <VBox>
+          <Label fx:id="totalRowLabel" text=" "/>
+          <Region prefWidth="10"/>
+          <Label fx:id="numberSetOff" text=" " />
+          <Label fx:id="numberTotalPage" text=" " />
+        </VBox>
         <MFXButton buttonType="RAISED" fx:id="searchFld" mnemonicParsing="false" text="⚙ Filter" prefWidth="70" styleClass="Btn"/>
         <MFXButton fx:id="crtBtn" buttonType="RAISED" mnemonicParsing="false" text="+ Create" prefWidth="70"
                    styleClass="Btn"/>
@@ -28,8 +31,10 @@
         <tableColumns>
           <MFXTableColumn fx:id="ID" text="ID" styleClass="productBF"/>
           <MFXTableColumn fx:id="ID_OPTION" text="ID OPTION" styleClass="productBF"/>
-          <MFXTableColumn fx:id="VALUE" text="VALUE" styleClass="productBF"/>
+          <MFXTableColumn fx:id="NAME_OPTION" text="NAME OPTION" styleClass="productBF"/>
           <MFXTableColumn fx:id="ID_FINAL_PRODUCT" text="ID FINAL PRODUCT" styleClass="productBF"/>
+          <MFXTableColumn fx:id="NAME_FINAL_PRODUCT" text="NAME PRODUCT" styleClass="productBF"/>
+          <MFXTableColumn fx:id="VALUE" text="VALUE" styleClass="productBF"/>
         </tableColumns>
       </MFXTableView>
       <HBox fx:id="paginationHBox" spacing="5" alignment="CENTER">
@@ -44,3 +49,4 @@
     </VBox>
   </HBox>
 </StackPane>
+

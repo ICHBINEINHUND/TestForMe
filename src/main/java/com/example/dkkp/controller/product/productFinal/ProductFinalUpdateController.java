@@ -1,7 +1,5 @@
 package com.example.dkkp.controller.product.productFinal;
 
-import com.example.dkkp.controller.product.TableInterface;
-import com.example.dkkp.controller.product.productBase.ProductBaseController;
 import com.example.dkkp.model.*;
 import com.example.dkkp.service.*;
 import io.github.palexdev.materialfx.controls.*;
@@ -11,7 +9,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.DatePicker;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
@@ -22,9 +19,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.time.LocalTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import static com.example.dkkp.controller.LoginController.entityManager;
@@ -216,7 +211,7 @@ public class ProductFinalUpdateController {
         ID_OPTION_VALUE.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Option_Values_Entity::getID));
         ID_OPTION.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Option_Values_Entity::getID_OPTION));
         VALUE.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Option_Values_Entity::getVALUE));
-        NAME_OPTION.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Option_Values_Entity::getName_Option));
+        NAME_OPTION.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Option_Values_Entity::getNAME_OPTION));
     }
 
     private void setTextFormatter(){

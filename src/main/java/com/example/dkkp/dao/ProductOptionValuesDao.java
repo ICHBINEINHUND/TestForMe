@@ -1,9 +1,6 @@
 package com.example.dkkp.dao;
 
-import com.example.dkkp.model.Product_Base_Entity;
-import com.example.dkkp.model.Product_Final_Entity;
-import com.example.dkkp.model.Product_Option_Entity;
-import com.example.dkkp.model.Product_Option_Values_Entity;
+import com.example.dkkp.model.*;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
 
@@ -44,7 +41,7 @@ public class ProductOptionValuesDao {
         return true;
     }
 
-    public List<Product_Option_Values_Entity> getFilteredProductOptionValue(Integer id, Integer idOption, String NAME_OPTION, String value, Integer idFinalProduct, String NAME_PRODUCT, String sortField, String sortOrder, Integer offset, Integer setOff) {
+    public List<Product_Option_Values_Entity> getFilteredProductOptionValue(Integer id, Integer idOption, String NAME_OPTION, String value, Integer idFinalProduct, String NAME_PRODUCT, String sortField, String sortOrder, Integer setOff, Integer offset) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Product_Option_Values_Entity> query = cb.createQuery(Product_Option_Values_Entity.class);
         Root<Product_Option_Values_Entity> root = query.from(Product_Option_Values_Entity.class);
@@ -154,35 +151,17 @@ public class ProductOptionValuesDao {
 
 
     public void deleteOptionValues(Integer ID, Integer ID_OPTION, Integer ID_FINAL_PRODUCT) {
-        // Bắt đầu xây dựng câu truy vấn
-        StringBuilder queryStr = new StringBuilder("SELECT po FROM Product_Option_Values_Entity po WHERE 1=1");
-        if (ID != null) {
-            queryStr.append(" AND po.ID = :ID");
-        } else if (ID_OPTION != null) {
-            queryStr.append(" AND po.ID_OPTION = :ID_OPTION");
-        } else if (ID_FINAL_PRODUCT != null) {
-            queryStr.append(" AND po.ID_FINAL_PRODUCT = :ID_FINAL_PRODUCT");
-        }
-        var query = entityManager.createQuery(queryStr.toString(), Product_Option_Values_Entity.class);
-        if (ID != null) {
-            query.setParameter("ID", ID);
-        } else if (ID_OPTION != null) {
-            query.setParameter("ID_OPTION", ID_OPTION);
-        } else if (ID_FINAL_PRODUCT != null) {
-            query.setParameter("ID_FINAL_PRODUCT", ID_FINAL_PRODUCT);
-        }
-        List<Product_Option_Values_Entity> optionValues = query.getResultList();
-        if (!optionValues.isEmpty()) {
-            for (Product_Option_Values_Entity optionValue : optionValues) {
-                try {
-                    entityManager.remove(optionValue);
-                } catch (RuntimeException e) {
-                    throw new RuntimeException("Error occurred while deleting Option Value", e);
-                }
+
+        Product_Option_Values_Entity productOptionValues = entityManager.find(Product_Option_Values_Entity.class, ID);
+        if (productOptionValues != null) {
+            try {
+                entityManager.remove(productOptionValues);
+                return;
+            } catch (RuntimeException e) {
+                throw new RuntimeException("please delete all attribute value belong this product opton value:" + ID, e);
             }
-        } else {
-            throw new RuntimeException("Cannot find Option Values to delete");
         }
+        throw new RuntimeException("Cant find id - option value to delete");
     }
 
 

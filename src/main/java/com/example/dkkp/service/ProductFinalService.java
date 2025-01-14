@@ -5,8 +5,6 @@ import com.example.dkkp.dao.ProductOptionValuesDao;
 import com.example.dkkp.dao.ProductFinalDao;
 import com.example.dkkp.model.*;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 
 import java.util.List;
 
@@ -158,7 +156,7 @@ public class ProductFinalService {
         Integer ID_OPTION = productOptionValues.getID_OPTION();
         String VALUE = productOptionValues.getVALUE();
         Integer ID_FINAL_PRODUCT = productOptionValues.getID_FINAL_PRODUCT();
-        String NAME_OPTION = productOptionValues.getName_Option();
+        String NAME_OPTION = productOptionValues.getNAME_OPTION();
         String NAME_PRODUCT = productOptionValues.getNAME_FINAL_PRODUCT();
 
           return  productOptionValuesDao.getFilteredProductOptionValue(ID, ID_OPTION, NAME_OPTION, VALUE, ID_FINAL_PRODUCT, NAME_PRODUCT, sortField, sortOrder, setOff, offset);
@@ -172,7 +170,7 @@ public class ProductFinalService {
         Integer ID_OPTION = productOptionValues.getID_OPTION();
         String VALUE = productOptionValues.getVALUE();
         Integer ID_FINAL_PRODUCT = productOptionValues.getID_FINAL_PRODUCT();
-        String NAME_OPTION = productOptionValues.getName_Option();
+        String NAME_OPTION = productOptionValues.getNAME_OPTION();
         String NAME_PRODUCT = productOptionValues.getNAME_FINAL_PRODUCT();
 
         return  productOptionValuesDao.getFilteredProductOptionValueCount(ID, ID_OPTION, NAME_OPTION, VALUE, ID_FINAL_PRODUCT, NAME_PRODUCT);

@@ -6,7 +6,7 @@ import com.example.dkkp.controller.product.productBrand.ProductBrandController;
 import com.example.dkkp.controller.product.productCategory.ProductCategoryController;
 import com.example.dkkp.controller.product.productFinal.ProductFinalController;
 import com.example.dkkp.controller.product.productOption.ProductOptionController;
-import com.example.dkkp.controller.product.productOptionValue.ProductOptionValueController;
+import com.example.dkkp.controller.product.productOptionValue.ProductOptionValuesController;
 import com.example.dkkp.controller.product.productAttributeValue.ProductAttributeValuesController;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.fxml.FXML;
@@ -49,7 +49,7 @@ public class ProductController{
   public ProductBaseController productBaseController = new ProductBaseController();
   public ProductFinalController productFinalController = new ProductFinalController();
   public ProductOptionController productOptionController = new ProductOptionController();
-  public ProductOptionValueController productOptionValueController = new ProductOptionValueController();
+  public ProductOptionValuesController productOptionValuesController = new ProductOptionValuesController();
   public ProductAttributeController productAttributeController = new ProductAttributeController();
   public ProductAttributeValuesController productAttributeValuesController = new ProductAttributeValuesController();
   public ProductBrandController productBrandController = new ProductBrandController();
@@ -100,8 +100,9 @@ public class ProductController{
       setMainView("/com/example/dkkp/ProductOption/ProductOptionView.fxml/", productOptionController);
     });
     productOptionValue.setOnMouseClicked(event -> {
+      productOptionValuesController.setProductController(this);
       setActiveTab(productOptionValue);
-      setMainView("/com/example/dkkp/ProductOptionValue/ProductOptionValueView.fxml/", productOptionValueController);
+      setMainView("/com/example/dkkp/ProductOptionValue/ProductOptionValueView.fxml/", productOptionValuesController);
     });
   }
 

@@ -26,7 +26,7 @@ public class Product_Option_Values_Entity {
   private Product_Option_Entity product_options;
 
   @Transient
-  private String Name_Option;
+  private String NAME_OPTION;
   @Transient
   private String NAME_FINAL_PRODUCT;
 
@@ -34,21 +34,25 @@ public class Product_Option_Values_Entity {
     return NAME_FINAL_PRODUCT;
   }
 
-  public String getName_Option() {
-    return Name_Option;
+  public void setNAME_FINAL_PRODUCT(String NAME_FINAL_PRODUCT) {
+    this.NAME_FINAL_PRODUCT = NAME_FINAL_PRODUCT;
   }
 
-  public Product_Option_Values_Entity(Integer ID, Integer ID_OPTION, String VALUE, Integer ID_FINAL_PRODUCT, String name_Option, String NAME_FINAL_PRODUCT) {
+  public String getNAME_OPTION() {
+    return NAME_OPTION;
+  }
+
+  public Product_Option_Values_Entity(Integer ID, Integer ID_OPTION, String VALUE, Integer ID_FINAL_PRODUCT, String NAMEOPTION, String NAME_FINAL_PRODUCT) {
     this.ID = ID;
     this.ID_OPTION = ID_OPTION;
-    this.Name_Option = name_Option;
+    this.NAME_OPTION = NAMEOPTION;
     this.VALUE = VALUE;
     this.ID_FINAL_PRODUCT = ID_FINAL_PRODUCT;
     this.NAME_FINAL_PRODUCT = NAME_FINAL_PRODUCT;
   }
 
-  public void setName_Option(String name_Option) {
-    Name_Option = name_Option;
+  public void setNAME_OPTION(String NAME_OPTION) {
+    this.NAME_OPTION = NAME_OPTION;
   }
 
 
