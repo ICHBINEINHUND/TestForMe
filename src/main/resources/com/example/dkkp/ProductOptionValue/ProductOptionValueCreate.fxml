@@ -10,7 +10,7 @@
   <VBox spacing="10">
     <MFXButton fx:id="back" buttonType="RAISED" mnemonicParsing="false" text="Back" prefWidth="70" styleClass="Btn"/>
     <HBox spacing="5">
-      <MFXTextField floatingText="VALUE" floatMode="BORDER" prefWidth="200"/>
+      <MFXTextField fx:id="VALUE" floatingText="VALUE" floatMode="BORDER" prefWidth="200"/>
     </HBox>
     <HBox spacing="5">
       <MFXFilterComboBox floatingText="OPTION" fx:id="optionField" floatMode="BORDER" prefWidth="250" prefHeight="40">

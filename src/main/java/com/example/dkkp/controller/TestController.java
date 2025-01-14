@@ -22,19 +22,14 @@ public class TestController {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            ProductFinalService productFinalService = new ProductFinalService(entityManager);
-            Product_Option_Values_Entity productOption_Entity = new Product_Option_Values_Entity();
-            List<Product_Option_Values_Entity> p = productFinalService.getProductOptionValuesCombinedCondition(productOption_Entity, null, null, null, null);
-            for (Product_Option_Values_Entity item : p) {
-                System.out.println("San pham: " + item.getVALUE() + item.getNAME_OPTION() + item.getID_OPTION() +item.getID_FINAL_PRODUCT() + item.getNAME_PRODUCT());
-            }
+            // nhét code vào đây
 
             transaction.commit();
         } catch (Exception e) {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+
         } finally {
             entityManager.close();
             entityManagerFactory.close();

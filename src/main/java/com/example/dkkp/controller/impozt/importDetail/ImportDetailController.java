@@ -1,7 +1,14 @@
-package com.example.dkkp.controller.product.productOptionValue;
+package com.example.dkkp.controller.impozt.importDetail;
 
-import com.example.dkkp.controller.product.ProductController;
-import com.example.dkkp.model.Product_Option_Values_Entity;
+import com.example.dkkp.controller.impozt.ImportController;
+import com.example.dkkp.controller.impozt.importDetail.ImportDetailController;
+import com.example.dkkp.controller.impozt.importDetail.ImportDetailFilterController;
+import com.example.dkkp.controller.product.productOption.ProductOptionCreateController;
+import com.example.dkkp.controller.product.productOption.ProductOptionFilterController;
+import com.example.dkkp.controller.product.productOption.ProductOptionUpdateController;
+import com.example.dkkp.model.Import_Detail_Entity;
+import com.example.dkkp.model.Product_Option_Entity;
+import com.example.dkkp.service.ImportService;
 import com.example.dkkp.service.ProductFinalService;
 import com.example.dkkp.service.Validator;
 import io.github.palexdev.materialfx.controls.MFXButton;
@@ -15,7 +22,10 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
@@ -33,29 +43,27 @@ import java.util.Optional;
 import static com.example.dkkp.controller.LoginController.entityManager;
 import static com.example.dkkp.controller.LoginController.transaction;
 
-public class ProductOptionValuesController {
+public class ImportDetailController {
     @FXML
-    private MFXTableView<Product_Option_Values_Entity> productTable;
+    private MFXTableView<Import_Detail_Entity> importTable;
     @FXML
-    private MFXTableColumn<Product_Option_Values_Entity> ID;
+    private MFXTableColumn<Import_Detail_Entity> ID_IMP;
     @FXML
-    private MFXTableColumn<Product_Option_Values_Entity> ID_OPTION;
+    private MFXTableColumn<Import_Detail_Entity> DATE_IMP;
     @FXML
-    private MFXTableColumn<Product_Option_Values_Entity> NAME_OPTION;
+    private MFXTableColumn<Import_Detail_Entity> DESCRIPTION;
     @FXML
-    private MFXTableColumn<Product_Option_Values_Entity> ID_FINAL_PRODUCT;
+    private MFXTableColumn<Import_Detail_Entity> IS_AVAILABLE;
     @FXML
-    private MFXTableColumn<Product_Option_Values_Entity> NAME_PRODUCT;
+    private MFXTableColumn<Import_Detail_Entity> ID_REPLACE;
     @FXML
-    private MFXTableColumn<Product_Option_Values_Entity> VALUE;
+    private MFXTableColumn<Import_Detail_Entity> TOTAL_PRICE;
 
 
     @FXML
     private MFXButton searchFld;
     @FXML
     private MFXButton crtBtn;
-    @FXML
-    private MFXButton updBtn;
     @FXML
     private MFXButton delBtn;
     @FXML
@@ -73,33 +81,33 @@ public class ProductOptionValuesController {
     private StackPane main;
     @FXML
     private HBox paginationHBox;
-    private ObservableList<Product_Option_Values_Entity> observableList;
+    private ObservableList<Import_Detail_Entity> observableList;
 
     @FXML
     private MFXButton prevBtn, prevPageBtn, nextPageBtn, nextBtn;
     @FXML
     private Label pageLabel1, pageLabel2, pageLabel3;
 
+    public String typeDate;
+    public String typePrice;
+
     public int currentPage = 1;
     private int totalPages = 5;
 
-    String sortField = "ID";
+    String sortField = "ID_IMPD";
     String sortOrder = "desc";
     Integer setOff = 2;
     Integer offSet = 0;
-    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
-    public ProductFinalService productFinalService = new ProductFinalService(entityManager);
-    Product_Option_Values_Entity productOptionValuesEntity = new Product_Option_Values_Entity();
-    public ProductController productController;
+    private static final Logger logger = LoggerFactory.getLogger(ImportController.class);
+    public ImportService importService = new ImportService(entityManager);
+    public Import_Detail_Entity importEntity = new Import_Detail_Entity();
+    public ImportController importController;
 
-    public ProductOptionValuesCreateController productOptionValuesCreateController = new ProductOptionValuesCreateController();
-    public ProductOptionValuesFilterController productOptionValuesFilterController = new ProductOptionValuesFilterController();
-    public ProductOptionValuesUpdateController productOptionValuesUpdateController = new ProductOptionValuesUpdateController();
-
+    public ImportDetailFilterController importDetailFilterController = new ImportDetailFilterController();
     @FXML
     public void initialize() {
-        observableList = getProducts();
-        productTable.setItems(observableList);
+        observableList = getImport();
+        importTable.setItems(observableList);
         setCol();
         setWidth();
         updateTotalPage();
@@ -111,30 +119,30 @@ public class ProductOptionValuesController {
     }
 
     private void setCol() {
-        ID.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Option_Values_Entity::getID));
-        ID_OPTION.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Option_Values_Entity::getID_OPTION));
-        NAME_OPTION.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Option_Values_Entity::getNAME_OPTION));
-        ID_FINAL_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Option_Values_Entity::getID_FINAL_PRODUCT));
-        NAME_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Option_Values_Entity::getNAME_PRODUCT));
-        VALUE.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Option_Values_Entity::getVALUE));
+        ID_IMP.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getID_IMP));
+        DATE_IMP.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getDATE_IMP));
+        DESCRIPTION.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getDESCRIPTION));
+        IS_AVAILABLE.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getIS_AVAILABLE));
+        ID_REPLACE.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getID_REPLACE));
+        TOTAL_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getTOTAL_PRICE));
     }
     public void setWidth() {
-        ID.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
-        ID_OPTION.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
-        NAME_OPTION.prefWidthProperty().bind(productTable.widthProperty().multiply(0.2));
-        ID_FINAL_PRODUCT.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
-        NAME_PRODUCT.prefWidthProperty().bind(productTable.widthProperty().multiply(0.3));
-        VALUE.prefWidthProperty().bind(productTable.widthProperty().multiply(0.2));
+        ID_IMP.prefWidthProperty().bind(importTable.widthProperty().multiply(0.2));
+        DATE_IMP.prefWidthProperty().bind(importTable.widthProperty().multiply(0.4));
+        DESCRIPTION.prefWidthProperty().bind(importTable.widthProperty().multiply(0.4));
+        IS_AVAILABLE.prefWidthProperty().bind(importTable.widthProperty().multiply(0.4));
+        ID_REPLACE.prefWidthProperty().bind(importTable.widthProperty().multiply(0.4));
+        TOTAL_PRICE.prefWidthProperty().bind(importTable.widthProperty().multiply(0.4));
     }
 
     private void setSort() {
 
-        ID.setOnMouseClicked(event -> handleSort("ID"));
-        ID_OPTION.setOnMouseClicked(event -> handleSort("ID_OPTION"));
-        NAME_OPTION.setOnMouseClicked(event -> handleSort("NAME_OPTION"));
-        ID_FINAL_PRODUCT.setOnMouseClicked(event -> handleSort("ID_FINAL_PRODUCT"));
-        NAME_PRODUCT.setOnMouseClicked(event -> handleSort("NAME_PRODUCT"));
-        VALUE.setOnMouseClicked(event -> handleSort("VALUE"));
+        ID_IMP.setOnMouseClicked(event -> handleSort("ID_IMP"));
+        DATE_IMP.setOnMouseClicked(event -> handleSort("DATE_IMP"));
+        DESCRIPTION.setOnMouseClicked(event -> handleSort("DESCRIPTION"));
+        IS_AVAILABLE.setOnMouseClicked(event -> handleSort("IS_AVAILABLE"));
+        ID_REPLACE.setOnMouseClicked(event -> handleSort("ID_REPLACE"));
+        TOTAL_PRICE.setOnMouseClicked(event -> handleSort("TOTAL_PRICE"));
     }
 
     private void handleSort(String columnName) {
@@ -148,12 +156,12 @@ public class ProductOptionValuesController {
     }
 
     public void refreshProductTable() {
-        observableList = getProducts();
-        productTable.setItems(observableList);
+        observableList = getImport();
+        importTable.setItems(observableList);
     }
 
     private void updateTotalPage() {
-        Integer number = productFinalService.getCountProductOptionValuesCombinedCondition(productOptionValuesEntity);
+        Integer number = importService.getCountImportByCombinedCondition(importEntity,typeDate,typePrice);
         totalPages = (int) Math.ceil((double) number / setOff);
         totalRowLabel.setText("Total row : " +number);
         numberSetOff.setText("Number row per page: " +setOff);
@@ -162,28 +170,28 @@ public class ProductOptionValuesController {
 
     private void crt() {
         main.setOnMouseClicked(event -> {
-            productTable.getSelectionModel().clearSelection();
+            importTable.getSelectionModel().clearSelection();
             main.requestFocus();
         });
-        setOffField.setOnKeyPressed(this::handleKeyPress);
+        setOffField.setOnKeyPressed(event -> handleKeyPress(event));
         crtBtn.setOnAction(_ -> {
-            productOptionValuesCreateController.setProductOptionValuesController(this);
-            setMainView("/com/example/dkkp/ProductOptionValue/ProductOptionValueCreate.fxml", productOptionValuesCreateController);
+            importDetailCreateController.setImportDetailController(this);
+            setMainView("/com/example/dkkp/ImportDetail/ImportDetailCreate.fxml", importDetailCreateController);
         });
 
         updatePagination();
         refreshBtn.setOnMouseClicked(event -> {
-            ProductOptionValuesController productOptionValuesController = new ProductOptionValuesController();
-            productOptionValuesController.productController = this.productController;
-            productController.productOptionValuesController = productOptionValuesController;
-            productController.setMainView("/com/example/dkkp/ProductOptionValue/ProductOptionValueView.fxml", productOptionValuesController);
+            ImportDetailController importDetailController = new ImportDetailController();
+            importDetailController.importController = this.importController;
+            importController.importDetailController = importDetailController;
+            importController.setMainView("/com/example/dkkp/ImportDetail/ImportDetailView.fxml", importDetailController);
         });
         searchFld.setOnMouseClicked(event -> {
-            productOptionValuesFilterController.setImportGeneralController(this);
-            Stage popupStage = setPopView("/com/example/dkkp/ProductOptionValue/ProductOptionValueFilter.fxml", productOptionValuesFilterController);
-            productOptionValuesFilterController.setPopupStage(popupStage);
+            importDetailFilterController.setImportDetailController(this);
+            Stage popupStage = setPopView("/com/example/dkkp/ImportDetail/ImportDetailFilter.fxml", importDetailFilterController);
+            importDetailFilterController.setPopupStage(popupStage);
         });
-        updBtn.setOnMouseClicked(event -> upd());
+
         delBtn.setOnMouseClicked(event -> del());
 
         pageLabel1.setOnMouseClicked(event -> setPage(currentPage));
@@ -198,22 +206,15 @@ public class ProductOptionValuesController {
         if (event.getCode() == KeyCode.ENTER) {
             setOff = Integer.parseInt(setOffField.getText().trim());
             updateTotalPage();
-            setPage(Math.min(currentPage, totalPages));
-            productController.setMainView("/com/example/dkkp/ProductOptionValue/ProductOptionValueView.fxml", this);
+            if (currentPage > totalPages) {
+                setPage(totalPages);
+            } else {
+                setPage(currentPage);
+            }
+            importController.setMainView("/com/example/dkkp/ImportDetail/ImportDetailView.fxml", this);
         }
     }
-    private void upd() {
-        List<Product_Option_Values_Entity> selectedItems = productTable.getSelectionModel().getSelectedValues();
-        if (selectedItems.size() == 1) {
-            productOptionValuesUpdateController.setEntity(selectedItems.getFirst());
-            productOptionValuesUpdateController.setProductOptionValuesController(this);
 
-            Stage popupStageUpdate = setPopView("/com/example/dkkp/ProductOptionValue/ProductOptionValueUpdate.fxml", productOptionValuesUpdateController);
-
-            productOptionValuesUpdateController.setPopupStage(popupStageUpdate);
-        }
-        ;
-    }
 
     public void setPage(int page) {
         if (page < 1 || page > totalPages || totalPages == 1) {
@@ -305,7 +306,7 @@ public class ProductOptionValuesController {
     }
 
     private void del() {
-        List<Product_Option_Values_Entity> selectedItems = productTable.getSelectionModel().getSelectedValues();
+        List<Import_Detail_Entity> selectedItems = importTable.getSelectionModel().getSelectedValues();
         if (!selectedItems.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Confirm Deletion");
@@ -318,9 +319,9 @@ public class ProductOptionValuesController {
             if (result.isPresent() && result.get() == yesButton) {
                 try {
                     transaction.begin();
-                    ProductFinalService productFinalService = new ProductFinalService(entityManager);
-                    for (Product_Option_Values_Entity item : selectedItems) {
-                        productFinalService.deleteProductOptionValues(item.getID(),null,null);
+                    ImportService importService = new ImportService(entityManager);
+                    for (Import_Detail_Entity item : selectedItems) {
+                        importService.deleteImportAndDetail(item.getID_IMP());
                     }
                     transaction.commit();
                 } catch (PersistenceException e) {
@@ -348,16 +349,16 @@ public class ProductOptionValuesController {
         }
     }
 
-    private ObservableList<Product_Option_Values_Entity> getProducts() {
-        List<Product_Option_Values_Entity> p =  productFinalService.getProductOptionValuesCombinedCondition(productOptionValuesEntity,sortField,sortOrder,setOff,offSet);
-        for(Product_Option_Values_Entity item : p) {
-            System.out.println("San pham " + item.getVALUE());
+    private ObservableList<Import_Detail_Entity> getImport() {
+        List<Import_Detail_Entity> p =  importService.getImportByCombinedCondition(importEntity,typeDate,typePrice,sortField,sortOrder,setOff,offSet);
+        for(Import_Detail_Entity item : p) {
+            System.out.println("San pham " + item.getID_IMP());
         }
         return FXCollections.observableArrayList(p);
     }
 
-    public void setProductController(ProductController productController) {
-        this.productController = productController;
+    public void setImportController(ImportController importController) {
+        this.importController = importController;
     }
 
     public void setMainView(String fxmlPath, Object controller) {
@@ -397,5 +398,5 @@ public class ProductOptionValuesController {
         if (popupStage != null) {
             popupStage.close();
         }
-    }
+    } 
 }

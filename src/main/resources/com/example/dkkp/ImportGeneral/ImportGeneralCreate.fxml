@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<?import javafx.scene.control.DatePicker?>
+<?import io.github.palexdev.materialfx.controls.MFXFilterComboBox?>
+<?import javafx.scene.control.Spinner?>
+<StackPane xmlns:fx="http://javafx.com/fxml" >
+  <VBox spacing="20">
+    <MFXButton buttonType="RAISED" fx:id="back" mnemonicParsing="false" text="Back" prefWidth="50" prefHeight="25" styleClass="Btn"/>
+    <HBox alignment="TOP_CENTER">
+<!--      <MFXTableView fx:id="importDetailTable" footerVisible="false" prefWidth="700" minHeight="380">-->
+<!--        <tableColumns>-->
+<!--          <MFXTableColumn fx:id="ID_IMPD" text="ID" styleClass="productBF" maxWidth="10"-->
+<!--                          style="-fx-font-size: 10px;"/>-->
+<!--          <MFXTableColumn fx:id="ID_BASE_PRODUCT" text="NAME" styleClass="productBF"-->
+<!--                          style="-fx-font-size: 10px;"/>-->
+<!--          <MFXTableColumn fx:id="ID_FINAL_PRODUCT" text="DESCRIPTION" styleClass="productBF"-->
+<!--                          style="-fx-font-size: 10px;"/>-->
+<!--          <MFXTableColumn fx:id="QUANTITY" text="DESCRIPTION" styleClass="productBF"-->
+<!--                          style="-fx-font-size: 10px;"/>-->
+<!--          <MFXTableColumn fx:id="UNIT_PRICE" text="DESCRIPTION" styleClass="productBF"-->
+<!--                          style="-fx-font-size: 10px;"/>-->
+<!--          <MFXTableColumn fx:id="TOTAL_PRICE" text="DESCRIPTION" styleClass="productBF"-->
+<!--                          style="-fx-font-size: 10px;"/>-->
+<!--          <MFXTableColumn fx:id="DESCRIPTIOND" text="DESCRIPTION" styleClass="productBF"-->
+<!--                          style="-fx-font-size: 10px;"/>-->
+<!--        </tableColumns>-->
+<!--      </MFXTableView>-->
+      <VBox spacing="10" alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
+        <Label styleClass="pdLabel">CREATE BASE PRODUCT</Label>
+        <MFXFilterComboBox floatingText="ID REPLACE" fx:id="ID_REPLACE" floatMode="BORDER" prefWidth="250" prefHeight="40">
+        </MFXFilterComboBox>
+        <HBox>
+          <DatePicker fx:id="datePicker" />
+          <Spinner fx:id="hourSpinner" prefWidth="80" />
+          <Spinner fx:id="minuteSpinner" prefWidth="80" />
+          <Spinner fx:id="secondSpinner" prefWidth="80" />
+        </HBox>
+        <MFXTextField floatingText="DESCRIPTION" fx:id="DESCRIPTION" floatMode="BORDER" prefWidth="250" prefHeight="40"/>
+      </VBox>
+    </HBox>
+    <HBox alignment="TOP_CENTER" spacing="10">
+      <MFXButton fx:id="createBtn" buttonType="RAISED" mnemonicParsing="false" text="Create" prefWidth="80" prefHeight="40"
+                 styleClass="Btn"/>
+    </HBox>
+  </VBox>
+</StackPane>

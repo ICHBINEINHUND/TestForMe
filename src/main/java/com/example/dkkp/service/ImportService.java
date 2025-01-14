@@ -27,8 +27,8 @@ public class ImportService {
             String typePrice,
             String sortField,
             String sortOrder,
-            int setOff, // Số bản ghi mỗi luồng xử lý
-            int offset
+            Integer setOff, // Số bản ghi mỗi luồng xử lý
+            Integer offset
     ) {
             LocalDateTime dateImport = import_entity.getDATE_IMP();
             String id = import_entity.getID_IMP();

@@ -1,5 +1,6 @@
 package com.example.dkkp.controller;
 
+import com.example.dkkp.controller.impozt.ImportController;
 import com.example.dkkp.controller.product.ProductController;
 import com.example.dkkp.view.LoginView;
 import javafx.event.ActionEvent;
@@ -56,7 +57,7 @@ public class HomeController {
 
   @FXML
   public void loadImportView() {
-    setMainView("/com/example/dkkp/Import/ImportView.fxml",importController);
+    setMainView("/com/example/dkkp/ImportView.fxml",importController);
     setActiveTab(importTab);
   }
 

@@ -42,7 +42,7 @@ public class ProductOptionValuesCreateController {
                 ProductFinalService productFinalService = new ProductFinalService(entityManager);
                 productFinalService.createProductOptionValues(productOptionValuesEntity);
                 transaction.commit();
-                productOptionValuesController.productController.setMainView("/com/example/dkkp/ProductOption/ProductOptionView.fxml", productOptionValuesController);
+                productOptionValuesController.productController.setMainView("/com/example/dkkp/ProductOptionValue/ProductOptionValueView.fxml", productOptionValuesController);
             } catch (Exception e) {
                 transaction.rollback();
             }
