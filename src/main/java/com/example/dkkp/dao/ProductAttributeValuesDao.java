@@ -44,8 +44,8 @@ public class ProductAttributeValuesDao {
                                                                                    String NAME_PRODUCT,
                                                                                    String sortField,
                                                                                    String sortOrder,
-                                                                                   Integer offset,
-                                                                                   Integer setOff) {
+                                                                                   Integer setOff,
+                                                                                   Integer offset) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Product_Attribute_Values_Entity> query = cb.createQuery(Product_Attribute_Values_Entity.class);
         Root<Product_Attribute_Values_Entity> root = query.from(Product_Attribute_Values_Entity.class);
@@ -155,30 +155,18 @@ public class ProductAttributeValuesDao {
         return result != null ? result.intValue() : 0;
     }
 
-    public void deleteAttributeValues(Integer id, Integer ID_ATTRIBUTE, Integer ID_BASE_PRODUCT) {
-        StringBuilder queryStr = new StringBuilder("SELECT po FROM Product_Attribute_Values_Entity po WHERE 1=1");
+    public void deleteAttributeValues(Integer ID, Integer ID_ATTRIBUTE, Integer ID_BASE_PRODUCT) {
 
-        var query = entityManager.createQuery(queryStr.toString(), Product_Attribute_Values_Entity.class);
-        if (id != null) {
-            queryStr.append(" AND po.ID = :id");
-        } else if (ID_BASE_PRODUCT != null) {
-            queryStr.append(" AND po.ID_BASE_PRODUCT = :ID_BASE_PRODUCT");
-        } else if (ID_ATTRIBUTE != null) {
-            queryStr.append(" AND po.ID_ATTRIBUTE = :ID_ATTRIBUTE");
-        }
-        if (id != null) {
-            query.setParameter("id", id);
-        } else if (ID_BASE_PRODUCT != null) {
-            query.setParameter("ID_BASE_PRODUCT", ID_BASE_PRODUCT);
-        } else if (ID_ATTRIBUTE != null) {
-            query.setParameter("ID_ATTRIBUTE", ID_ATTRIBUTE);
-        }
-        List<Product_Attribute_Values_Entity> attributeValues = query.getResultList();
-        if (!attributeValues.isEmpty()) {
-            for (Product_Attribute_Values_Entity optionValue : attributeValues) {
-                entityManager.remove(optionValue);
+        Product_Attribute_Values_Entity productAttributeValues = entityManager.find(Product_Attribute_Values_Entity.class, ID);
+        if (productAttributeValues != null) {
+            try {
+                entityManager.remove(productAttributeValues);
+                return;
+            } catch (RuntimeException e) {
+                throw new RuntimeException("please delete all attribute value belong this product attribute:" + ID_ATTRIBUTE, e);
             }
         }
+        throw new RuntimeException("Cant find id - attribute to delete");
     }
 
 

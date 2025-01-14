@@ -31,7 +31,7 @@
         <tableColumns>
           <MFXTableColumn fx:id="ID" text="ID" styleClass="productBF"/>
           <MFXTableColumn fx:id="ID_BASE_PRODUCT" text="ID BASE PRODUCT" styleClass="productBF"/>
-          <MFXTableColumn fx:id="NAME_PRODUCT" text="NAME ATTRIBUTE" styleClass="productBF"/>
+          <MFXTableColumn fx:id="NAME_PRODUCT" text="NAME PRODUCT" styleClass="productBF"/>
           <MFXTableColumn fx:id="ID_ATTRIBUTE" text="ID ATTRIBUTE" styleClass="productBF"/>
           <MFXTableColumn fx:id="NAME_ATTRIBUTE" text="NAME ATTRIBUTE" styleClass="productBF"/>
           <MFXTableColumn fx:id="VALUE" text="VALUE" styleClass="productBF"/>

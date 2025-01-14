@@ -2,6 +2,8 @@ package com.example.dkkp.controller.product.productAttributeValue;
 
 import com.example.dkkp.model.Category_Entity;
 import com.example.dkkp.model.Product_Attribute_Entity;
+import com.example.dkkp.model.Product_Attribute_Values_Entity;
+import com.example.dkkp.model.Product_Base_Entity;
 import com.example.dkkp.service.CategoryService;
 import com.example.dkkp.service.ProductBaseService;
 import io.github.palexdev.materialfx.controls.MFXButton;
@@ -16,9 +18,11 @@ import static com.example.dkkp.controller.LoginController.transaction;
 public class ProductAttributeValuesCreateController {
     
     @FXML
-    private MFXTextField NAME_ATTRIBUTE;    
+    private MFXTextField VALUE;
     @FXML
-    private MFXFilterComboBox<Category_Entity> cateField;
+    private MFXFilterComboBox<Product_Attribute_Entity> attributeField;
+    @FXML
+    private MFXFilterComboBox<Product_Base_Entity> baseProductField;
     
     @FXML
     private MFXButton createBtn;
@@ -29,15 +33,16 @@ public class ProductAttributeValuesCreateController {
     ProductAttributeValuesController productAttributeValuesController;
     @FXML
     public void createProduct() {
-        String name = (NAME_ATTRIBUTE.getText().isEmpty()) ? null : NAME_ATTRIBUTE.getText();
-        Integer categoryId = (cateField.getValue() != null) ? cateField.getValue().getID_CATEGORY() : null;
+        String value = (VALUE.getText().isEmpty()) ? null : VALUE.getText();
+        Integer attributeId = (attributeField.getValue() != null) ? attributeField.getValue().getID_ATTRIBUTE() : null;
+        Integer baseProductId = (baseProductField.getValue() != null) ? baseProductField.getValue().getID_BASE_PRODUCT() : null;
             transaction.begin();
             try {
-                Product_Attribute_Entity productAttributeEntity = new Product_Attribute_Entity(null, name,categoryId);
+                Product_Attribute_Values_Entity productAttributeValuesEntity = new Product_Attribute_Values_Entity(null, baseProductId,attributeId, value);
                 ProductBaseService productBaseService = new ProductBaseService(entityManager);
-                productBaseService.createProductAttribute(productAttributeEntity);
+                productBaseService.createProductAttributeValues(productAttributeValuesEntity);
                 transaction.commit();
-                productAttributeValuesController.productController.setMainView("/com/example/dkkp/ProductAttribute/ProductAttributeView.fxml", productAttributeValuesController);
+                productAttributeValuesController.productController.setMainView("/com/example/dkkp/ProductAttributeValue/ProductAttributeValueView.fxml", productAttributeValuesController);
             } catch (Exception e) {
                 transaction.rollback();
             }
@@ -48,12 +53,15 @@ public class ProductAttributeValuesCreateController {
     public void initialize() {
         createBtn.setOnAction(event -> createProduct());
         back.setOnMouseClicked(event -> {
-            productAttributeValuesController.productController.setMainView("/com/example/dkkp/ProductAttribute/ProductAttributeView.fxml", productAttributeValuesController);
+            productAttributeValuesController.productController.setMainView("/com/example/dkkp/ProductAttributeValue/ProductAttributeValueView.fxml", productAttributeValuesController);
         });
 
-        CategoryService categoryService = new CategoryService(entityManager);
-        Category_Entity categoryEntity = new Category_Entity();
-        cateField.getItems().addAll(categoryService.getFilteredCategories(categoryEntity, null, null, null, null));
+        ProductBaseService productBaseService = new ProductBaseService(entityManager);
+        Product_Base_Entity product = new Product_Base_Entity();
+        Product_Attribute_Entity attribute = new Product_Attribute_Entity();
+        baseProductField.getItems().addAll(productBaseService.getProductBaseByCombinedCondition(product,null,null,null,null,null,null,null));
+        attributeField.getItems().addAll(productBaseService.getProductAttributeCombinedCondition(attribute,null,null,null,null));
+
     }
 
 

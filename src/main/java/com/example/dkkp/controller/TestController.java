@@ -28,13 +28,11 @@ public class TestController {
 //               for(Product_Option_Entity item: p){
 //                   System.out.println("San pham: " + item.getNAME_OPTION());
 //               }
-
             ProductBaseService productBaseService = new ProductBaseService(entityManager);
-            Product_Attribute_Values_Entity product = new Product_Attribute_Values_Entity();
-           List<Product_Attribute_Values_Entity> p = productBaseService.getProductAttributeValuesCombinedCondition(product,null,null,2,null);
-                   for(Product_Attribute_Values_Entity item:p){
-                       System.out.println("day la " + item.getVALUE());
-                   }
+            productBaseService.deleteProductAttributeValues(6,null,null);
+//                   for(Product_Attribute_Values_Entity item:p){
+//                       System.out.println("day la " + item.getVALUE() + " " + item.getNAME_PRODUCT() );
+//                   }
 
             transaction.commit();
         } catch (Exception e) {

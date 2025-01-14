@@ -173,10 +173,10 @@ public class ProductAttributeValuesController {
 
         updatePagination();
         refreshBtn.setOnMouseClicked(event -> {
-            ProductAttributeController productAttributeController = new ProductAttributeController();
-            productAttributeController.productController = this.productController;
-            productController.productAttributeController = productAttributeController;
-            productController.setMainView("/com/example/dkkp/ProductAttributeValue/ProductAttributeValueView.fxml", productAttributeController);
+            ProductAttributeValuesController productAttributeValueController = new ProductAttributeValuesController();
+            productAttributeValueController.productController = this.productController;
+            productController.productAttributeValuesController = productAttributeValueController;
+            productController.setMainView("/com/example/dkkp/ProductAttributeValue/ProductAttributeValueView.fxml", productAttributeValueController);
         });
         searchFld.setOnMouseClicked(event -> {
             productAttributeValuesFilterController.setProductAttributeValuesController(this);
@@ -328,7 +328,7 @@ public class ProductAttributeValuesController {
                     transaction.begin();
                     ProductBaseService productBaseService = new ProductBaseService(entityManager);
                     for (Product_Attribute_Values_Entity item : selectedItems) {
-                        productBaseService.deleteProductAttribute(item.getID_ATTRIBUTE());
+                        productBaseService.deleteProductAttributeValues(item.getID(),null,null);
                     }
                     transaction.commit();
                 } catch (PersistenceException e) {
@@ -357,7 +357,7 @@ public class ProductAttributeValuesController {
     }
 
     private ObservableList<Product_Attribute_Values_Entity> getProducts() {
-        List<Product_Attribute_Values_Entity> p = productBaseService.getProductAttributeValuesCombinedCondition(productAttributeValuesEntity, sortField, sortOrder, setOff, offSet);
+        List<Product_Attribute_Values_Entity> p = productBaseService.getProductAttributeValuesCombinedCondition(productAttributeValuesEntity, sortField, sortOrder, setOff,offSet);
         for(Product_Attribute_Values_Entity item : p) {
             System.out.println("san pham " + item.getVALUE());
         }

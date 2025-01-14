@@ -1,8 +1,11 @@
 package com.example.dkkp.controller.product.productAttributeValue;
 
 import com.example.dkkp.model.Category_Entity;
+import com.example.dkkp.model.Product_Attribute_Entity;
 import com.example.dkkp.model.Product_Attribute_Values_Entity;
+import com.example.dkkp.model.Product_Base_Entity;
 import com.example.dkkp.service.CategoryService;
+import com.example.dkkp.service.ProductBaseService;
 import com.example.dkkp.service.Validator;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXFilterComboBox;
@@ -16,11 +19,13 @@ import static com.example.dkkp.controller.LoginController.entityManager;
 public class ProductAttributeValuesFilterController {
 
     @FXML
-    private MFXTextField ID_ATTRIBUTE;
+    private MFXTextField ID;
     @FXML
-    private MFXTextField NAME_ATTRIBUTE;
+    private MFXTextField VALUE;
     @FXML
-    private MFXFilterComboBox<Category_Entity> cateField;
+    private MFXFilterComboBox<Product_Base_Entity> baseProductField;
+    @FXML
+    private MFXFilterComboBox<Product_Attribute_Entity> attributeField;
 
     @FXML
     private MFXButton back;
@@ -30,13 +35,14 @@ public class ProductAttributeValuesFilterController {
     ProductAttributeValuesController productAttributeValuesController;
     @FXML
     public void createFilter() {
-        Integer id = ID_ATTRIBUTE.getText().trim().isEmpty() ? null : Integer.parseInt(ID_ATTRIBUTE.getText());
-        String name = NAME_ATTRIBUTE.getText().trim().isEmpty() ? null : NAME_ATTRIBUTE.getText();
-        Integer categoryId = (cateField.getValue() != null) ? cateField.getValue().getID_CATEGORY() : null;
+        Integer id = ID.getText().trim().isEmpty() ? null : Integer.parseInt(ID.getText());
+        String value = VALUE.getText().trim().isEmpty() ? null : VALUE.getText();
+        Integer baseProductId = (baseProductField.getValue() != null) ? baseProductField.getValue().getID_CATEGORY() : null;
+        Integer attributeId = (attributeField.getValue() != null) ? attributeField.getValue().getID_CATEGORY() : null;
 
-        productAttributeValuesController.productAttributeValuesEntity = new Product_Attribute_Values_Entity(id,null, null, null);
+        productAttributeValuesController.productAttributeValuesEntity = new Product_Attribute_Values_Entity(id,baseProductId,attributeId, value);
         productAttributeValuesController.setPage(1);
-        productAttributeValuesController.productController.setMainView("/com/example/dkkp/ProductAttribute/ProductAttributeView.fxml", productAttributeValuesController);
+        productAttributeValuesController.productController.setMainView("/com/example/dkkp/ProductAttributeValue/ProductAttributeValueView.fxml", productAttributeValuesController);
         productAttributeValuesController.closePopup(popupStage);
     }
 
@@ -51,14 +57,16 @@ public class ProductAttributeValuesFilterController {
         back.setOnMouseClicked(event -> {
             productAttributeValuesController.closePopup(popupStage);
         });
-        CategoryService categoryService = new CategoryService(entityManager);
-        Category_Entity categoryEntity = new Category_Entity();
-        cateField.getItems().addAll(categoryService.getFilteredCategories(categoryEntity, null, null, null, null));
 
+        ProductBaseService productBaseService = new ProductBaseService(entityManager);
+        Product_Base_Entity product = new Product_Base_Entity();
+        Product_Attribute_Entity attribute = new Product_Attribute_Entity();
+        baseProductField.getItems().addAll(productBaseService.getProductBaseByCombinedCondition(product,null,null,null,null,null,null,null));
+        attributeField.getItems().addAll(productBaseService.getProductAttributeCombinedCondition(attribute,null,null,null,null));
     }
     private void setTextFormatter(){
         Validator validator1 = new Validator();
-        ID_ATTRIBUTE.delegateSetTextFormatter(validator1.formatterInteger);
+        ID.delegateSetTextFormatter(validator1.formatterInteger);
     }
     public void setProductAttributeValuesController(ProductAttributeValuesController productAttributeValuesController) {
         this.productAttributeValuesController = productAttributeValuesController;

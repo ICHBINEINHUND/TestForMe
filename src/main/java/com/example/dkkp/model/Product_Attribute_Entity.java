@@ -78,4 +78,9 @@ public class Product_Attribute_Entity {
         this.NAME_ATTRIBUTE = NAME_ATTRIBUTE;
         this.ID_CATEGORY = ID_CATEGORY;
     }
+
+    @Override
+    public String toString() {
+        return "ID: " + ID_ATTRIBUTE + " ,NAME: " + NAME_ATTRIBUTE ;
+    }
 }

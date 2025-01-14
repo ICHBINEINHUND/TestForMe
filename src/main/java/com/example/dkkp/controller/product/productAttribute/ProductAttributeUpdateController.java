@@ -80,9 +80,9 @@ public class ProductAttributeUpdateController {
 
             CategoryService categoryService = new CategoryService(entityManager);
             Category_Entity categoryEntityDefault = categoryService.getFilteredCategories(new Category_Entity(productAttributeEntity.getID_CATEGORY(), null), null, null, null, null).getFirst();
+            cateField.setText(categoryEntityDefault.toString());
             Category_Entity categoryEntity = new Category_Entity();
             cateField.getItems().addAll(categoryService.getFilteredCategories(categoryEntity, null, null, null, null));
-            cateField.setText(categoryEntityDefault.toString());
         }
     }
     public void setProductAttributeController(ProductAttributeController productAttributeController) {

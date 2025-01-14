@@ -1,7 +1,9 @@
 package com.example.dkkp.controller.product.productAttributeValue;
 
 import com.example.dkkp.model.Category_Entity;
+import com.example.dkkp.model.Product_Attribute_Entity;
 import com.example.dkkp.model.Product_Attribute_Values_Entity;
+import com.example.dkkp.model.Product_Base_Entity;
 import com.example.dkkp.service.CategoryService;
 import com.example.dkkp.service.ProductBaseService;
 import io.github.palexdev.materialfx.controls.MFXButton;
@@ -23,11 +25,13 @@ public class ProductAttributeValuesUpdateController {
     private ProductAttributeValuesController productAttributeValuesController;
 
     @FXML
-    private MFXTextField ID_ATTRIBUTE;
+    private MFXTextField ID;
     @FXML
-    private MFXTextField NAME_ATTRIBUTE;
+    private MFXTextField VALUE;
     @FXML
-    private MFXFilterComboBox<Category_Entity> cateField;
+    private MFXFilterComboBox<Product_Base_Entity> baseProductField;
+    @FXML
+    private MFXFilterComboBox<Product_Attribute_Entity> attributeField;
 
     @FXML
     private MFXButton updateBtn;
@@ -41,7 +45,11 @@ public class ProductAttributeValuesUpdateController {
         updateBtn.setOnAction(event -> updateCategory());
         backBtn.setOnMouseClicked(event -> productAttributeValuesController.closePopup(popupStage));
 
-
+        ProductBaseService productBaseService = new ProductBaseService(entityManager);
+        Product_Base_Entity product = new Product_Base_Entity();
+        Product_Attribute_Entity attribute = new Product_Attribute_Entity();
+        baseProductField.getItems().addAll(productBaseService.getProductBaseByCombinedCondition(product,null,null,null,null,null,null,null));
+        attributeField.getItems().addAll(productBaseService.getProductAttributeCombinedCondition(attribute,null,null,null,null));
     }
 
     private void updateCategory() {
@@ -57,15 +65,18 @@ public class ProductAttributeValuesUpdateController {
         if (result.isPresent() && result.get() == yesButton) {
             try {
                 transaction.begin();
-                if (cateField.getSelectionModel().getSelectedItem() != null) {
-//                    productAttributeValuesEntity.get(cateField.getSelectionModel().getSelectedItem().getID_CATEGORY());
+                if (baseProductField.getSelectionModel().getSelectedItem() != null) {
+                    productAttributeValuesEntity.setID_BASE_PRODUCT(baseProductField.getSelectionModel().getSelectedItem().getID_BASE_PRODUCT());
                 }
-                productAttributeValuesEntity.setNAME_ATTRIBUTE(NAME_ATTRIBUTE.getText());
+                if (attributeField.getSelectionModel().getSelectedItem() != null) {
+                    productAttributeValuesEntity.setID_ATTRIBUTE(attributeField.getSelectionModel().getSelectedItem().getID_ATTRIBUTE());
+                }
+                productAttributeValuesEntity.setVALUE(VALUE.getText());
                 ProductBaseService productBaseService = new ProductBaseService(entityManager);
-//                productBaseService.updateProductAttribute(productAttributeValuesEntity);
+                productBaseService.updateProductAttributeValues(productAttributeValuesEntity);
 
                 transaction.commit();
-                productAttributeValuesController.setMainView("/com/example/dkkp/ProductAttribute/ProductAttributeView.fxml", productAttributeValuesController);
+                productAttributeValuesController.setMainView("/com/example/dkkp/ProductAttributeValue/ProductAttributeValueView.fxml", productAttributeValuesController);
                 productAttributeValuesController.closePopup(popupStage);
             } catch (Exception e) {
                 transaction.rollback();
@@ -74,14 +85,13 @@ public class ProductAttributeValuesUpdateController {
     }
     public void pushEntity() {
         if (productAttributeValuesEntity != null) {
-            ID_ATTRIBUTE.setText(productAttributeValuesEntity.getID().toString());
-            NAME_ATTRIBUTE.setText(productAttributeValuesEntity.getNAME_ATTRIBUTE());
-
-            CategoryService categoryService = new CategoryService(entityManager);
-//            Category_Entity categoryEntityDefault = categoryService.getFilteredCategories(new Category_Entity(productAttributeValuesEntity.getID_CATEGORY(), null), null, null, null, null).getFirst();
-            Category_Entity categoryEntity = new Category_Entity();
-            cateField.getItems().addAll(categoryService.getFilteredCategories(categoryEntity, null, null, null, null));
-//            cateField.setText(categoryEntityDefault.toString());
+            ID.setText(productAttributeValuesEntity.getID().toString());
+            VALUE.setText(productAttributeValuesEntity.getVALUE());
+            ProductBaseService productBaseService = new ProductBaseService(entityManager);
+            Product_Base_Entity product = new Product_Base_Entity(productAttributeValuesEntity.getID_BASE_PRODUCT(),null,null,null,null,null,null,null);
+            Product_Attribute_Entity attribute= new Product_Attribute_Entity(productAttributeValuesEntity.getID_ATTRIBUTE(),null,null);
+            baseProductField.setText(productBaseService.getProductBaseByCombinedCondition(product,null,null,null,null,null,null,null).toString());
+            attributeField.setText(productBaseService.getProductAttributeCombinedCondition(attribute,null,null,null,null).toString());
         }
     }
     public void setProductAttributeValuesController(ProductAttributeValuesController productAttributeValuesController) {
