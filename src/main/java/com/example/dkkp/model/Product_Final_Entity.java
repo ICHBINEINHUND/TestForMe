@@ -132,4 +132,9 @@ public class Product_Final_Entity {
 
     public Product_Final_Entity() {
     }
+
+    @Override
+    public String toString() {
+        return "ID " + ID_SP + " - NAME " + NAME_PRODUCT;
+    }
 }

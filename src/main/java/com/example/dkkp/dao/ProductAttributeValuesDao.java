@@ -94,6 +94,21 @@ public class ProductAttributeValuesDao {
                 query.orderBy(cb.asc(sortPath));
             }
         }
+        if (sortField != null && sortOrder != null) {
+            Path<?> sortPath;
+            if ("NAME_ATTRIBUTE".equalsIgnoreCase(sortField)) {
+                sortPath = productAttributeJoin.get("NAME_ATTRIBUTE");
+            }else if("NAME_PRODUCT".equalsIgnoreCase(sortField)){
+                sortPath = productBasejoin.get("NAME_PRODUCT");
+            }else {
+                sortPath = root.get(sortField.toUpperCase());
+            }
+            if ("desc".equalsIgnoreCase(sortOrder)) {
+                query.orderBy(cb.desc(sortPath));
+            } else {
+                query.orderBy(cb.asc(sortPath));
+            }
+        }
 
         query.select(cb.construct(
                 Product_Attribute_Values_Entity.class,

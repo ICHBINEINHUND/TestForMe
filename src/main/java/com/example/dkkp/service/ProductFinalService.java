@@ -157,7 +157,7 @@ public class ProductFinalService {
         String VALUE = productOptionValues.getVALUE();
         Integer ID_FINAL_PRODUCT = productOptionValues.getID_FINAL_PRODUCT();
         String NAME_OPTION = productOptionValues.getNAME_OPTION();
-        String NAME_PRODUCT = productOptionValues.getNAME_FINAL_PRODUCT();
+        String NAME_PRODUCT = productOptionValues.getNAME_PRODUCT();
 
           return  productOptionValuesDao.getFilteredProductOptionValue(ID, ID_OPTION, NAME_OPTION, VALUE, ID_FINAL_PRODUCT, NAME_PRODUCT, sortField, sortOrder, setOff, offset);
 
@@ -171,7 +171,7 @@ public class ProductFinalService {
         String VALUE = productOptionValues.getVALUE();
         Integer ID_FINAL_PRODUCT = productOptionValues.getID_FINAL_PRODUCT();
         String NAME_OPTION = productOptionValues.getNAME_OPTION();
-        String NAME_PRODUCT = productOptionValues.getNAME_FINAL_PRODUCT();
+        String NAME_PRODUCT = productOptionValues.getNAME_PRODUCT();
 
         return  productOptionValuesDao.getFilteredProductOptionValueCount(ID, ID_OPTION, NAME_OPTION, VALUE, ID_FINAL_PRODUCT, NAME_PRODUCT);
 

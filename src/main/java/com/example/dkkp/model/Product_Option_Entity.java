@@ -38,4 +38,9 @@ public class Product_Option_Entity {
 
   public Product_Option_Entity() {
   }
+
+  @Override
+  public String toString() {
+    return "ID " + ID_OPTION + " - Name " + NAME_OPTION;
+  }
 }

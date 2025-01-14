@@ -1,8 +1,13 @@
 package com.example.dkkp.controller.product.productOptionValue;
 
 import com.example.dkkp.model.Product_Option_Entity;
+import com.example.dkkp.model.Product_Option_Values_Entity;
+import com.example.dkkp.model.Product_Final_Entity;
+import com.example.dkkp.model.Product_Option_Values_Entity;
+import com.example.dkkp.service.ProductFinalService;
 import com.example.dkkp.service.ProductFinalService;
 import io.github.palexdev.materialfx.controls.MFXButton;
+import io.github.palexdev.materialfx.controls.MFXFilterComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.fxml.FXML;
 
@@ -13,7 +18,11 @@ import static com.example.dkkp.controller.LoginController.transaction;
 public class ProductOptionValuesCreateController {
     
     @FXML
-    private MFXTextField NAME_OPTION;
+    private MFXTextField VALUE;    
+    @FXML
+    private MFXFilterComboBox<Product_Option_Entity> optionField;
+    @FXML
+    private MFXFilterComboBox<Product_Final_Entity> finalProductField;
     
     @FXML
     private MFXButton createBtn;
@@ -24,12 +33,14 @@ public class ProductOptionValuesCreateController {
     ProductOptionValuesController productOptionValuesController;
     @FXML
     public void createProduct() {
-        String name = (NAME_OPTION.getText().isEmpty()) ? null : NAME_OPTION.getText();
+        String value = (VALUE.getText().isEmpty()) ? null : VALUE.getText();
+        Integer optionId = (optionField.getValue() != null) ? optionField.getValue().getID_OPTION() : null;
+        Integer finalId = (finalProductField.getValue() != null) ? finalProductField.getValue().getID_SP() : null;
             transaction.begin();
             try {
-                Product_Option_Entity productOptionEntity = new Product_Option_Entity(null, name);
+                Product_Option_Values_Entity productOptionValuesEntity = new Product_Option_Values_Entity(null, optionId,value,finalId);
                 ProductFinalService productFinalService = new ProductFinalService(entityManager);
-                productFinalService.createProductOption(productOptionEntity);
+                productFinalService.createProductOptionValues(productOptionValuesEntity);
                 transaction.commit();
                 productOptionValuesController.productController.setMainView("/com/example/dkkp/ProductOption/ProductOptionView.fxml", productOptionValuesController);
             } catch (Exception e) {
@@ -44,7 +55,13 @@ public class ProductOptionValuesCreateController {
         back.setOnMouseClicked(event -> {
             productOptionValuesController.productController.setMainView("/com/example/dkkp/ProductOptionValue/ProductOptionValueView.fxml", productOptionValuesController);
         });
-
+        
+        ProductFinalService productFinalService = new ProductFinalService(entityManager);
+        Product_Final_Entity product = new Product_Final_Entity();
+        Product_Option_Entity option = new Product_Option_Entity();
+        finalProductField.getItems().addAll(productFinalService.getProductFinalByCombinedCondition(product,null,null,null,null,null,null,null));
+        optionField.getItems().addAll(productFinalService.getProductOptionCombinedCondition(option,null,null,null,null));
+        
     }
 
 

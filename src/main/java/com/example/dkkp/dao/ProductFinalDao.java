@@ -124,6 +124,20 @@ public class ProductFinalDao {
             }
         }
 
+        if (sortField != null && sortOrder != null) {
+            Path<?> sortPath;
+            if ("NAME_BASE_PRODUCT".equalsIgnoreCase(sortField)) {
+                sortPath = baseProductJoin.get("NAME_PRODUCT");
+            }  else {
+                sortPath = root.get(sortField.toUpperCase());
+            }
+            if ("desc".equalsIgnoreCase(sortOrder)) {
+                query.orderBy(cb.desc(sortPath));
+            } else {
+                query.orderBy(cb.asc(sortPath));
+            }
+        }
+
         query.select(cb.construct(
                 Product_Final_Entity.class,
                 root.get("ID_SP"),

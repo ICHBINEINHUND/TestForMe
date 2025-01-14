@@ -33,7 +33,7 @@
           <MFXTableColumn fx:id="ID_OPTION" text="ID OPTION" styleClass="productBF"/>
           <MFXTableColumn fx:id="NAME_OPTION" text="NAME OPTION" styleClass="productBF"/>
           <MFXTableColumn fx:id="ID_FINAL_PRODUCT" text="ID FINAL PRODUCT" styleClass="productBF"/>
-          <MFXTableColumn fx:id="NAME_FINAL_PRODUCT" text="NAME PRODUCT" styleClass="productBF"/>
+          <MFXTableColumn fx:id="NAME_PRODUCT" text="NAME PRODUCT" styleClass="productBF"/>
           <MFXTableColumn fx:id="VALUE" text="VALUE" styleClass="productBF"/>
         </tableColumns>
       </MFXTableView>

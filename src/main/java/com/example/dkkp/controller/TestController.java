@@ -26,7 +26,7 @@ public class TestController {
             Product_Option_Values_Entity productOption_Entity = new Product_Option_Values_Entity();
             List<Product_Option_Values_Entity> p = productFinalService.getProductOptionValuesCombinedCondition(productOption_Entity, null, null, null, null);
             for (Product_Option_Values_Entity item : p) {
-                System.out.println("San pham: " + item.getVALUE() + item.getNAME_OPTION() + item.getID_OPTION() +item.getID_FINAL_PRODUCT() + item.getNAME_FINAL_PRODUCT());
+                System.out.println("San pham: " + item.getVALUE() + item.getNAME_OPTION() + item.getID_OPTION() +item.getID_FINAL_PRODUCT() + item.getNAME_PRODUCT());
             }
 
             transaction.commit();

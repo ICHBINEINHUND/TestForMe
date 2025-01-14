@@ -82,7 +82,14 @@ public class ProductOptionValuesDao {
             query.select(root);
         }
         if (sortField != null && sortOrder != null) {
-            Path<?> sortPath = root.get(sortField.toUpperCase());
+            Path<?> sortPath;
+            if ("NAME_PRODUCT".equalsIgnoreCase(sortField)) {
+                sortPath = productFinaljoin.get("NAME_PRODUCT");
+            }else if("NAME_OPTION".equalsIgnoreCase(sortField)){
+                sortPath = productOptionjoin.get("NAME_OPTION");
+            }else {
+                sortPath = root.get(sortField.toUpperCase());
+            }
             if ("desc".equalsIgnoreCase(sortOrder)) {
                 query.orderBy(cb.desc(sortPath));
             } else {

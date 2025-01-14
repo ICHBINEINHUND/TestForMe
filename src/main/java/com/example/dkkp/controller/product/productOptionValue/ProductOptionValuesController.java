@@ -1,7 +1,6 @@
 package com.example.dkkp.controller.product.productOptionValue;
 
 import com.example.dkkp.controller.product.ProductController;
-import com.example.dkkp.controller.product.productOption.ProductOptionController;
 import com.example.dkkp.model.Product_Option_Values_Entity;
 import com.example.dkkp.service.ProductFinalService;
 import com.example.dkkp.service.Validator;
@@ -28,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,7 +45,7 @@ public class ProductOptionValuesController {
     @FXML
     private MFXTableColumn<Product_Option_Values_Entity> ID_FINAL_PRODUCT;
     @FXML
-    private MFXTableColumn<Product_Option_Values_Entity> NAME_FINAL_PRODUCT;
+    private MFXTableColumn<Product_Option_Values_Entity> NAME_PRODUCT;
     @FXML
     private MFXTableColumn<Product_Option_Values_Entity> VALUE;
 
@@ -117,15 +115,15 @@ public class ProductOptionValuesController {
         ID_OPTION.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Option_Values_Entity::getID_OPTION));
         NAME_OPTION.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Option_Values_Entity::getNAME_OPTION));
         ID_FINAL_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Option_Values_Entity::getID_FINAL_PRODUCT));
-        NAME_FINAL_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Option_Values_Entity::getNAME_FINAL_PRODUCT));
-        NAME_OPTION.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Option_Values_Entity::getVALUE));
+        NAME_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Option_Values_Entity::getNAME_PRODUCT));
+        VALUE.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Option_Values_Entity::getVALUE));
     }
     public void setWidth() {
         ID.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
         ID_OPTION.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
         NAME_OPTION.prefWidthProperty().bind(productTable.widthProperty().multiply(0.2));
         ID_FINAL_PRODUCT.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
-        NAME_FINAL_PRODUCT.prefWidthProperty().bind(productTable.widthProperty().multiply(0.3));
+        NAME_PRODUCT.prefWidthProperty().bind(productTable.widthProperty().multiply(0.3));
         VALUE.prefWidthProperty().bind(productTable.widthProperty().multiply(0.2));
     }
 
@@ -135,7 +133,7 @@ public class ProductOptionValuesController {
         ID_OPTION.setOnMouseClicked(event -> handleSort("ID_OPTION"));
         NAME_OPTION.setOnMouseClicked(event -> handleSort("NAME_OPTION"));
         ID_FINAL_PRODUCT.setOnMouseClicked(event -> handleSort("ID_FINAL_PRODUCT"));
-        NAME_FINAL_PRODUCT.setOnMouseClicked(event -> handleSort("NAME_PRODUCT"));
+        NAME_PRODUCT.setOnMouseClicked(event -> handleSort("NAME_PRODUCT"));
         VALUE.setOnMouseClicked(event -> handleSort("VALUE"));
     }
 
@@ -167,7 +165,7 @@ public class ProductOptionValuesController {
             productTable.getSelectionModel().clearSelection();
             main.requestFocus();
         });
-        setOffField.setOnKeyPressed(event -> handleKeyPress(event));
+        setOffField.setOnKeyPressed(this::handleKeyPress);
         crtBtn.setOnAction(_ -> {
             productOptionValuesCreateController.setProductOptionValuesController(this);
             setMainView("/com/example/dkkp/ProductOptionValue/ProductOptionValueCreate.fxml", productOptionValuesCreateController);
@@ -175,10 +173,10 @@ public class ProductOptionValuesController {
 
         updatePagination();
         refreshBtn.setOnMouseClicked(event -> {
-            ProductOptionController productOptionController = new ProductOptionController();
-            productOptionController.productController = this.productController;
-            productController.productOptionController = productOptionController;
-            productController.setMainView("/com/example/dkkp/ProductOptionValue/ProductOptionValueView.fxml", productOptionController);
+            ProductOptionValuesController productOptionValuesController = new ProductOptionValuesController();
+            productOptionValuesController.productController = this.productController;
+            productController.productOptionValuesController = productOptionValuesController;
+            productController.setMainView("/com/example/dkkp/ProductOptionValue/ProductOptionValueView.fxml", productOptionValuesController);
         });
         searchFld.setOnMouseClicked(event -> {
             productOptionValuesFilterController.setProductOptionValuesController(this);
@@ -200,11 +198,7 @@ public class ProductOptionValuesController {
         if (event.getCode() == KeyCode.ENTER) {
             setOff = Integer.parseInt(setOffField.getText().trim());
             updateTotalPage();
-            if (currentPage > totalPages) {
-                setPage(totalPages);
-            } else {
-                setPage(currentPage);
-            }
+            setPage(Math.min(currentPage, totalPages));
             productController.setMainView("/com/example/dkkp/ProductOptionValue/ProductOptionValueView.fxml", this);
         }
     }
@@ -355,7 +349,7 @@ public class ProductOptionValuesController {
     }
 
     private ObservableList<Product_Option_Values_Entity> getProducts() {
-        List<Product_Option_Values_Entity> p =  productFinalService.getProductOptionValuesCombinedCondition(productOptionValuesEntity,null,null,null,null);
+        List<Product_Option_Values_Entity> p =  productFinalService.getProductOptionValuesCombinedCondition(productOptionValuesEntity,sortField,sortOrder,setOff,offSet);
         for(Product_Option_Values_Entity item : p) {
             System.out.println("San pham " + item.getVALUE());
         }
