@@ -122,11 +122,11 @@ public class ImportGeneralController {
     }
     public void setWidth() {
         ID_IMP.prefWidthProperty().bind(importTable.widthProperty().multiply(0.2));
-        DATE_IMP.prefWidthProperty().bind(importTable.widthProperty().multiply(0.4));
-        DESCRIPTION.prefWidthProperty().bind(importTable.widthProperty().multiply(0.4));
-        IS_AVAILABLE.prefWidthProperty().bind(importTable.widthProperty().multiply(0.4));
-        ID_REPLACE.prefWidthProperty().bind(importTable.widthProperty().multiply(0.4));
-        TOTAL_PRICE.prefWidthProperty().bind(importTable.widthProperty().multiply(0.4));
+        DATE_IMP.prefWidthProperty().bind(importTable.widthProperty().multiply(0.2));
+        DESCRIPTION.prefWidthProperty().bind(importTable.widthProperty().multiply(0.2));
+        IS_AVAILABLE.prefWidthProperty().bind(importTable.widthProperty().multiply(0.1));
+        ID_REPLACE.prefWidthProperty().bind(importTable.widthProperty().multiply(0.2));
+        TOTAL_PRICE.prefWidthProperty().bind(importTable.widthProperty().multiply(0.1));
     }
 
     private void setSort() {
@@ -345,9 +345,6 @@ public class ImportGeneralController {
 
     private ObservableList<Import_Entity> getImport() {
         List<Import_Entity> p =  importService.getImportByCombinedCondition(importEntity,typeDate,typePrice,sortField,sortOrder,setOff,offSet);
-        for(Import_Entity item : p) {
-            System.out.println("San pham " + item.getID_IMP());
-        }
         return FXCollections.observableArrayList(p);
     }
 

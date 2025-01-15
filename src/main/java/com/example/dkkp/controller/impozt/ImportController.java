@@ -33,18 +33,18 @@ public class ImportController {
         importGeneralController.setImportController(this);
         getButton();
         setActiveTab(importGeneral);
-        setMainView("/com/example/dkkp/ImportDetail/ImportGeneralView.fxml",importGeneralController);
+        setMainView("/com/example/dkkp/ImportGeneral/ImportGeneralView.fxml",importGeneralController);
     }
     private void getButton(){
         importGeneral.setOnAction(event -> {
             importGeneralController.setImportController(this);
             setActiveTab(importGeneral);
-            setMainView("/com/example/dkkp/ImportDetail/ImportGeneralView.fxml",importGeneralController);
+            setMainView("/com/example/dkkp/ImportGeneral/ImportGeneralView.fxml",importGeneralController);
         });
         importDetail.setOnMouseClicked(event -> {
             importDetailController.setImportController(this);
             setActiveTab(importDetail);
-            setMainView("/com/example/dkkp/ProductFinal/ProductFinalView.fxml",importDetailController);
+            setMainView("/com/example/dkkp/ImportDetail/ImportDetailView.fxml",importDetailController);
         });
     }
 

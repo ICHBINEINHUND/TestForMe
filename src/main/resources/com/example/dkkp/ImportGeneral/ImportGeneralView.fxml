@@ -27,12 +27,12 @@
       </HBox>
       <MFXTableView fx:id="importTable" footerVisible="false" minHeight="380">
         <tableColumns>
-          <MFXTableColumn fx:id="ID_IMP" text="ID IMPORT GENERAL" styleClass="productBF"/>
-          <MFXTableColumn fx:id="ID_REPLACE" text="ID REPLACE" styleClass="productBF"/>
-          <MFXTableColumn fx:id="IS_AVAILABLE" text="IS AVAILABLE" styleClass="productBF"/>
-          <MFXTableColumn fx:id="DATE_IMP" text="DATE IMPORT" styleClass="productBF"/>
-          <MFXTableColumn fx:id="TOTAL_PRICE" text="TOTAL PRICE" styleClass="productBF"/>
-          <MFXTableColumn fx:id="DESCRIPTION" text="DESCRIPTION" styleClass="productBF"/>
+          <MFXTableColumn  fx:id="ID_IMP" style="-fx-font-size: 10px;" text="ID IMPORT GENERAL" styleClass="productBF"/>
+          <MFXTableColumn fx:id="ID_REPLACE" style="-fx-font-size: 10px;" text="ID REPLACE" styleClass="productBF"/>
+          <MFXTableColumn fx:id="IS_AVAILABLE" style="-fx-font-size: 10px;" text="IS AVAILABLE" styleClass="productBF"/>
+          <MFXTableColumn fx:id="DATE_IMP"  style="-fx-font-size: 10px;" text="DATE IMPORT" styleClass="productBF"/>
+          <MFXTableColumn fx:id="TOTAL_PRICE" style="-fx-font-size: 10px;" text="TOTAL PRICE" styleClass="productBF"/>
+          <MFXTableColumn fx:id="DESCRIPTION" style="-fx-font-size: 10px;" text="DESCRIPTION" styleClass="productBF"/>
         </tableColumns>
       </MFXTableView>
       <HBox fx:id="paginationHBox" spacing="5" alignment="CENTER">

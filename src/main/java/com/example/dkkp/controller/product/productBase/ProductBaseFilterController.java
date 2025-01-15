@@ -71,6 +71,7 @@ public class ProductBaseFilterController implements TableInterface {
         if (dateOperatorComboBox != null) {productBaseController.typeDate = getValueOperator(dateOperatorComboBox.getValue());}
         if (quantityOperatorComboBox!= null) {productBaseController.typeQuantity = getValueOperator(quantityOperatorComboBox.getValue());}
         if (viewCountOperatorComboBox != null) {productBaseController.typeView = getValueOperator(viewCountOperatorComboBox.getValue());}
+
         productBaseController.productBaseEntity = new Product_Base_Entity(id,name,quantity,date,null,view,categoryId,brandId);
         productBaseController.setPage(1);
         productBaseController.productController.setMainView("/com/example/dkkp/ProductBase/ProductBaseView.fxml",productBaseController);

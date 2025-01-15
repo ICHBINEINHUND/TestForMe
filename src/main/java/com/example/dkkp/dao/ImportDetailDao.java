@@ -32,22 +32,22 @@ public class ImportDetailDao {
         return this.entityManager;
     }
 
-    public List<Import_Detail_Entity> getFilteredImportDetails(Integer ID_IMPD, String ID_IMPORT, Integer ID_FINAL_PRODUCT,String NAME_FINAL_PRODUCT,Boolean IS_AVAILABLE,Integer ID_BASE_PRODUCT,String NAME_BASE_PRODUCT,Integer QUANTITY,String typeQuantity,String typeUPrice,String typePPrice,Double UNIT_PRICE,Double TOTAL_PRICE, String sortField, String sortOrder, Integer offset, Integer setOff) {
+    public List<Import_Detail_Entity> getFilteredImportDetails(Integer ID_IMPD, String ID_IMPORT, Integer ID_FINAL_PRODUCT,String NAME_FINAL_PRODUCT,Boolean IS_AVAILABLE,Integer ID_BASE_PRODUCT,String NAME_BASE_PRODUCT,Integer QUANTITY,String typeQuantity,String typeUPrice,String typePPrice,Double UNIT_PRICE,Double TOTAL_PRICE, String sortField, String sortOrder, Integer setOff, Integer offset) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Import_Detail_Entity> query = cb.createQuery(Import_Detail_Entity.class);
         Root<Import_Detail_Entity> root = query.from(Import_Detail_Entity.class);
-        Join<Import_Detail_Entity, Product_Base_Entity> productBaseJoin = root.join("product_base", JoinType.INNER);
-        Join<Import_Detail_Entity, Product_Final_Entity> productFinalJoin = root.join("product_final", JoinType.INNER);
+        Join<Import_Detail_Entity, Product_Base_Entity> productBaseJoin = root.join("product_Base_Entity", JoinType.INNER);
+        Join<Import_Detail_Entity, Product_Final_Entity> productFinalJoin = root.join("product_Final_Entity", JoinType.INNER);
 
         Predicate conditions = cb.conjunction();
         boolean hasConditions = false;
 
         if (ID_IMPD != null ) {
-            conditions = cb.and(conditions, cb.equal(root.get("ID_IMPD"), ID_IMPD));
+            conditions = cb.and(conditions, cb.like(root.get("ID_IMP"), "%" + ID_IMPD + "%"));
             hasConditions = true;
         }
         if (ID_IMPORT != null ) {
-            conditions = cb.and(conditions, cb.equal(root.get("ID_IMPORT"), ID_IMPORT));
+            conditions = cb.and(conditions, cb.equal(root.get("ID_IMPORT"),"%" + ID_IMPORT + "%"));
             hasConditions = true;
         }
         if (ID_FINAL_PRODUCT != null) {
@@ -78,6 +78,7 @@ public class ImportDetailDao {
             hasConditions = true;
         }
         if (IS_AVAILABLE != null ) {
+            System.out.println("no ko null");
             conditions = cb.and(conditions, cb.equal(root.get("IS_AVAILABLE"), IS_AVAILABLE));
             hasConditions = true;
         }
@@ -145,8 +146,8 @@ public class ImportDetailDao {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Long> query = cb.createQuery(Long.class);
         Root<Import_Detail_Entity> root = query.from(Import_Detail_Entity.class);
-        Join<Import_Detail_Entity, Product_Base_Entity> productBaseJoin = root.join("product_base", JoinType.INNER);
-        Join<Import_Detail_Entity, Product_Final_Entity> productFinalJoin = root.join("product_final", JoinType.INNER);
+        Join<Import_Detail_Entity, Product_Base_Entity> productBaseJoin = root.join("product_Base_Entity", JoinType.INNER);
+        Join<Import_Detail_Entity, Product_Final_Entity> productFinalJoin = root.join("product_Final_Entity", JoinType.INNER);
 
         Predicate conditions = cb.conjunction();
         boolean hasConditions = false;

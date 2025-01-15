@@ -33,7 +33,7 @@ public class ImportService {
             LocalDateTime dateImport = import_entity.getDATE_IMP();
             String id = import_entity.getID_IMP();
             Boolean status = import_entity.getIS_AVAILABLE();
-            Integer idReplace = import_entity.getID_REPLACE();
+            String idReplace = import_entity.getID_REPLACE();
             Double totalPrice = import_entity.getTOTAL_PRICE();
             return importDao.getFilteredImports(
                     dateImport, typeDate, id, status, idReplace, totalPrice,typePrice, sortField, sortOrder, offset, setOff
@@ -47,7 +47,7 @@ public class ImportService {
             LocalDateTime dateImport = import_entity.getDATE_IMP();
             String id = import_entity.getID_IMP();
             Boolean status = import_entity.getIS_AVAILABLE();
-            Integer idReplace = import_entity.getID_REPLACE();
+            String idReplace = import_entity.getID_REPLACE();
             Double totalPrice = import_entity.getTOTAL_PRICE();
             return importDao.getFilteredImportsCount(
                     dateImport, typeDate, id, status, idReplace, totalPrice,typePrice);
@@ -60,8 +60,8 @@ public class ImportService {
             String typePPrice,
             String sortField,
             String sortOrder,
-            int setOff, // Số bản ghi mỗi luồng xử lý
-            int offset
+            Integer setOff, // Số bản ghi mỗi luồng xử lý
+            Integer offset
     ) {
         Integer id = importQuery.getID_IMPD();
         String idImport = importQuery.getID_IMPORT();
@@ -74,7 +74,7 @@ public class ImportService {
         String NAME_FINAL_PRODUCT = importQuery.getNAME_PRODUCT_FINAL();
         String NAME_BASE_PRODUCT = importQuery.getNAME_PRODUCT_BASE();
             return importDetailDao.getFilteredImportDetails(
-                    id, idImport, idFinalProduct,NAME_FINAL_PRODUCT, isAvailable, idBaseProduct,NAME_BASE_PRODUCT, quantity,typeQuantity,typeUPrice,typePPrice, unitPrice, totalPrice, sortField, sortOrder, offset, setOff
+                    id, idImport, idFinalProduct,NAME_FINAL_PRODUCT, isAvailable, idBaseProduct,NAME_BASE_PRODUCT, quantity,typeQuantity,typeUPrice,typePPrice, unitPrice, totalPrice, sortField, sortOrder, setOff, offset
             );
     }
     public Integer getCountImportDetailByCombinedConditionCount(
@@ -115,8 +115,6 @@ public class ImportService {
     public void registerNewImport(Import_Entity importEntity) throws
             SQLException {
         //add check
-        LocalDateTime DATE_JOIN = LocalDateTime.now();
-        importEntity.setDATE_IMP(DATE_JOIN);
         importDao.createImport(importEntity);
     }
 

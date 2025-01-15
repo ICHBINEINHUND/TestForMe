@@ -179,7 +179,7 @@ public class ProductOptionValuesController {
             productController.setMainView("/com/example/dkkp/ProductOptionValue/ProductOptionValueView.fxml", productOptionValuesController);
         });
         searchFld.setOnMouseClicked(event -> {
-            productOptionValuesFilterController.setImportGeneralController(this);
+            productOptionValuesFilterController.setProductOptionValuesController(this);
             Stage popupStage = setPopView("/com/example/dkkp/ProductOptionValue/ProductOptionValueFilter.fxml", productOptionValuesFilterController);
             productOptionValuesFilterController.setPopupStage(popupStage);
         });

@@ -11,44 +11,66 @@
 <?import javafx.scene.control.DatePicker?>
 <?import io.github.palexdev.materialfx.controls.MFXFilterComboBox?>
 <?import javafx.scene.control.Spinner?>
-<StackPane xmlns:fx="http://javafx.com/fxml" >
-  <VBox spacing="20">
-    <MFXButton buttonType="RAISED" fx:id="back" mnemonicParsing="false" text="Back" prefWidth="50" prefHeight="25" styleClass="Btn"/>
-    <HBox alignment="TOP_CENTER">
-<!--      <MFXTableView fx:id="importDetailTable" footerVisible="false" prefWidth="700" minHeight="380">-->
-<!--        <tableColumns>-->
-<!--          <MFXTableColumn fx:id="ID_IMPD" text="ID" styleClass="productBF" maxWidth="10"-->
-<!--                          style="-fx-font-size: 10px;"/>-->
-<!--          <MFXTableColumn fx:id="ID_BASE_PRODUCT" text="NAME" styleClass="productBF"-->
-<!--                          style="-fx-font-size: 10px;"/>-->
-<!--          <MFXTableColumn fx:id="ID_FINAL_PRODUCT" text="DESCRIPTION" styleClass="productBF"-->
-<!--                          style="-fx-font-size: 10px;"/>-->
-<!--          <MFXTableColumn fx:id="QUANTITY" text="DESCRIPTION" styleClass="productBF"-->
-<!--                          style="-fx-font-size: 10px;"/>-->
-<!--          <MFXTableColumn fx:id="UNIT_PRICE" text="DESCRIPTION" styleClass="productBF"-->
-<!--                          style="-fx-font-size: 10px;"/>-->
-<!--          <MFXTableColumn fx:id="TOTAL_PRICE" text="DESCRIPTION" styleClass="productBF"-->
-<!--                          style="-fx-font-size: 10px;"/>-->
-<!--          <MFXTableColumn fx:id="DESCRIPTIOND" text="DESCRIPTION" styleClass="productBF"-->
-<!--                          style="-fx-font-size: 10px;"/>-->
-<!--        </tableColumns>-->
-<!--      </MFXTableView>-->
-      <VBox spacing="10" alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
-        <Label styleClass="pdLabel">CREATE BASE PRODUCT</Label>
-        <MFXFilterComboBox floatingText="ID REPLACE" fx:id="ID_REPLACE" floatMode="BORDER" prefWidth="250" prefHeight="40">
-        </MFXFilterComboBox>
-        <HBox>
-          <DatePicker fx:id="datePicker" />
-          <Spinner fx:id="hourSpinner" prefWidth="80" />
-          <Spinner fx:id="minuteSpinner" prefWidth="80" />
-          <Spinner fx:id="secondSpinner" prefWidth="80" />
+<?import io.github.palexdev.materialfx.controls.MFXTableView?>
+<?import io.github.palexdev.materialfx.controls.MFXTableColumn?>
+<StackPane xmlns:fx="http://javafx.com/fxml">
+    <VBox spacing="5">
+        <MFXButton buttonType="RAISED" fx:id="back" mnemonicParsing="false" text="BACK" prefWidth="50"
+                   prefHeight="25"
+                   styleClass="Btn"/>
+        <HBox spacing="5">
+            <VBox spacing="5" alignment="TOP_CENTER">
+                <Label styleClass="pdLabel">IMPORT DETAIL TABLE</Label>
+                <HBox spacing="5" >
+                    <MFXButton buttonType="RAISED" fx:id="createImportDetail" mnemonicParsing="false" text="CREATE"
+                               prefWidth="120"
+                               prefHeight="25"
+                               styleClass="Btn"/>
+                    <MFXButton buttonType="RAISED" fx:id="deleteImportDetail" mnemonicParsing="false" text="DELETE"
+                               prefWidth="120"
+                               prefHeight="25"
+                               styleClass="Btn"/>
+                </HBox>
+                <MFXTableView fx:id="importDetailTable" footerVisible="false" prefWidth="700" minHeight="380">
+                    <tableColumns>
+                        <MFXTableColumn fx:id="ID_BASE_PRODUCT" text="NAME" styleClass="productBF"
+                                        style="-fx-font-size: 10px;"/>
+                        <MFXTableColumn fx:id="ID_FINAL_PRODUCT" text="DESCRIPTION" styleClass="productBF"
+                                        style="-fx-font-size: 10px;"/>
+                        <MFXTableColumn fx:id="QUANTITY" text="DESCRIPTION" styleClass="productBF"
+                                        style="-fx-font-size: 10px;"/>
+                        <MFXTableColumn fx:id="UNIT_PRICE" text="DESCRIPTION" styleClass="productBF"
+                                        style="-fx-font-size: 10px;"/>
+                        <MFXTableColumn fx:id="TOTAL_PRICE" text="DESCRIPTION" styleClass="productBF"
+                                        style="-fx-font-size: 10px;"/>
+                        <MFXTableColumn fx:id="DESCRIPTIOND" text="DESCRIPTION" styleClass="productBF"
+                                        style="-fx-font-size: 10px;"/>
+                    </tableColumns>
+                </MFXTableView>
+            </VBox>
+            <VBox spacing="20" >
+
+                <Label styleClass="pdLabel">CREATE BASE PRODUCT</Label>
+                <MFXFilterComboBox floatingText="ID REPLACE" fx:id="ID_REPLACE" floatMode="BORDER" prefWidth="250"
+                                   prefHeight="40">
+                </MFXFilterComboBox>
+                <HBox>
+                    <DatePicker promptText="IMPORT DATE" fx:id="datePicker"/>
+                    <Spinner fx:id="hourSpinner" prefWidth="80"/>
+                    <Spinner fx:id="minuteSpinner" prefWidth="80"/>
+                    <Spinner fx:id="secondSpinner" prefWidth="80"/>
+                </HBox>
+                <MFXTextField floatingText="DESCRIPTION" fx:id="DESCRIPTION" floatMode="BORDER" prefWidth="250"
+                              prefHeight="40"/>
+                <VBox alignment="BOTTOM_CENTER">
+
+                <MFXButton  fx:id="createBtn" buttonType="RAISED" mnemonicParsing="false" text="Create" prefWidth="80"
+                           prefHeight="40"
+                           styleClass="Btn"/>
+                </VBox>
+            </VBox>
         </HBox>
-        <MFXTextField floatingText="DESCRIPTION" fx:id="DESCRIPTION" floatMode="BORDER" prefWidth="250" prefHeight="40"/>
-      </VBox>
-    </HBox>
-    <HBox alignment="TOP_CENTER" spacing="10">
-      <MFXButton fx:id="createBtn" buttonType="RAISED" mnemonicParsing="false" text="Create" prefWidth="80" prefHeight="40"
-                 styleClass="Btn"/>
-    </HBox>
-  </VBox>
+
+    </VBox>
 </StackPane>
+

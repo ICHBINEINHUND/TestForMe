@@ -1,31 +1,20 @@
 package com.example.dkkp.controller.impozt.importDetail;
 
 import com.example.dkkp.controller.impozt.ImportController;
-import com.example.dkkp.controller.impozt.importDetail.ImportDetailController;
-import com.example.dkkp.controller.impozt.importDetail.ImportDetailFilterController;
-import com.example.dkkp.controller.product.productOption.ProductOptionCreateController;
-import com.example.dkkp.controller.product.productOption.ProductOptionFilterController;
-import com.example.dkkp.controller.product.productOption.ProductOptionUpdateController;
 import com.example.dkkp.model.Import_Detail_Entity;
-import com.example.dkkp.model.Product_Option_Entity;
 import com.example.dkkp.service.ImportService;
-import com.example.dkkp.service.ProductFinalService;
 import com.example.dkkp.service.Validator;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTableColumn;
 import io.github.palexdev.materialfx.controls.MFXTableView;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.controls.cell.MFXTableRowCell;
-import jakarta.persistence.PersistenceException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
@@ -38,26 +27,30 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 import static com.example.dkkp.controller.LoginController.entityManager;
-import static com.example.dkkp.controller.LoginController.transaction;
 
 public class ImportDetailController {
     @FXML
     private MFXTableView<Import_Detail_Entity> importTable;
     @FXML
-    private MFXTableColumn<Import_Detail_Entity> ID_IMP;
+    private MFXTableColumn<Import_Detail_Entity> ID_IMPD;
     @FXML
-    private MFXTableColumn<Import_Detail_Entity> DATE_IMP;
-    @FXML
-    private MFXTableColumn<Import_Detail_Entity> DESCRIPTION;
+    private MFXTableColumn<Import_Detail_Entity> ID_IMPORT;
     @FXML
     private MFXTableColumn<Import_Detail_Entity> IS_AVAILABLE;
     @FXML
-    private MFXTableColumn<Import_Detail_Entity> ID_REPLACE;
+    private MFXTableColumn<Import_Detail_Entity> ID_BASE_PRODUCT;
+    @FXML
+    private MFXTableColumn<Import_Detail_Entity> ID_FINAL_PRODUCT;
+    @FXML
+    private MFXTableColumn<Import_Detail_Entity> QUANTITY;
+    @FXML
+    private MFXTableColumn<Import_Detail_Entity> UNIT_PRICE;
     @FXML
     private MFXTableColumn<Import_Detail_Entity> TOTAL_PRICE;
+    @FXML
+    private MFXTableColumn<Import_Detail_Entity> DESCRIPTION;
 
 
     @FXML
@@ -88,8 +81,9 @@ public class ImportDetailController {
     @FXML
     private Label pageLabel1, pageLabel2, pageLabel3;
 
-    public String typeDate;
-    public String typePrice;
+    public String typePPrice;
+    public String typeUPrice;
+    public String typeQuantity;
 
     public int currentPage = 1;
     private int totalPages = 5;
@@ -100,7 +94,7 @@ public class ImportDetailController {
     Integer offSet = 0;
     private static final Logger logger = LoggerFactory.getLogger(ImportController.class);
     public ImportService importService = new ImportService(entityManager);
-    public Import_Detail_Entity importEntity = new Import_Detail_Entity();
+    public Import_Detail_Entity importDetailEntity = new Import_Detail_Entity();
     public ImportController importController;
 
     public ImportDetailFilterController importDetailFilterController = new ImportDetailFilterController();
@@ -109,40 +103,49 @@ public class ImportDetailController {
         observableList = getImport();
         importTable.setItems(observableList);
         setCol();
-        setWidth();
+//        setWidth();
         updateTotalPage();
         crt();
         setSort();
-
+//
         Validator validator1 = new Validator();
         setOffField.delegateSetTextFormatter(validator1.formatterInteger);
     }
 
     private void setCol() {
-        ID_IMP.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getID_IMP));
-        DATE_IMP.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getDATE_IMP));
-        DESCRIPTION.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getDESCRIPTION));
+        ID_IMPD.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getID_IMPD));
+        ID_IMPORT.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getID_IMPORT));
         IS_AVAILABLE.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getIS_AVAILABLE));
-        ID_REPLACE.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getID_REPLACE));
+        ID_BASE_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getID_BASE_PRODUCT));
+        ID_FINAL_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getID_FINAL_PRODUCT));
+        QUANTITY.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getQUANTITY));
+        UNIT_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getUNIT_PRICE));
         TOTAL_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getTOTAL_PRICE));
+        DESCRIPTION.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getDESCRIPTION));
     }
     public void setWidth() {
-        ID_IMP.prefWidthProperty().bind(importTable.widthProperty().multiply(0.2));
-        DATE_IMP.prefWidthProperty().bind(importTable.widthProperty().multiply(0.4));
-        DESCRIPTION.prefWidthProperty().bind(importTable.widthProperty().multiply(0.4));
-        IS_AVAILABLE.prefWidthProperty().bind(importTable.widthProperty().multiply(0.4));
-        ID_REPLACE.prefWidthProperty().bind(importTable.widthProperty().multiply(0.4));
-        TOTAL_PRICE.prefWidthProperty().bind(importTable.widthProperty().multiply(0.4));
+        ID_IMPD.prefWidthProperty().bind(importTable.widthProperty().multiply(0.1));
+        ID_IMPORT.prefWidthProperty().bind(importTable.widthProperty().multiply(0.1));
+        IS_AVAILABLE.prefWidthProperty().bind(importTable.widthProperty().multiply(0.1));
+        ID_BASE_PRODUCT.prefWidthProperty().bind(importTable.widthProperty().multiply(0.1));
+        ID_FINAL_PRODUCT.prefWidthProperty().bind(importTable.widthProperty().multiply(0.1));
+        QUANTITY.prefWidthProperty().bind(importTable.widthProperty().multiply(0.1));
+        UNIT_PRICE.prefWidthProperty().bind(importTable.widthProperty().multiply(0.15));
+        TOTAL_PRICE.prefWidthProperty().bind(importTable.widthProperty().multiply(0.15));
+        DESCRIPTION.prefWidthProperty().bind(importTable.widthProperty().multiply(0.1));
     }
 
     private void setSort() {
 
-        ID_IMP.setOnMouseClicked(event -> handleSort("ID_IMP"));
-        DATE_IMP.setOnMouseClicked(event -> handleSort("DATE_IMP"));
-        DESCRIPTION.setOnMouseClicked(event -> handleSort("DESCRIPTION"));
+        ID_IMPD.setOnMouseClicked(event -> handleSort("ID_IMPD"));
+        ID_IMPORT.setOnMouseClicked(event -> handleSort("ID_IMPORT"));
         IS_AVAILABLE.setOnMouseClicked(event -> handleSort("IS_AVAILABLE"));
-        ID_REPLACE.setOnMouseClicked(event -> handleSort("ID_REPLACE"));
+        ID_BASE_PRODUCT.setOnMouseClicked(event -> handleSort("ID_BASE_PRODUCT"));
+        ID_FINAL_PRODUCT.setOnMouseClicked(event -> handleSort("ID_FINAL_PRODUCT"));
+        QUANTITY.setOnMouseClicked(event -> handleSort("QUANTITY"));
+        UNIT_PRICE.setOnMouseClicked(event -> handleSort("UNIT_PRICE"));
         TOTAL_PRICE.setOnMouseClicked(event -> handleSort("TOTAL_PRICE"));
+        DESCRIPTION.setOnMouseClicked(event -> handleSort("DESCRIPTION"));
     }
 
     private void handleSort(String columnName) {
@@ -161,11 +164,12 @@ public class ImportDetailController {
     }
 
     private void updateTotalPage() {
-        Integer number = importService.getCountImportByCombinedCondition(importEntity,typeDate,typePrice);
+        Integer number = importService.getCountImportDetailByCombinedConditionCount(importDetailEntity, typeUPrice,typeQuantity, typePPrice);
         totalPages = (int) Math.ceil((double) number / setOff);
         totalRowLabel.setText("Total row : " +number);
         numberSetOff.setText("Number row per page: " +setOff);
         numberTotalPage.setText("Number pages: " + totalPages );
+
     }
 
     private void crt() {
@@ -174,10 +178,6 @@ public class ImportDetailController {
             main.requestFocus();
         });
         setOffField.setOnKeyPressed(event -> handleKeyPress(event));
-        crtBtn.setOnAction(_ -> {
-            importDetailCreateController.setImportDetailController(this);
-            setMainView("/com/example/dkkp/ImportDetail/ImportDetailCreate.fxml", importDetailCreateController);
-        });
 
         updatePagination();
         refreshBtn.setOnMouseClicked(event -> {
@@ -192,7 +192,6 @@ public class ImportDetailController {
             importDetailFilterController.setPopupStage(popupStage);
         });
 
-        delBtn.setOnMouseClicked(event -> del());
 
         pageLabel1.setOnMouseClicked(event -> setPage(currentPage));
         pageLabel2.setOnMouseClicked(event -> setPage(currentPage + 1));
@@ -305,54 +304,12 @@ public class ImportDetailController {
         nextPageBtn.setDisable(currentPage == totalPages || totalPages == 3);
     }
 
-    private void del() {
-        List<Import_Detail_Entity> selectedItems = importTable.getSelectionModel().getSelectedValues();
-        if (!selectedItems.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirm Deletion");
-            alert.setHeaderText("Are you sure you want to delete this item?");
-            alert.setContentText("This action cannot be undone.");
-            ButtonType yesButton = new ButtonType("Yes");
-            ButtonType noButton = new ButtonType("No");
-            alert.getButtonTypes().setAll(yesButton, noButton);
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.isPresent() && result.get() == yesButton) {
-                try {
-                    transaction.begin();
-                    ImportService importService = new ImportService(entityManager);
-                    for (Import_Detail_Entity item : selectedItems) {
-                        importService.deleteImportAndDetail(item.getID_IMP());
-                    }
-                    transaction.commit();
-                } catch (PersistenceException e) {
-                    transaction.rollback();
-                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                    errorAlert.setTitle("Deletion Error");
-                    errorAlert.setHeaderText("Unable to delete item(s).");
-                    TextArea textArea = new TextArea("The selected item(s) cannot be deleted due to foreign key constraints. "
-                            + "Please ensure the item(s) are not referenced elsewhere before attempting to delete.");
-                    textArea.setEditable(false);
-                    textArea.setWrapText(true);
-                    errorAlert.getDialogPane().setContent(textArea);
-                    errorAlert.showAndWait();
-                } catch (Exception e) {
-                    transaction.rollback();
-                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                    errorAlert.setTitle("Error");
-                    errorAlert.setHeaderText("An unexpected error occurred.");
-                    errorAlert.setContentText("Please try again later.");
-                    errorAlert.showAndWait();
-                }
-                updateTotalPage();
-                refreshProductTable();
-            }
-        }
-    }
 
     private ObservableList<Import_Detail_Entity> getImport() {
-        List<Import_Detail_Entity> p =  importService.getImportByCombinedCondition(importEntity,typeDate,typePrice,sortField,sortOrder,setOff,offSet);
+//        List<Import_Detail_Entity> p =  importService.getImportDetailByCombinedCondition(importDetailEntity, typeUPrice,typeQuantity, typePPrice,sortField,sortOrder,setOff,offSet);
+        List<Import_Detail_Entity> p =  importService.getImportDetailByCombinedCondition(new Import_Detail_Entity(), null,null, null,null,null,null,null);
         for(Import_Detail_Entity item : p) {
-            System.out.println("San pham " + item.getID_IMP());
+            System.out.println("San pham " + item.getID_IMPD());
         }
         return FXCollections.observableArrayList(p);
     }

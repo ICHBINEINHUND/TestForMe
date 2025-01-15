@@ -25,7 +25,7 @@ public class ImportDao {
 
 
 
-    public List<Import_Entity> getFilteredImports(LocalDateTime DATE_IMP, String typeDate, String ID_IMP, Boolean IS_AVAILABLE, Integer ID_REPLACE,Double TOTAL_PRICE,String typePrice, String sortField, String sortOrder, Integer offset, Integer setOff) {
+    public List<Import_Entity> getFilteredImports(LocalDateTime DATE_IMP, String typeDate, String ID_IMP, Boolean IS_AVAILABLE, String ID_REPLACE,Double TOTAL_PRICE,String typePrice, String sortField, String sortOrder, Integer offset, Integer setOff) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Import_Entity> query = cb.createQuery(Import_Entity.class);
         Root<Import_Entity> root = query.from(Import_Entity.class);
@@ -56,15 +56,15 @@ public class ImportDao {
         }
 
         if (ID_IMP != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("ID_IMP"), ID_IMP));
+            conditions = cb.and(conditions, cb.like(root.get("ID_IMP"), "%" + ID_IMP + "%"));
             hasConditions = true;
         }
         if (IS_AVAILABLE != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("STATUS"), IS_AVAILABLE));
+            conditions = cb.and(conditions, cb.equal(root.get("IS_AVAILABLE"), IS_AVAILABLE));
             hasConditions = true;
         }
         if (ID_REPLACE != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("ID_REPLACE"), ID_REPLACE));
+            conditions = cb.and(conditions, cb.like(root.get("ID_REPLACE"), "%" + ID_REPLACE + "%"));
             hasConditions = true;
         }
 
@@ -86,7 +86,7 @@ public class ImportDao {
         if (setOff != null) typedQuery.setMaxResults(setOff); // Số lượng bản ghi mỗi lần
         return typedQuery.getResultList();
     }
-    public Integer getFilteredImportsCount(LocalDateTime DATE_IMP, String typeDate, String ID_IMP, Boolean IS_AVAILABLE, Integer ID_REPLACE, Double TOTAL_PRICE, String typePrice) {
+    public Integer getFilteredImportsCount(LocalDateTime DATE_IMP, String typeDate, String ID_IMP, Boolean IS_AVAILABLE, String ID_REPLACE, Double TOTAL_PRICE, String typePrice) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Long> query = cb.createQuery(Long.class);
         Root<Import_Entity> root = query.from(Import_Entity.class);
@@ -119,7 +119,7 @@ public class ImportDao {
         }
 
         if (ID_IMP != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("ID_IMP"), ID_IMP));
+            conditions = cb.and(conditions, cb.like(root.get("ID_IMP"), "%" + ID_IMP + "%"));
             hasConditions = true;
         }
         if (IS_AVAILABLE != null) {
@@ -127,7 +127,7 @@ public class ImportDao {
             hasConditions = true;
         }
         if (ID_REPLACE != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("ID_REPLACE"), ID_REPLACE));
+            conditions = cb.and(conditions, cb.like(root.get("ID_REPLACE"), "%" + ID_REPLACE + "%"));
             hasConditions = true;
         }
 

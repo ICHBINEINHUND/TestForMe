@@ -60,8 +60,8 @@ public class ProductAttributeValuesFilterController {
 
         ProductBaseService productBaseService = new ProductBaseService(entityManager);
         Product_Base_Entity product = new Product_Base_Entity();
-        Product_Attribute_Entity attribute = new Product_Attribute_Entity();
         baseProductField.getItems().addAll(productBaseService.getProductBaseByCombinedCondition(product,null,null,null,null,null,null,null));
+        Product_Attribute_Entity attribute = new Product_Attribute_Entity();
         attributeField.getItems().addAll(productBaseService.getProductAttributeCombinedCondition(attribute,null,null,null,null));
     }
     private void setTextFormatter(){

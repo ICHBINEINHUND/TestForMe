@@ -12,7 +12,7 @@ public class Import_Detail_Entity {
   @Column(name = "\"ID_IMPORT\"")//
   private String ID_IMPORT;
   @Column(name = "\"IS_AVAILABLE\"")//
-  private boolean IS_AVAILABLE;
+  private Boolean IS_AVAILABLE;
   @Column(name = "\"ID_BASE_PRODUCT\"")//
   private Integer ID_BASE_PRODUCT;
   @Column(name = "\"ID_FINAL_PRODUCT\"")//
@@ -40,7 +40,7 @@ public class Import_Detail_Entity {
   @JoinColumn(name = "\"ID_FINAL_PRODUCT\"", referencedColumnName = "\"ID_FINAL_PRODUCT\"", insertable = false, updatable = false)
   private Product_Final_Entity product_Final_Entity;
 
-  public Import_Detail_Entity(Integer ID_IMPD, String ID_IMPORT, boolean IS_AVAILABLE, Integer ID_BASE_PRODUCT, Integer ID_FINAL_PRODUCT, Integer QUANTITY, Double UNIT_PRICE, String DESCRIPTION, String NAME_PRODUCT_BASE, String NAME_PRODUCT_FINAL) {
+  public Import_Detail_Entity(Integer ID_IMPD, String ID_IMPORT, Boolean IS_AVAILABLE, Integer ID_BASE_PRODUCT, Integer ID_FINAL_PRODUCT, Integer QUANTITY, Double UNIT_PRICE, String DESCRIPTION, String NAME_PRODUCT_BASE, String NAME_PRODUCT_FINAL) {
     this.ID_IMPD = ID_IMPD;
     this.ID_IMPORT = ID_IMPORT;
     this.IS_AVAILABLE = IS_AVAILABLE;
@@ -54,7 +54,7 @@ public class Import_Detail_Entity {
     this.DESCRIPTION = DESCRIPTION;
   }
 
-  public boolean isIS_AVAILABLE() {
+  public Boolean isIS_AVAILABLE() {
     return IS_AVAILABLE;
   }
 
@@ -90,11 +90,11 @@ public class Import_Detail_Entity {
     this.ID_IMPORT = ID_IMPORT;
   }
 
-  public boolean getIS_AVAILABLE() {
+  public Boolean getIS_AVAILABLE() {
     return IS_AVAILABLE;
   }
 
-  public void setIS_AVAILABLE(boolean IS_AVAILABLE) {
+  public void setIS_AVAILABLE(Boolean IS_AVAILABLE) {
     this.IS_AVAILABLE = IS_AVAILABLE;
   }
 
@@ -146,7 +146,19 @@ public class Import_Detail_Entity {
     this.DESCRIPTION = DESCRIPTION;
   }
 
-  public Import_Detail_Entity(Integer ID_IMPD, String ID_IMPORT, boolean IS_AVAILABLE, Integer ID_BASE_PRODUCT, Integer ID_FINAL_PRODUCT, Integer QUANTITY, Double UNIT_PRICE,  String DESCRIPTION) {
+  public Import_Detail_Entity(Integer ID_IMPD, String ID_IMPORT, Boolean IS_AVAILABLE, Integer ID_BASE_PRODUCT, Integer ID_FINAL_PRODUCT, Integer QUANTITY, Double UNIT_PRICE, Double TOTAL_PRICE, String DESCRIPTION) {
+    this.ID_IMPD = ID_IMPD;
+    this.ID_IMPORT = ID_IMPORT;
+    this.IS_AVAILABLE = IS_AVAILABLE;
+    this.ID_BASE_PRODUCT = ID_BASE_PRODUCT;
+    this.ID_FINAL_PRODUCT = ID_FINAL_PRODUCT;
+    this.QUANTITY = QUANTITY;
+    this.UNIT_PRICE = UNIT_PRICE;
+    this.TOTAL_PRICE = TOTAL_PRICE;
+    this.DESCRIPTION = DESCRIPTION;
+  }
+
+  public Import_Detail_Entity(Integer ID_IMPD, String ID_IMPORT, Boolean IS_AVAILABLE, Integer ID_BASE_PRODUCT, Integer ID_FINAL_PRODUCT, Integer QUANTITY, Double UNIT_PRICE, String DESCRIPTION) {
     this.ID_IMPD = ID_IMPD;
     this.ID_IMPORT = ID_IMPORT;
     this.IS_AVAILABLE = IS_AVAILABLE;

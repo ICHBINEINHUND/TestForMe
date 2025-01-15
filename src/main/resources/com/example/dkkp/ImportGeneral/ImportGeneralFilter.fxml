@@ -19,7 +19,7 @@
                 <MFXTextField fx:id="ID_REPLACE" floatingText="ID REPLACE" prefWidth="250" prefHeight="40"/>
             </VBox>
                 <HBox>
-                    <MFXComboBox fx:id="dateCombobox" prefWidth="250" prefHeight="40" promptText="VIEW COUNT">
+                    <MFXComboBox fx:id="dateCombobox" prefWidth="250" prefHeight="40" promptText="DATE IMPORT">
                         <items>
                             <FXCollections fx:factory="observableArrayList">
                                 <String fx:value="Equal"/>
@@ -36,7 +36,7 @@
                     <Spinner fx:id="secondSpinner" prefWidth="80" />
                 </HBox>
             <HBox spacing="10" alignment="CENTER_LEFT">
-                <MFXComboBox fx:id="totalPriceComboBox" prefWidth="250" prefHeight="40" promptText="VIEW COUNT">
+                <MFXComboBox fx:id="totalPriceComboBox" prefWidth="250" prefHeight="40" promptText="TOTAL PRICE">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="Equal"/>
@@ -50,7 +50,7 @@
                 <MFXTextField fx:id="TOTAL_PRICE" floatingText="ENTER PRICE" prefWidth="100" prefHeight="40"/>
             </HBox>
             <HBox>
-                <MFXComboBox fx:id="isAvailableComboBox" prefWidth="250" prefHeight="40" promptText="VIEW COUNT">
+                <MFXComboBox fx:id="isAvailableComboBox" prefWidth="250" prefHeight="40" promptText="IS AVAILABLE">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="Yes"/>
@@ -62,8 +62,6 @@
             </HBox>
         </VBox>
     </HBox>
-    <HBox alignment="CENTER" prefHeight="60.0" prefWidth="350.0">
         <MFXButton fx:id="applyButton" buttonType="RAISED" mnemonicParsing="false" text="Create" prefWidth="80" prefHeight="40"
                    styleClass="Btn"/>
-    </HBox>
 </VBox>

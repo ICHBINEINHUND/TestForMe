@@ -1,116 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import java.lang.*?>
 <?import javafx.collections.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox prefHeight="500.0" prefWidth="350.0" spacing="15" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
-    <!-- Header -->
-    <HBox alignment="CENTER" prefHeight="60.0" prefWidth="350.0">
-        <children>
-            <Label style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-padding: 10;" text="Import Detail Filter" />
-        </children>
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import io.github.palexdev.materialfx.controls.MFXFilterComboBox?>
+<VBox prefHeight="500.0" prefWidth="350.0" spacing="15" xmlns="http://javafx.com/javafx/17.0.12"
+      xmlns:fx="http://javafx.com/fxml/1" styleClass="productAP" stylesheets="@../DKKP.css">
+    <MFXButton buttonType="RAISED" fx:id="back" mnemonicParsing="false" text="Back" prefWidth="50" prefHeight="25" styleClass="Btn"/>
+    <HBox alignment="TOP_CENTER" prefHeight="60.0" prefWidth="350.0">
+        <VBox spacing="10" alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
+            <VBox spacing="10">
+                <MFXTextField floatingText="ID IMPORT DETAIL" fx:id="ID_IMPD" prefWidth="250" prefHeight="40"/>
+                <MFXFilterComboBox fx:id="ID_IMPORT" floatingText="ID IMPORT" prefWidth="250" prefHeight="40"/>
+                <MFXComboBox fx:id="isAvailableCombobox" prefWidth="250" prefHeight="40" floatingText="IS AVAILABLE">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Yes"/>
+                            <String fx:value="No"/>
+                            <String fx:value="Both"/>
+                        </FXCollections>
+                    </items>
+                </MFXComboBox>
+                <MFXFilterComboBox fx:id="baseProductCombobox" floatingText="BASE PRODUCT" floatMode="BORDER" prefWidth="250" prefHeight="40"/>
+                <MFXFilterComboBox fx:id="finalProductCombobox" floatingText="FINAL PRODUCT" floatMode="BORDER" prefWidth="250" prefHeight="40"/>
+            </VBox>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <MFXComboBox fx:id="quantityCombobox" prefWidth="250" prefHeight="40" promptText="QUANTITY">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Equal"/>
+                            <String fx:value="More"/>
+                            <String fx:value="Less"/>
+                            <String fx:value="Equal or More"/>
+                            <String fx:value="Equal or Less"/>
+                        </FXCollections>
+                    </items>
+                </MFXComboBox>
+                <MFXTextField fx:id="quantityField" floatingText="ENTER QUANTITY" prefWidth="100" prefHeight="40"/>
+            </HBox>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <MFXComboBox fx:id="unitPriceCombobox" prefWidth="250" prefHeight="40" promptText="UNIT PRICE">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Equal"/>
+                            <String fx:value="More"/>
+                            <String fx:value="Less"/>
+                            <String fx:value="Equal or More"/>
+                            <String fx:value="Equal or Less"/>
+                        </FXCollections>
+                    </items>
+                </MFXComboBox>
+                <MFXTextField fx:id="unitPriceField" floatingText="ENTER UNIT PRICE" prefWidth="100" prefHeight="40"/>
+            </HBox>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <MFXComboBox fx:id="totalPriceCombobox" promptText="TOTAL PRICE" prefWidth="250"
+                             prefHeight="40">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Equal"/>
+                            <String fx:value="More"/>
+                            <String fx:value="Less"/>
+                            <String fx:value="Equal or More"/>
+                            <String fx:value="Equal or Less"/>
+                        </FXCollections>
+                    </items>
+                </MFXComboBox>
+                <MFXTextField fx:id="totalPriceField" floatingText="ENTER TOTAL PRICE" prefWidth="100" prefHeight="40"/>
+            </HBox>
+        </VBox>
     </HBox>
-
-    <!-- Main Content -->
-    <GridPane alignment="CENTER" hgap="10" vgap="10">
-        <columnConstraints>
-            <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="120" />
-            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="150" />
-            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="120" />
-        </columnConstraints>
-
-        <!-- ID Import Detail Filter -->
-        <Label text="ID Import Detail" GridPane.columnIndex="0" GridPane.rowIndex="0" textAlignment="LEFT" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
-        <TextField fx:id="idImportDetailTextField" prefHeight="30.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="0" style="-fx-background-color: #f4f4f4; -fx-border-color: #ccc; -fx-border-radius: 5; -fx-box-shadow: 0px 0px 8px rgba(0,0,0,0.1);" />
-
-        <!-- ID Import General Filter (ID Replace) -->
-        <Label text="ID Import General" GridPane.columnIndex="0" GridPane.rowIndex="1" textAlignment="LEFT" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
-        <TextField fx:id="idImportGeneralTextField" prefHeight="30.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" style="-fx-background-color: #f4f4f4; -fx-border-color: #ccc; -fx-border-radius: 5; -fx-box-shadow: 0px 0px 8px rgba(0,0,0,0.1);" />
-
-
-        <!-- Is Available Filter -->
-        <Label text="Is Available" GridPane.columnIndex="0" GridPane.rowIndex="2" textAlignment="LEFT" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
-        <ComboBox fx:id="isAvailableComboBox" prefHeight="30.0" prefWidth="150.0" promptText="Select Availability" GridPane.columnIndex="1" GridPane.rowIndex="2" style="-fx-background-color: #f4f4f4; -fx-border-color: #ccc; -fx-border-radius: 5; -fx-box-shadow: 0px 0px 8px rgba(0,0,0,0.1);">
-            <items>
-                <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="Available" />
-                    <String fx:value="Deleted" />
-                    <String fx:value="Both" />
-                </FXCollections>
-            </items>
-        </ComboBox>
-
-        <!-- ID Base Product Filter -->
-        <Label text="ID Base Product" GridPane.columnIndex="0" GridPane.rowIndex="3" textAlignment="LEFT" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
-        <ComboBox fx:id="idBaseProductComboBox" editable="true" prefHeight="30.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" style="-fx-background-color: #f4f4f4; -fx-border-color: #ccc; -fx-border-radius: 5; -fx-box-shadow: 0px 0px 8px rgba(0,0,0,0.1);" />
-
-        <!-- ID Final Product Filter -->
-        <Label text="ID Final Product" GridPane.columnIndex="0" GridPane.rowIndex="4" textAlignment="LEFT" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
-        <ComboBox fx:id="idFinalProductComboBox" editable="true" prefHeight="30.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4" style="-fx-background-color: #f4f4f4; -fx-border-color: #ccc; -fx-border-radius: 5; -fx-box-shadow: 0px 0px 8px rgba(0,0,0,0.1);" />
-
-        <!-- Quantity Filter -->
-        <Label text="Quantity" GridPane.columnIndex="0" GridPane.rowIndex="5" textAlignment="LEFT" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
-        <ComboBox fx:id="quantityOperatorComboBox" prefHeight="30.0" prefWidth="150.0" promptText="Select Operator" GridPane.columnIndex="1" GridPane.rowIndex="5" style="-fx-background-color: #f4f4f4; -fx-border-color: #ccc; -fx-border-radius: 5; -fx-box-shadow: 0px 0px 8px rgba(0,0,0,0.1);">
-            <items>
-                <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="Equal" />
-                    <String fx:value="More" />
-                    <String fx:value="Less" />
-                    <String fx:value="Equal or More" />
-                    <String fx:value="Equal or Less" />
-                </FXCollections>
-            </items>
-        </ComboBox>
-        <TextField fx:id="quantityTextField" prefHeight="30.0" prefWidth="80.0" promptText="Integer" GridPane.columnIndex="2" GridPane.rowIndex="5" style="-fx-background-color: #f4f4f4; -fx-border-color: #ccc; -fx-border-radius: 5; -fx-box-shadow: 0px 0px 8px rgba(0,0,0,0.1);" />
-
-        <!-- Unit Price Filter -->
-        <Label text="Unit Price" GridPane.columnIndex="0" GridPane.rowIndex="6" textAlignment="LEFT" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
-        <ComboBox fx:id="unitPriceOperatorComboBox" prefHeight="30.0" prefWidth="150.0" promptText="Select Operator" GridPane.columnIndex="1" GridPane.rowIndex="6" style="-fx-background-color: #f4f4f4; -fx-border-color: #ccc; -fx-border-radius: 5; -fx-box-shadow: 0px 0px 8px rgba(0,0,0,0.1);">
-            <items>
-                <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="Equal" />
-                    <String fx:value="More" />
-                    <String fx:value="Less" />
-                    <String fx:value="Equal or More" />
-                    <String fx:value="Equal or Less" />
-                </FXCollections>
-            </items>
-        </ComboBox>
-        <TextField fx:id="unitPriceTextField" prefHeight="30.0" prefWidth="80.0" promptText="Double" GridPane.columnIndex="2" GridPane.rowIndex="6" style="-fx-background-color: #f4f4f4; -fx-border-color: #ccc; -fx-border-radius: 5; -fx-box-shadow: 0px 0px 8px rgba(0,0,0,0.1);" />
-
-        <!-- Total Price Filter -->
-        <Label text="Total Price" GridPane.columnIndex="0" GridPane.rowIndex="7" textAlignment="LEFT" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
-        <ComboBox fx:id="totalPriceOperatorComboBox" prefHeight="30.0" prefWidth="150.0" promptText="Select Operator" GridPane.columnIndex="1" GridPane.rowIndex="7" style="-fx-background-color: #f4f4f4; -fx-border-color: #ccc; -fx-border-radius: 5; -fx-box-shadow: 0px 0px 8px rgba(0,0,0,0.1);">
-            <items>
-                <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="Equal" />
-                    <String fx:value="More" />
-                    <String fx:value="Less" />
-                    <String fx:value="Equal or More" />
-                    <String fx:value="Equal or Less" />
-                </FXCollections>
-            </items>
-        </ComboBox>
-        <TextField fx:id="totalPriceTextField" prefHeight="30.0" prefWidth="80.0" promptText="Double" GridPane.columnIndex="2" GridPane.rowIndex="7" style="-fx-background-color: #f4f4f4; -fx-border-color: #ccc; -fx-border-radius: 5; -fx-box-shadow: 0px 0px 8px rgba(0,0,0,0.1);" />
-
-        <rowConstraints>
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-        </rowConstraints>
-    </GridPane>
-
-    <!-- Submit Button -->
     <HBox alignment="CENTER" prefHeight="60.0" prefWidth="350.0">
-        <children>
-            <Button fx:id="applyButton" prefHeight="40.0" prefWidth="150.0"
-                    style="-fx-background-color: #7F4B8B; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"
-                    text="Submit" />
-        </children>
+        <MFXButton fx:id="applyButton" buttonType="RAISED" mnemonicParsing="false" text="Create" prefWidth="80" prefHeight="40"
+                   styleClass="Btn"/>
     </HBox>
 </VBox>

@@ -22,12 +22,20 @@ public class TestController {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            // nhét code vào đây
-
+//             nhét code vào đây
+            ImportService importService = new ImportService(entityManager);
+            Import_Detail_Entity importDetailEntity = new Import_Detail_Entity();
+            importDetailEntity.setIS_AVAILABLE(null);
+            List<Import_Detail_Entity> p = importService.getImportDetailByCombinedCondition(importDetailEntity,null, null, null, null, null, null, null);
+            for (Import_Detail_Entity i : p) {
+                System.out.println("import " + i.getID_IMPD());
+            }
+            System.out.println("size " + p.size());
             transaction.commit();
         } catch (Exception e) {
             if (transaction.isActive()) {
                 transaction.rollback();
+                System.out.println("da loi " + e.getMessage());
             }
 
         } finally {

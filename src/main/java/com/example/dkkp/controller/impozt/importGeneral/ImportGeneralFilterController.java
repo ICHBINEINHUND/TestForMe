@@ -2,6 +2,7 @@ package com.example.dkkp.controller.impozt.importGeneral;
 
 import com.example.dkkp.model.Import_Entity;
 import com.example.dkkp.model.Product_Option_Entity;
+import com.example.dkkp.service.ImportService;
 import com.example.dkkp.service.Validator;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
@@ -14,6 +15,8 @@ import javafx.stage.Stage;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+
+import static com.example.dkkp.controller.LoginController.entityManager;
 
 
 public class ImportGeneralFilterController {
@@ -46,6 +49,7 @@ public class ImportGeneralFilterController {
     private MFXButton applyButton;
     private Stage popupStage;
     ImportGeneralController importGeneralController;
+
     @FXML
     public void createFilter() {
 
@@ -56,29 +60,38 @@ public class ImportGeneralFilterController {
         if (datePicker.getValue() != null) {
             LocalDate date = datePicker.getValue();
             if (hourSpinner.getValue() != null) hour = (int) hourSpinner.getValue();
-            if (minuteSpinner.getValue() != null)  minute = (int) minuteSpinner.getValue();
+            if (minuteSpinner.getValue() != null) minute = (int) minuteSpinner.getValue();
             if (secondSpinner.getValue() != null) second = (int) secondSpinner.getValue();
             dateTime = LocalDateTime.of(date, LocalTime.of(hour, minute, second));
         }
 
         String id = ID_IMP.getText().trim().isEmpty() ? null : ID_IMP.getText();
         String idReplace = ID_REPLACE.getText().trim().isEmpty() ? null : ID_REPLACE.getText();
-        if (totalPriceComboBox != null) {importGeneralController.typePrice = getValueOperator(totalPriceComboBox.getValue());}
-        if (dateCombobox != null) {importGeneralController.typeDate = getValueOperator(dateCombobox.getValue());}
-        Boolean isAvailable = switch (isAvailableComboBox.getValue()) {
+        if (totalPriceComboBox != null) {
+            importGeneralController.typePrice = getValueOperator(totalPriceComboBox.getValue());
+        }
+        if (dateCombobox != null) {
+            importGeneralController.typeDate = getValueOperator(dateCombobox.getValue());
+        }
+        Boolean isAvailable = null;
+        if (isAvailableComboBox.getValue() != null) isAvailable = switch (isAvailableComboBox.getValue()) {
             case "Both" -> null;
             case "Yes" -> true;
             case "No" -> false;
+            case null -> false;
             default -> null;
         };
-        importGeneralController.importEntity = new Import_Entity(id,dateTime,null,isAvailable,idReplace,Double.parseDouble(TOTAL_PRICE.getText()) );
+        Double pPrice = TOTAL_PRICE.getText().isEmpty() ? null : Double.parseDouble(TOTAL_PRICE.getText());
+
+        importGeneralController.importEntity = new Import_Entity(id, dateTime, null, isAvailable, idReplace, pPrice);
         importGeneralController.setPage(1);
-        importGeneralController.importController.setMainView("/com/example/dkkp/ImportGeneral/ImportGeneralView.fxml",importGeneralController);
+        importGeneralController.importController.setMainView("/com/example/dkkp/ImportGeneral/ImportGeneralView.fxml", importGeneralController);
+//        importGeneralController.refreshProductTable();
         importGeneralController.closePopup(popupStage);
     }
 
     private String getValueOperator(String value) {
-        if(value == null) return null;
+        if (value == null) return null;
         System.out.println(value + " day la");
         return switch (value) {
             case "Equal" -> "=";
@@ -93,6 +106,7 @@ public class ImportGeneralFilterController {
     public void setPopupStage(Stage popupStage) {
         this.popupStage = popupStage;
     }
+
     @FXML
     public void initialize() {
         setTextFormatter();
@@ -101,10 +115,12 @@ public class ImportGeneralFilterController {
             importGeneralController.closePopup(popupStage);
         });
     }
-    private void setTextFormatter(){
+
+    private void setTextFormatter() {
         Validator validator3 = new Validator();
         TOTAL_PRICE.delegateSetTextFormatter(validator3.formatterDouble);
     }
+
     public void setImportGeneralController(ImportGeneralController importGeneralController) {
         this.importGeneralController = importGeneralController;
     }

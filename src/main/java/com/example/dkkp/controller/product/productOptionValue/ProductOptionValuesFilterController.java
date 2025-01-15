@@ -1,6 +1,5 @@
 package com.example.dkkp.controller.product.productOptionValue;
 
-import com.example.dkkp.controller.impozt.importGeneral.ImportGeneralController;
 import com.example.dkkp.model.Product_Final_Entity;
 import com.example.dkkp.model.Product_Option_Entity;
 import com.example.dkkp.model.Product_Option_Values_Entity;
@@ -32,7 +31,7 @@ public class ProductOptionValuesFilterController {
     @FXML
     private MFXButton applyButton;
     private Stage popupStage;
-    ImportGeneralController importGeneralController;
+    ProductOptionValuesController productOptionValuesController;
     @FXML
     public void createFilter() {
         Integer id = ID.getText().trim().isEmpty() ? null : Integer.parseInt(ID.getText());
@@ -40,10 +39,10 @@ public class ProductOptionValuesFilterController {
         Integer optionId = (optionField.getValue() != null) ? optionField.getValue().getID_OPTION() : null;
         Integer finalId = (finalProductField.getValue() != null) ? finalProductField.getValue().getID_SP() : null;
 
-        importGeneralController.productOptionValuesEntity = new Product_Option_Values_Entity(id, optionId ,value,finalId);
-        importGeneralController.setPage(1);
-        importGeneralController.productController.setMainView("/com/example/dkkp/ProductOptionValue/ProductOptionValueView.fxml",importGeneralController);
-        importGeneralController.closePopup(popupStage);
+        productOptionValuesController.productOptionValuesEntity = new Product_Option_Values_Entity(id, optionId ,value,finalId);
+        productOptionValuesController.setPage(1);
+        productOptionValuesController.productController.setMainView("/com/example/dkkp/ProductOptionValue/ProductOptionValueView.fxml",productOptionValuesController);
+        productOptionValuesController.closePopup(popupStage);
     }
 
 
@@ -55,33 +54,22 @@ public class ProductOptionValuesFilterController {
         setTextFormatter();
         applyButton.setOnAction(event -> createFilter());
         back.setOnMouseClicked(event -> {
-            importGeneralController.closePopup(popupStage);
+            productOptionValuesController.closePopup(popupStage);
         });
 
         ProductFinalService productFinalService = new ProductFinalService(entityManager);
         Product_Final_Entity product = new Product_Final_Entity();
-        Product_Option_Entity option = new Product_Option_Entity();
         finalProductField.getItems().addAll(productFinalService.getProductFinalByCombinedCondition(product,null,null,null,null,null,null,null));
+        Product_Option_Entity option = new Product_Option_Entity();
         optionField.getItems().addAll(productFinalService.getProductOptionCombinedCondition(option,null,null,null,null));
     }
     private void setTextFormatter(){
         Validator validator1 = new Validator();
         ID.delegateSetTextFormatter(validator1.formatterInteger);
     }
-    public void setImportGeneralController(ImportGeneralController importGeneralController) {
-        this.importGeneralController = importGeneralController;
+    public void setProductOptionValuesController(ProductOptionValuesController productOptionValuesController) {
+        this.productOptionValuesController = productOptionValuesController;
     }
 
-    private String getValueOperator(String value) {
-        if(value == null) return null;
-        System.out.println(value + " day la");
-        return switch (value) {
-            case "Equal" -> "=";
-            case "More" -> ">";
-            case "Less" -> "<";
-            case "Equal or More" -> "=>";
-            case "Equal or Less" -> "<=";
-            default -> null;
-        };
-    }
+
 }
