@@ -107,30 +107,29 @@ public class BillService {
     }
 
 
-    public void changeBillStatus(String id, EnumType.Status_Bill statusBill) {
+    public void changeBillStatus(String id, EnumType.Status_Bill statusBill) throws Exception {
 
         if (statusBill == EnumType.Status_Bill.CANC) {
-            billDao.changeBillStatus(id, statusBill);
             billDetailDao.cancelBillDetail(id);
             plusBillProduct(id);
         }
-        if (billDao.getBillByID(id).getBILL_STATUS() == EnumType.Status_Bill.PEN) {
-            billDao.changeBillStatus(id, statusBill);
+        if (billDao.getBillByID(id).getBILL_STATUS() == EnumType.Status_Bill.PEN && statusBill != EnumType.Status_Bill.CANC) {
+            System.out.println("cong tien");
             minusProduct(id);
         }
         billDao.changeBillStatus(id, statusBill);
     }
 
 
-    public void minusProduct(String id) {
+    public void minusProduct(String id) throws Exception {
         if (billDao.getFilteredBills(null, null, id, null, null, null, null, null, null, null, null, null, null, null) != null) {
             List<Bill_Detail_Entity> listBillDetail = billDetailDao.getFilteredBillDetails(null, null, null, null, null, null, null, null, null, id, null, null, null, null, null);
             for (Bill_Detail_Entity billDetail : listBillDetail) {
                 ProductFinalService productFinalService = new ProductFinalService(entityManager);
                 Product_Final_Entity productE = productFinalService.getProductByID(billDetail.getID_FINAL_PRODUCT());
-                if (productE == null) throw new RuntimeException("Cant find product final to minus quantity");
+                if (productE == null) throw new Exception("Cant find product final to minus quantity");
                 if (productE.getQUANTITY() < billDetail.getQUANTITY_BILL())
-                    throw new RuntimeException("Quantity product in final storage is smaller to minus");
+                    throw new Exception("Quantity product in final storage is smaller to minus");
                 Integer newQuantity = productE.getQUANTITY() - billDetail.getQUANTITY_BILL();
                 productE.setQUANTITY(newQuantity);
                 productFinalService.updateProductFinal(productE);
@@ -140,7 +139,6 @@ public class BillService {
     }
 
     public void plusBillProduct(String id) {
-        System.out.println("day la " + id);
         List<Bill_Detail_Entity> listBillDetail = billDetailDao.getFilteredBillDetails(null, null, null, null, null, null, null, null, null, id, null, null, null, null, null);
         for (Bill_Detail_Entity billDetail : listBillDetail) {
             ProductFinalService productFinalService = new ProductFinalService(entityManager);

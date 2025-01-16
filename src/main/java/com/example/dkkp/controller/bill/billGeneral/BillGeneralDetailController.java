@@ -5,6 +5,7 @@ import com.example.dkkp.model.Bill_Detail_Entity;
 import com.example.dkkp.model.Bill_Entity;
 import com.example.dkkp.model.EnumType;
 import com.example.dkkp.service.BillService;
+import com.example.dkkp.service.SecurityFunction;
 import io.github.palexdev.materialfx.controls.*;
 import io.github.palexdev.materialfx.controls.cell.MFXTableRowCell;
 import jakarta.persistence.EntityManager;
@@ -52,7 +53,7 @@ public class BillGeneralDetailController implements TableInterface {
     @FXML
     private MFXComboBox<String> BILL_STATUS;
     @FXML
-    private  MFXTextField PHONE_BILL;
+    private MFXTextField PHONE_BILL;
     @FXML
     private MFXTextField ADD_BILL;
     @FXML
@@ -69,9 +70,10 @@ public class BillGeneralDetailController implements TableInterface {
     private ObservableList<Bill_Detail_Entity> list;
 
     @FXML
-    public void initialize() {
-//        list = getBillDetail();
-//        billDetailTable.setItems(list);
+    public void initialize() throws Exception {
+        list = getBillDetail();
+//        getBillDetail();
+        billDetailTable.setItems(list);
         updateBtn.setOnMouseClicked(event -> updateBill());
         setCol();
         setWidth();
@@ -90,36 +92,49 @@ public class BillGeneralDetailController implements TableInterface {
         alert.getButtonTypes().setAll(yesButton, noButton);
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == yesButton) {
-            try{
+            try {
                 transaction.begin();
-            } catch (RuntimeException e) {
-                transaction.rollback();
-
-                String billS =  (BILL_STATUS.getValue() != null) ? BILL_STATUS.getValue() : null;
-                EnumType.Status_Bill billStatus = switch (billS){
+                String billS = (BILL_STATUS.getValue() != null) ? BILL_STATUS.getValue() : null;
+                System.out.println("status cua bill " + billS);
+                EnumType.Status_Bill billStatus = switch (billS) {
                     case "Pending" -> EnumType.Status_Bill.PEN;
                     case "Payed" -> EnumType.Status_Bill.CONF;
-                    case "Shipped"-> EnumType.Status_Bill.SHIP;
-                    case "Delivered"-> EnumType.Status_Bill.DELI;
-                    case "Cancel"-> EnumType.Status_Bill.CANC;
+                    case "Shipped" -> EnumType.Status_Bill.SHIP;
+                    case "Delivered" -> EnumType.Status_Bill.DELI;
+                    case "Cancel" -> EnumType.Status_Bill.CANC;
                     default -> null;
+
                 };
 
                 BillService billService = new BillService(entityManager);
-                billService.changeBillStatus(billEntity.getID_BILL(),billStatus);
-                throw new RuntimeException(e);
+                billService.changeBillStatus(billEntity.getID_BILL(), billStatus);
+                transaction.commit();
+                billGeneralController.closePopup(popupStage);
+            } catch (Exception e) {
+                transaction.rollback();
+                Alert alert1 = new Alert(Alert.AlertType.ERROR);
+                alert1.setTitle("Error");
+                alert1.setHeaderText("Transaction Failed");
+                alert1.setContentText(e.getMessage());
+                alert1.showAndWait();
             }
         }
     }
 
     public ObservableList<Bill_Detail_Entity> getBillDetail() {
-        BillService importService = new BillService(entityManager);
-        Bill_Detail_Entity importDetailEntity = new Bill_Detail_Entity(null, billEntity.getID_BILL(), null,null,null,null);
-        List<Bill_Detail_Entity> p = importService.getBillDetailByCombinedCondition(importDetailEntity, null,null,null, null, null, null, null);
-        for (Bill_Detail_Entity i : p) {
-            System.out.println("dcm " + i.getID_BILL_DETAIL());
+        List<Bill_Detail_Entity> p = null;
+        try {
+            BillService importService = new BillService(entityManager);
+            Bill_Detail_Entity importDetailEntity = new Bill_Detail_Entity();
+            importDetailEntity.setID_BILL(billEntity.getID_BILL());
+            p = importService.getBillDetailByCombinedCondition(importDetailEntity, null, null, null, null, null, null, null);
+            for (Bill_Detail_Entity i : p) {
+                System.out.println("dcm " + i.getID_BILL_DETAIL());
+            }
+        } catch (Exception _) {
+        } finally {
+            return FXCollections.observableArrayList(p);
         }
-        return FXCollections.observableArrayList(p);
     }
 
     @Override
@@ -135,7 +150,6 @@ public class BillGeneralDetailController implements TableInterface {
     }
 
     private void setCol() {
-
         ID_BILL_DETAIL.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Detail_Entity::getID_BILL_DETAIL));
         ID_BILLD.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Detail_Entity::getID_BILL));
         AVAILABLE.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Detail_Entity::getAVAILABLE));
@@ -155,14 +169,14 @@ public class BillGeneralDetailController implements TableInterface {
     }
 
     //
-    public void pushEntity() {
+    public void pushEntity() throws Exception {
 
         if (billEntity != null) {
             ID_BILL.setText(billEntity.getID_BILL());
-            ID_USER.setText(billEntity.getID_USER());
-            BILL_STATUS.setText(billEntity.getBILL_STATUS().toString());
-            PHONE_BILL.setText(billEntity.getPHONE_BILL());
-            ADD_BILL.setText(billEntity.getADD_BILL());
+            ID_USER.setText(SecurityFunction.decrypt(billEntity.getEMAIL_ACC()));
+            BILL_STATUS.setText(billEntity.getBILL_STATUS().getDescription());
+            PHONE_BILL.setText(SecurityFunction.decrypt(billEntity.getPHONE_BILL()));
+            ADD_BILL.setText(SecurityFunction.decrypt(billEntity.getADD_BILL()));
             DESCRIPTION.setText(billEntity.getDESCRIPTION());
             DATE_EXP.setText(billEntity.getDESCRIPTION());
         }

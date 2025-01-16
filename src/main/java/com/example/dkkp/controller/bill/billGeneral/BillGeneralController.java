@@ -127,7 +127,7 @@ public class BillGeneralController {
     private void setCol() {
         ID_BILL.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Entity::getID_BILL));
         DATE_EXP.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Entity::getDATE_EXP));
-        ID_USER.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Entity::getID_USER));
+        ID_USER.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Entity::getEMAIL_ACC));
         BILL_STATUS.setRowCellFactory(_ -> new MFXTableRowCell<>(bill -> {
             EnumType.Status_Bill status = bill.getBILL_STATUS();
             return status != null ? status.getDescription() : "Unknown";

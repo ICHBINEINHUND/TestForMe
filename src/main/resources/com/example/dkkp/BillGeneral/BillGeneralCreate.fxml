@@ -33,7 +33,7 @@
                 </HBox>
                 <MFXTableView fx:id="billDetailTable" footerVisible="false" prefWidth="700" minHeight="380">
                     <tableColumns>
-                        <MFXTableColumn fx:id="ID_FINAL_PRODUCT" text="ID BILL DETAIL" styleClass="productBF"
+                        <MFXTableColumn fx:id="ID_FINAL_PRODUCT" text="ID FINAL PRODUCT" styleClass="productBF"
                                         style="-fx-font-size: 10px;"/>
                         <MFXTableColumn fx:id="QUANTITY_SP" text="QUANTITY" styleClass="productBF"
                                         style="-fx-font-size: 10px;"/>

@@ -55,7 +55,7 @@ public class BillDetailCreateController {
         Double unitPrice = basePrice *(1- discount/100)  ;
 
         Bill_Detail_Entity bill_Detail_Entity = new Bill_Detail_Entity();
-        if(finalProductId != null) bill_Detail_Entity.setID_FINAL_PRODUCT(finalProductId);
+        bill_Detail_Entity.setID_FINAL_PRODUCT(finalProductId);
         bill_Detail_Entity.setQUANTITY_BILL(quantity);
         bill_Detail_Entity.setUNIT_PRICE(unitPrice);
         bill_Detail_Entity.setTOTAL_DETAIL_PRICE(unitPrice * quantity);

@@ -34,7 +34,7 @@ public class BillDetailDao {
     public List<Bill_Detail_Entity> getFilteredBillDetails(Integer ID_BILL_DETAIL,
                                                            Double TOTAL_DETAIL_PRICE,
                                                            String typePPrice,
-                                                           Double UNIT_PRICE,
+                                                           Double PRICE_SP,
                                                            String typeUPrice,
                                                            Integer ID_FINAL_PRODUCT,
                                                            String NAME_FINAL_PRODUCT,
@@ -50,7 +50,7 @@ public class BillDetailDao {
         CriteriaQuery<Bill_Detail_Entity> query = cb.createQuery(Bill_Detail_Entity.class);
         Root<Bill_Detail_Entity> root = query.from(Bill_Detail_Entity.class);
 
-        Join<Bill_Detail_Entity, Product_Final_Entity> productFinalJoin = root.join("product_final", JoinType.INNER);
+        Join<Bill_Detail_Entity, Product_Final_Entity> productFinalJoin = root.join("product_Final_Entity", JoinType.LEFT);
         Predicate conditions = cb.conjunction();
         boolean hasConditions = false;
 
@@ -69,13 +69,13 @@ public class BillDetailDao {
             };
             hasConditions = true;
         }
-        if (UNIT_PRICE != null) {
+        if (PRICE_SP != null) {
             conditions = switch (typeUPrice) {
-                case "<" -> cb.and(conditions, cb.lessThan(root.get("UNIT_PRICE"), UNIT_PRICE));
-                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("UNIT_PRICE"), UNIT_PRICE));
-                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("UNIT_PRICE"), UNIT_PRICE));
-                case ">" -> cb.and(conditions, cb.greaterThan(root.get("UNIT_PRICE"), UNIT_PRICE));
-                case "=" -> cb.and(conditions, cb.equal(root.get("UNIT_PRICE"), UNIT_PRICE));
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("PRICE_SP"), PRICE_SP));
+                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("PRICE_SP"), PRICE_SP));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("PRICE_SP"), PRICE_SP));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("PRICE_SP"), PRICE_SP));
+                case "=" -> cb.and(conditions, cb.equal(root.get("PRICE_SP"), PRICE_SP));
                 default -> conditions;
             };
             hasConditions = true;
@@ -109,8 +109,10 @@ public class BillDetailDao {
         }
 
         if (hasConditions) {
+            System.out.println("day co dieu kien");
             query.where(conditions);
         } else {
+            System.out.println("day ko dieu kien");
             query.select(root);
         }
         if (sortField != null && sortOrder != null) {
@@ -126,7 +128,8 @@ public class BillDetailDao {
                 root.get("ID_BILL_DETAIL"),
                 root.get("ID_BILL"),
                 root.get("QUANTITY_SP"),
-                productFinalJoin.get("UNIT_PRICE"),
+                root.get("TOTAL_DETAIL_PRICE"),
+                productFinalJoin.get("PRICE_SP"),
                 root.get("ID_FINAL_PRODUCT"),
                 root.get("AVAILABLE"),
                 productFinalJoin.get("NAME_PRODUCT")
@@ -141,7 +144,7 @@ public class BillDetailDao {
     public Integer getFilteredBillDetailsCount(Integer ID_BILL_DETAIL,
                                             Double TOTAL_DETAIL_PRICE,
                                             String typePPrice,
-                                            Double UNIT_PRICE,
+                                            Double PRICE_SP,
                                             String typeUPrice,
                                             Integer ID_FINAL_PRODUCT,
                                             String NAME_FINAL_PRODUCT,
@@ -153,7 +156,7 @@ public class BillDetailDao {
         CriteriaQuery<Long> query = cb.createQuery(Long.class);
         Root<Bill_Detail_Entity> root = query.from(Bill_Detail_Entity.class);
 
-        Join<Bill_Detail_Entity, Product_Final_Entity> productFinalJoin = root.join("product_final", JoinType.INNER);
+        Join<Bill_Detail_Entity, Product_Final_Entity> productFinalJoin = root.join("product_Final_Entity", JoinType.LEFT);
         Predicate conditions = cb.conjunction();
         boolean hasConditions = false;
 
@@ -183,13 +186,13 @@ public class BillDetailDao {
             };
             hasConditions = true;
         }
-        if (UNIT_PRICE != null) {
+        if (PRICE_SP != null) {
             conditions = switch (typeUPrice) {
-                case "<" -> cb.and(conditions, cb.lessThan(root.get("UNIT_PRICE"), UNIT_PRICE));
-                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("UNIT_PRICE"), UNIT_PRICE));
-                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("UNIT_PRICE"), UNIT_PRICE));
-                case ">" -> cb.and(conditions, cb.greaterThan(root.get("UNIT_PRICE"), UNIT_PRICE));
-                case "=" -> cb.and(conditions, cb.equal(root.get("UNIT_PRICE"), UNIT_PRICE));
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("PRICE_SP"), PRICE_SP));
+                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("PRICE_SP"), PRICE_SP));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("PRICE_SP"), PRICE_SP));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("PRICE_SP"), PRICE_SP));
+                case "=" -> cb.and(conditions, cb.equal(root.get("PRICE_SP"), PRICE_SP));
                 default -> conditions;
             };
             hasConditions = true;

@@ -251,7 +251,10 @@ public class BillDao {
             Bill_Entity billToChangeStatus = entityManager.find(Bill_Entity.class, idBill);
             if (billToChangeStatus != null) {
                 billToChangeStatus.setBILL_STATUS(Status);
+                System.out.println("sau cung " + billToChangeStatus.getBILL_STATUS());
                 entityManager.merge(billToChangeStatus);
+            Bill_Entity billT = entityManager.find(Bill_Entity.class, idBill);
+                System.out.println("checlk " + billT.getBILL_STATUS());
                 return ;
             }
             throw new RuntimeException("Bill does not exist");

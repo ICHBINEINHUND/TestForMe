@@ -20,11 +20,11 @@ public class EnumType {
         }
     }
     public enum Status_Bill{
-        PEN("pending"),
-        CONF("payed"),
-        SHIP("shipped"),
-        DELI("delivered"),
-        CANC("cancel");
+        PEN("Pending"),
+        CONF("Payed"),
+        SHIP("Shipped"),
+        DELI("Delivered"),
+        CANC("Cancel");
         private final String description; // Trường để lưu mô tả
         // Constructor nhận giá trị mô tả
         Status_Bill(String description) {

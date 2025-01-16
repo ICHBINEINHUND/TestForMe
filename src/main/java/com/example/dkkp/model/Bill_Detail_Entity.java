@@ -17,7 +17,7 @@ public class Bill_Detail_Entity {
   private Double TOTAL_DETAIL_PRICE;
   @Column(name = "\"UNIT_PRICE\"")
   private Double UNIT_PRICE;
-  @Column(name = "\"ID_FINAL_PRODUCT\"",insertable = false, updatable = false)
+  @Column(name = "\"ID_FINAL_PRODUCT\"")
   private Integer ID_FINAL_PRODUCT;
   @Column(name = "\"AVAILABLE\"")
   private Boolean AVAILABLE;
@@ -106,6 +106,17 @@ public class Bill_Detail_Entity {
     this.ID_FINAL_PRODUCT = ID_FINAL_PRODUCT;
     this.NAME_FINAL_PRODUCT = NAME_FINAL_PRODUCT;
     this.AVAILABLE = AVAILABLE;
+  }
+
+  public Bill_Detail_Entity(Integer ID_BILL_DETAIL, String ID_BILL, Integer QUANTITY_SP, Double TOTAL_DETAIL_PRICE, Double UNIT_PRICE, Integer ID_FINAL_PRODUCT, Boolean AVAILABLE, String NAME_FINAL_PRODUCT) {
+    this.ID_BILL_DETAIL = ID_BILL_DETAIL;
+    this.ID_BILL = ID_BILL;
+    this.QUANTITY_SP = QUANTITY_SP;
+    this.TOTAL_DETAIL_PRICE = TOTAL_DETAIL_PRICE;
+    this.UNIT_PRICE = UNIT_PRICE;
+    this.ID_FINAL_PRODUCT = ID_FINAL_PRODUCT;
+    this.AVAILABLE = AVAILABLE;
+    this.NAME_FINAL_PRODUCT = NAME_FINAL_PRODUCT;
   }
 
   public Bill_Detail_Entity(Integer ID_BILL_DETAIL, String ID_BILL, Integer QUANTITY_BILL, Double UNIT_PRICE, Integer ID_FINAL_PRODUCT, Boolean AVAILABLE) {

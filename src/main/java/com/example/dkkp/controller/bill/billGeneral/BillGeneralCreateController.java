@@ -116,25 +116,19 @@ public class BillGeneralCreateController {
         if (!PHONE_BILL.getText().isEmpty()) phone = PHONE_BILL.getText();
         if (!ADD_BILL.getText().isEmpty()) add = ADD_BILL.getText();
 
-        System.out.println("DCM LOI HOAI 3");
         EnumType.Status_Bill billStatus = EnumType.Status_Bill.PEN;
         transaction.begin();
         try {
             Bill_Entity billEntity = new Bill_Entity( dateTime, add, phone, idUser, null, des, billStatus);
-            System.out.println("dcm loi loi 1");
             BillService billService = new BillService(entityManager);
-            System.out.println("dcm loi loi 2");
             billService.registerNewBill(billEntity, phone, add);
-            System.out.println("dcm loi loi 3");
             if (!listBillDetail.isEmpty()) {
-                System.out.println("cb vao for");
                 for (Bill_Detail_Entity item : listBillDetail) {
                     System.out.println("dang trong for");
                     item.setID_BILL(billEntity.getID_BILL());
                 }
             }
-            System.out.println("DCM LOI HOAI");
-            if (!listBillDetail.isEmpty()) System.out.println("trong nay nay");
+//            if (!listBillDetail.isEmpty()) System.out.println("trong nay nay");
             ;
             if (!listBillDetail.isEmpty()) billService.registerNewBillDetail(listBillDetail);
             billGeneralController.billController.setMainView("/com/example/dkkp/BillGeneral/BillGeneralView.fxml", billGeneralController);

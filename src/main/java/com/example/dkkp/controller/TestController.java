@@ -24,14 +24,15 @@ public class TestController {
             transaction.begin();
 //             nhét code vào đây
             BillService billService = new BillService(entityManager);
-            Bill_Entity bill = new Bill_Entity();
+            Bill_Detail_Entity bill = new Bill_Detail_Entity();
+//            bill.setID_BILL("BILL-1737044899949-680");
 
-            List<Bill_Entity> bills = billService.getBillByCombinedCondition(bill,null,null,null,null,null,null);
-            for(Bill_Entity bill2 : bills) {
-                System.out.println("bill " + bill2.getDATE_EXP().toString());
+            List<Bill_Detail_Entity> bills = billService.getBillDetailByCombinedCondition(bill,null,null,null,null,null,null,null);
+            for(Bill_Detail_Entity bill2 : bills) {
+                System.out.println("bill " + bill2.getID_BILL());
             }
-            Integer number = billService.getCountBillByCombinedCondition(bill,null,null);
-            System.out.println("so luong " + number);
+//            Integer number = billService.getCountBillDetailByCombinedCondition(bill,null,null,null);
+//            System.out.println("so luong " + number);
             transaction.commit();
         } catch (Exception e) {
             if (transaction.isActive()) {
