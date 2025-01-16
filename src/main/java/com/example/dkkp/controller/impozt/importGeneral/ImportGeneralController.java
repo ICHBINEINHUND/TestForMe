@@ -2,13 +2,17 @@ package com.example.dkkp.controller.impozt.importGeneral;
 
 import com.example.dkkp.controller.impozt.ImportController;
 import com.example.dkkp.model.Import_Entity;
+import com.example.dkkp.model.Product_Attribute_Values_Entity;
 import com.example.dkkp.service.ImportService;
 import com.example.dkkp.service.Validator;
+import com.sun.source.tree.TryTree;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTableColumn;
 import io.github.palexdev.materialfx.controls.MFXTableView;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.controls.cell.MFXTableRowCell;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.PersistenceException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,10 +37,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.dkkp.controller.LoginController.entityManager;
-import static com.example.dkkp.controller.LoginController.transaction;
+import static com.example.dkkp.controller.LoginController.*;
 
 public class ImportGeneralController {
+    EntityManager entityManager = entityManagerFactory.createEntityManager();
+    EntityTransaction transaction = entityManager.getTransaction();
+
     @FXML
     private MFXTableView<Import_Entity> importTable;
     @FXML
@@ -61,6 +67,8 @@ public class ImportGeneralController {
     private MFXButton delBtn;
     @FXML
     private MFXButton refreshBtn;
+    @FXML
+    private MFXButton detailBtn;
     @FXML
     private MFXTextField setOffField;
     @FXML
@@ -98,6 +106,7 @@ public class ImportGeneralController {
 
     public ImportGeneralCreateController importGeneralCreateController = new ImportGeneralCreateController();
     public ImportGeneralFilterController importGeneralFilterController = new ImportGeneralFilterController();
+    public ImportGeneralDetailController importGeneralDetailController = new ImportGeneralDetailController();
     @FXML
     public void initialize() {
         observableList = getImport();
@@ -187,6 +196,7 @@ public class ImportGeneralController {
         });
 
         delBtn.setOnMouseClicked(event -> del());
+        detailBtn.setOnMouseClicked(event ->detail() );
 
         pageLabel1.setOnMouseClicked(event -> setPage(currentPage));
         pageLabel2.setOnMouseClicked(event -> setPage(currentPage + 1));
@@ -196,6 +206,25 @@ public class ImportGeneralController {
         prevPageBtn.setOnAction(event -> setPage(currentPage - 1));
         nextPageBtn.setOnAction(event -> setPage(currentPage + 1));
     }
+
+    private void detail() {
+        try{
+
+        List<Import_Entity> selectedItems = importTable.getSelectionModel().getSelectedValues();
+        if (selectedItems.size() == 1) {
+            importGeneralDetailController.setEntity(selectedItems.getFirst());
+            importGeneralDetailController.setImportGeneralController(this);
+
+            Stage popupStageUpdate = setPopView("/com/example/dkkp/ImportGeneral/ImportGeneralDetail.fxml", importGeneralDetailController);
+
+            importGeneralDetailController.setPopupStage(popupStageUpdate);
+        }
+        } catch (Exception e) {
+            System.out.println("co loi " +e.getMessage());
+        }
+        ;
+    }
+
     private void handleKeyPress(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             setOff = Integer.parseInt(setOffField.getText().trim());
@@ -205,7 +234,7 @@ public class ImportGeneralController {
             } else {
                 setPage(currentPage);
             }
-            importController.setMainView("/com/example/dkkp/ImportGeneral/ImportGeneralView.fxml", this);
+            importController.setMainView("/com/example/dkkp/ImportGeneral/ImportGeneralDetail.fxml", this);
         }
     }
 

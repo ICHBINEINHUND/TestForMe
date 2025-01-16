@@ -21,8 +21,8 @@ import io.github.palexdev.materialfx.controls.MFXTextField;
 public class LoginController {
 
   static public EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
-  static public EntityManager entityManager = entityManagerFactory.createEntityManager();
-   static public EntityTransaction transaction = entityManager.getTransaction();
+   public EntityManager entityManager = entityManagerFactory.createEntityManager();
+    public EntityTransaction transaction = entityManager.getTransaction();
   @FXML
   private MFXTextField username;
   @FXML

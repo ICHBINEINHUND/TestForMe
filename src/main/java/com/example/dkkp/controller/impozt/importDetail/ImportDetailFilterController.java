@@ -9,13 +9,17 @@ import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXFilterComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
 
-import static com.example.dkkp.controller.LoginController.entityManager;
+import static com.example.dkkp.controller.LoginController.entityManagerFactory;
 
 
 public class ImportDetailFilterController {
+    EntityManager entityManager = entityManagerFactory.createEntityManager();
+    EntityTransaction transaction = entityManager.getTransaction();
 
     @FXML
     private MFXTextField ID_IMPD;

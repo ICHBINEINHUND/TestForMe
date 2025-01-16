@@ -11,6 +11,8 @@ import io.github.palexdev.materialfx.controls.MFXTableView;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.controls.cell.MFXTableRowCell;
 //import io.github.palexdev.mfxcore.controls.Label;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -36,10 +38,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.dkkp.controller.LoginController.entityManager;
-import static com.example.dkkp.controller.LoginController.transaction;
+import static com.example.dkkp.controller.LoginController.*;
 
 public class ProductBaseController implements TableInterface {
+    EntityManager entityManager = entityManagerFactory.createEntityManager();
+    EntityTransaction transaction = entityManager.getTransaction();
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
     @FXML
     private MFXTableView<Product_Base_Entity> productTable;

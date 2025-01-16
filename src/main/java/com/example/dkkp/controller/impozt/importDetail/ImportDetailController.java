@@ -9,6 +9,8 @@ import io.github.palexdev.materialfx.controls.MFXTableColumn;
 import io.github.palexdev.materialfx.controls.MFXTableView;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.controls.cell.MFXTableRowCell;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -28,9 +30,11 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 
-import static com.example.dkkp.controller.LoginController.entityManager;
+import static com.example.dkkp.controller.LoginController.entityManagerFactory;
 
 public class ImportDetailController {
+    EntityManager entityManager = entityManagerFactory.createEntityManager();
+    EntityTransaction transaction = entityManager.getTransaction();
     @FXML
     private MFXTableView<Import_Detail_Entity> importTable;
     @FXML
@@ -103,7 +107,7 @@ public class ImportDetailController {
         observableList = getImport();
         importTable.setItems(observableList);
         setCol();
-//        setWidth();
+        setWidth();
         updateTotalPage();
         crt();
         setSort();
@@ -125,14 +129,14 @@ public class ImportDetailController {
     }
     public void setWidth() {
         ID_IMPD.prefWidthProperty().bind(importTable.widthProperty().multiply(0.1));
-        ID_IMPORT.prefWidthProperty().bind(importTable.widthProperty().multiply(0.1));
+        ID_IMPORT.prefWidthProperty().bind(importTable.widthProperty().multiply(0.15));
         IS_AVAILABLE.prefWidthProperty().bind(importTable.widthProperty().multiply(0.1));
         ID_BASE_PRODUCT.prefWidthProperty().bind(importTable.widthProperty().multiply(0.1));
         ID_FINAL_PRODUCT.prefWidthProperty().bind(importTable.widthProperty().multiply(0.1));
         QUANTITY.prefWidthProperty().bind(importTable.widthProperty().multiply(0.1));
         UNIT_PRICE.prefWidthProperty().bind(importTable.widthProperty().multiply(0.15));
         TOTAL_PRICE.prefWidthProperty().bind(importTable.widthProperty().multiply(0.15));
-        DESCRIPTION.prefWidthProperty().bind(importTable.widthProperty().multiply(0.1));
+        DESCRIPTION.prefWidthProperty().bind(importTable.widthProperty().multiply(0.15));
     }
 
     private void setSort() {
@@ -306,8 +310,7 @@ public class ImportDetailController {
 
 
     private ObservableList<Import_Detail_Entity> getImport() {
-//        List<Import_Detail_Entity> p =  importService.getImportDetailByCombinedCondition(importDetailEntity, typeUPrice,typeQuantity, typePPrice,sortField,sortOrder,setOff,offSet);
-        List<Import_Detail_Entity> p =  importService.getImportDetailByCombinedCondition(new Import_Detail_Entity(), null,null, null,null,null,null,null);
+        List<Import_Detail_Entity> p =  importService.getImportDetailByCombinedCondition(importDetailEntity, typeUPrice,typeQuantity, typePPrice,sortField,sortOrder,setOff,offSet);
         for(Import_Detail_Entity item : p) {
             System.out.println("San pham " + item.getID_IMPD());
         }

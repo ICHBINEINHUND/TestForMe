@@ -27,30 +27,34 @@ public class BillService {
             String typePrice,
             String sortField,
             String sortOrder,
-            int setOff,
-            int offset
+            Integer setOff,
+            Integer offset
     ) throws Exception {
-        LocalDateTime dateExport = billEntity.getDate_EXP();
+        LocalDateTime dateExport = billEntity.getDATE_EXP();
         String id = billEntity.getID_BILL();
-        String phone = SecurityFunction.encrypt(billEntity.getPHONE_BILL());
-        String add = SecurityFunction.encrypt(billEntity.getADD_BILL());
+//        String phone = SecurityFunction.encrypt(billEntity.getPHONE_BILL());
+        String phone = billEntity.getPHONE_BILL();
+        String add = billEntity.getADD_BILL();
+//        String add = SecurityFunction.encrypt(billEntity.getADD_BILL());
         String idUser = billEntity.getID_USER();
         Double totalPrice = billEntity.getTOTAL_PRICE();
         String EMAIL_ACC = billEntity.getEMAIL_ACC();
         EnumType.Status_Bill statusBill = billEntity.getBILL_STATUS();
-            List<Bill_Entity> results = billDao.getFilteredBills(
-                    dateExport, typeDate, id, phone, idUser, EMAIL_ACC,statusBill, add, totalPrice,typePrice, sortField, sortOrder, offset, setOff);
-            for (Bill_Entity bill : results) {
-                decryptBillSensitiveData(bill);
-            }
-            return results;
+
+        List<Bill_Entity> results = billDao.getFilteredBills(
+                dateExport, typeDate, id, phone, idUser, EMAIL_ACC, statusBill, add, totalPrice, typePrice, sortField, sortOrder, setOff, offset);
+//        for (Bill_Entity bill : results) {
+//            decryptBillSensitiveData(bill);
+//        }
+        return results;
     }
+
     public Integer getCountBillByCombinedCondition(
             Bill_Entity billEntity,
             String typeDate,
             String typePrice
     ) throws Exception {
-        LocalDateTime dateExport = billEntity.getDate_EXP();
+        LocalDateTime dateExport = billEntity.getDATE_EXP();
         String id = billEntity.getID_BILL();
         String phone = SecurityFunction.encrypt(billEntity.getPHONE_BILL());
         String add = SecurityFunction.encrypt(billEntity.getADD_BILL());
@@ -59,32 +63,18 @@ public class BillService {
         String EMAIL_ACC = billEntity.getEMAIL_ACC();
         EnumType.Status_Bill statusBill = billEntity.getBILL_STATUS();
         return billDao.getFilteredBillCount(
-                    dateExport, typeDate, id, phone, idUser, EMAIL_ACC,statusBill, add, totalPrice,typePrice);
+                dateExport, typeDate, id, phone, idUser, EMAIL_ACC, statusBill, add, totalPrice, typePrice);
     }
 
     public List<Bill_Detail_Entity> getBillDetailByCombinedCondition(
             Bill_Detail_Entity billDetailEntity,
+            String typeUPrice,
             String typeQuantity,
+            String typePPrice,
             String sortField,
             String sortOrder,
-            int setOff,
-            int offset
-    ){
-        Integer idBillDetail = billDetailEntity.getID_BILL_DETAIL();
-        String idBill = billDetailEntity.getID_BILL();
-        Double totalPrice = billDetailEntity.getTOTAL_DETAIL_PRICE();
-        Double unitPrice = billDetailEntity.getUNIT_PRICE();
-        Boolean available = billDetailEntity.getAVAILABLE();
-        Integer idFinalProduct = billDetailEntity.getID_FINAL_PRODUCT();
-        Integer quantityBill = billDetailEntity.getQUANTITY_BILL();
-        String NAME_FINAL_PRODUCT = billDetailEntity.getNAME_FINAL_PRODUCT();
-            return billDetailDao.getFilteredBillDetails(
-                    idBillDetail, totalPrice, unitPrice, idFinalProduct,NAME_FINAL_PRODUCT, quantityBill,typeQuantity, idBill, available, sortField, sortOrder, offset, setOff);
-    }
-
-    public Integer getCountBillDetailByCombinedCondition(
-            Bill_Detail_Entity billDetailEntity,
-            String typeQuantity
+            Integer setOff,
+            Integer offset
     ) {
         Integer idBillDetail = billDetailEntity.getID_BILL_DETAIL();
         String idBill = billDetailEntity.getID_BILL();
@@ -94,8 +84,26 @@ public class BillService {
         Integer idFinalProduct = billDetailEntity.getID_FINAL_PRODUCT();
         Integer quantityBill = billDetailEntity.getQUANTITY_BILL();
         String NAME_FINAL_PRODUCT = billDetailEntity.getNAME_FINAL_PRODUCT();
-            return billDetailDao.getFilteredBillDetailsCount(
-                    idBillDetail, totalPrice, unitPrice, idFinalProduct,NAME_FINAL_PRODUCT, quantityBill,typeQuantity, idBill, available);
+        return billDetailDao.getFilteredBillDetails(
+                idBillDetail, totalPrice, typePPrice, unitPrice, typeUPrice, idFinalProduct, NAME_FINAL_PRODUCT, quantityBill, typeQuantity, idBill, available, sortField, sortOrder, offset, setOff);
+    }
+
+    public Integer getCountBillDetailByCombinedCondition(
+            Bill_Detail_Entity billDetailEntity,
+            String typeUPrice,
+            String typeQuantity,
+            String typePPrice
+    ) {
+        Integer idBillDetail = billDetailEntity.getID_BILL_DETAIL();
+        String idBill = billDetailEntity.getID_BILL();
+        Double totalPrice = billDetailEntity.getTOTAL_DETAIL_PRICE();
+        Double unitPrice = billDetailEntity.getUNIT_PRICE();
+        Boolean available = billDetailEntity.getAVAILABLE();
+        Integer idFinalProduct = billDetailEntity.getID_FINAL_PRODUCT();
+        Integer quantityBill = billDetailEntity.getQUANTITY_BILL();
+        String NAME_FINAL_PRODUCT = billDetailEntity.getNAME_FINAL_PRODUCT();
+        return billDetailDao.getFilteredBillDetailsCount(
+                idBillDetail, totalPrice, typePPrice, unitPrice, typeUPrice, idFinalProduct, NAME_FINAL_PRODUCT, quantityBill, typeQuantity, idBill, available);
     }
 
 
@@ -115,8 +123,8 @@ public class BillService {
 
 
     public void minusProduct(String id) {
-        if (billDao.getFilteredBills(null, null, id,null, null,null, null, null, null, null, null, null, null, null) != null) {
-            List<Bill_Detail_Entity> listBillDetail = billDetailDao.getFilteredBillDetails(null, null, null,null, null, null,null, id, null, null, null, null, null);
+        if (billDao.getFilteredBills(null, null, id, null, null, null, null, null, null, null, null, null, null, null) != null) {
+            List<Bill_Detail_Entity> listBillDetail = billDetailDao.getFilteredBillDetails(null, null, null, null, null, null, null, null, null, id, null, null, null, null, null);
             for (Bill_Detail_Entity billDetail : listBillDetail) {
                 ProductFinalService productFinalService = new ProductFinalService(entityManager);
                 Product_Final_Entity productE = productFinalService.getProductByID(billDetail.getID_FINAL_PRODUCT());
@@ -133,7 +141,7 @@ public class BillService {
 
     public void plusBillProduct(String id) {
         System.out.println("day la " + id);
-        List<Bill_Detail_Entity> listBillDetail = billDetailDao.getFilteredBillDetails(null, null, null, null, null,null ,null, id, null,null, null, null, null);
+        List<Bill_Detail_Entity> listBillDetail = billDetailDao.getFilteredBillDetails(null, null, null, null, null, null, null, null, null, id, null, null, null, null, null);
         for (Bill_Detail_Entity billDetail : listBillDetail) {
             ProductFinalService productFinalService = new ProductFinalService(entityManager);
             Product_Final_Entity productE = productFinalService.getProductByID(billDetail.getID_FINAL_PRODUCT());
@@ -150,26 +158,45 @@ public class BillService {
         //add check
         LocalDateTime DATE_JOIN = LocalDateTime.now();
         if (billEntity.getID_USER() != null) {
+            System.out.println("mem ay beo1");
             String idUser = billEntity.getID_USER();
+            System.out.println("mem ay beo2");
             UserService userService = new UserService(entityManager);
+            System.out.println("mem ay beo3");
             User_Entity user = userService.getUsersByID(idUser);
-            entityManager.detach(user);
-            userService.decryptUserSensitiveData(user);
-            phone = user.getPHONE_ACC();
-            add = user.getADDRESS();
+            System.out.println("mem ay beo4");
+            if (phone == null) {
+                phone = user.getPHONE_ACC();
+            } else {
+                phone = SecurityFunction.encrypt(phone);
+            }
+            System.out.println("mem ay beo5");
+            if (add == null) {
+                add = user.getADDRESS();
+            } else {
+                add = SecurityFunction.encrypt(add);
+            }
+            System.out.println("mem ay beo6");
+
+        } else {
+            phone = SecurityFunction.encrypt(phone);
+            add = SecurityFunction.encrypt(add);
         }
-
-
+        System.out.println("mm beo111");
         billEntity.setADD_BILL(add);
+        System.out.println("mm beo122");
         billEntity.setPHONE_BILL(phone);
-        billEntity.setDate_EXP(DATE_JOIN);
-        encryptBillSensitiveData(billEntity);
+        System.out.println("mm beo33");
+        billEntity.setDATE_EXP(DATE_JOIN);
+        System.out.println("mm beo44");
         billDao.createBill(billEntity);
+        System.out.println("mm beo55");
     }
 
     public void registerNewBillDetail(List<Bill_Detail_Entity> listBillDetail) {
         //add check
         if (listBillDetail != null) {
+            System.out.println();
             billDetailDao.createBillDetail(listBillDetail);
             Double sumPrice = 0.0;
             String id = listBillDetail.getFirst().getID_BILL();
@@ -178,9 +205,7 @@ public class BillService {
                 sumPrice += billDetail.getTOTAL_DETAIL_PRICE();
             }
             billDao.addSumPrice(id, sumPrice);
-            return;
         }
-        throw new RuntimeException("Error list bill detail is null");
     }
 
     public void decryptBillSensitiveData(Bill_Entity bill) throws Exception {

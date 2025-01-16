@@ -1,5 +1,6 @@
 package com.example.dkkp.controller;
 
+import com.example.dkkp.controller.bill.BillController;
 import com.example.dkkp.controller.impozt.ImportController;
 import com.example.dkkp.controller.product.ProductController;
 import com.example.dkkp.view.LoginView;
@@ -63,7 +64,7 @@ public class HomeController {
 
   @FXML
   public void loadExportView() {
-    setMainView("/com/example/dkkp/Bill/ExportView.fxml",billController);
+    setMainView("/com/example/dkkp/BillView.fxml",billController);
     setActiveTab(exportTab);
   }
 

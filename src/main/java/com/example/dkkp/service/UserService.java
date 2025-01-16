@@ -6,6 +6,7 @@ import jakarta.persistence.EntityManager;
 
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class UserService {
     private final UserDao userDao;
@@ -44,6 +45,9 @@ public class UserService {
         encryptUserSensitiveData(user);
          userDao.createUser(user);
     }
+    public List<User_Entity> getAllUser(){
+        return  userDao.getAllUsers();
+    }
 
 
     public boolean login(String EMAIL_ACC, String PASSWORD_ACC) throws Exception {
@@ -80,15 +84,23 @@ public class UserService {
     }
 
     public void decryptUserSensitiveData(User_Entity user) throws Exception {
+        System.out.println("trong dec 1");
         if (user.getADDRESS() != null) {
+        System.out.println("trong dec 2");
             user.setADDRESS(SecurityFunction.decrypt(user.getADDRESS()));
+        System.out.println("trong dec 3");
         }
         if (user.getPHONE_ACC() != null) {
+        System.out.println("trong dec 4");
             user.setPHONE_ACC(SecurityFunction.decrypt(user.getPHONE_ACC()));
+        System.out.println("trong dec 5");
         }
         if (user.getEMAIL_ACC() != null) {
+        System.out.println("trong dec 6");
             user.setEMAIL_ACC(SecurityFunction.decrypt(user.getEMAIL_ACC()));
+        System.out.println("trong dec 7");
         }
+        System.out.println("trong dec");
     }
 
     public void encryptUserSensitiveData(User_Entity user) throws Exception {

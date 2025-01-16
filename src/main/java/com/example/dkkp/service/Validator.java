@@ -23,6 +23,19 @@ public class Validator {
         String newText = c.getControlNewText();
         return newText.matches("-?\\d*(\\.\\d*)?") && !newText.startsWith(".") || newText.isEmpty() ? c : null;
     });
+    public TextFormatter<Double> formatterPercentage = new TextFormatter<>(
+            new DoubleStringConverter(),
+            null,
+            c -> {
+                String newText = c.getControlNewText();
+                if (newText.matches("\\d{0,2}(\\.\\d*)?") && !newText.startsWith(".")) {
+                    return c;
+                } else {
+                    return null;
+                }
+            }
+    );
+
 
     public static boolean isValidEmail(String email) {
         String regex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";

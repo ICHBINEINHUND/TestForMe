@@ -7,13 +7,16 @@ import com.example.dkkp.service.ProductBaseService;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXFilterComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import javafx.fxml.FXML;
 
-import static com.example.dkkp.controller.LoginController.entityManager;
-import static com.example.dkkp.controller.LoginController.transaction;
+import static com.example.dkkp.controller.LoginController.*;
 
 
 public class ProductAttributeCreateController {
+    EntityManager entityManager = entityManagerFactory.createEntityManager();
+    EntityTransaction transaction = entityManager.getTransaction();
     
     @FXML
     private MFXTextField NAME_ATTRIBUTE;    

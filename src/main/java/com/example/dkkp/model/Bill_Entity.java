@@ -13,7 +13,7 @@ public class Bill_Entity {
   @Column(name = "\"ID_BILL\"")
   private String ID_BILL;
   @Column(name = "\"DATE_EXP\"")
-  private LocalDateTime Date_EXP;
+  private LocalDateTime DATE_EXP;
   @Column(name = "\"PHONE_BILL\"")
   private String PHONE_BILL;
   @Column(name = "\"ADD_BILL\"")
@@ -33,11 +33,11 @@ public class Bill_Entity {
 
   @ManyToOne
   @JoinColumn(name = "\"ID_USER\"", referencedColumnName = "\"ID_USER\"", insertable = false, updatable = false)
-  private User_Entity userEntity;
+  private User_Entity uzer;
 
-  public Bill_Entity(String ID_BILL, LocalDateTime date_EXP, String PHONE_BILL, String ADD_BILL, String ID_USER, Double TOTAL_PRICE, String DESCRIPTION, Status_Bill BILL_STATUS, String EMAIL_ACC) {
+  public Bill_Entity(String ID_BILL, LocalDateTime DATE_EXP, String PHONE_BILL, String ADD_BILL, String ID_USER, Double TOTAL_PRICE, String DESCRIPTION, Status_Bill BILL_STATUS, String EMAIL_ACC) {
     this.ID_BILL = ID_BILL;
-    this.Date_EXP = date_EXP;
+    this.DATE_EXP = DATE_EXP;
     this.PHONE_BILL = PHONE_BILL;
     this.ADD_BILL = ADD_BILL;
     this.ID_USER = ID_USER;
@@ -60,8 +60,8 @@ public class Bill_Entity {
     this.ID_BILL = ID_BILL;
   }
 
-  public void setDate_EXP(LocalDateTime date_EXP) {
-    Date_EXP = date_EXP;
+  public void setDATE_EXP(LocalDateTime DATE_EXP) {
+    this.DATE_EXP = DATE_EXP;
   }
 
   public void setPHONE_BILL(String PHONE_BILL) {
@@ -92,8 +92,8 @@ public class Bill_Entity {
     return ID_BILL;
   }
 
-  public LocalDateTime getDate_EXP() {
-    return Date_EXP;
+  public LocalDateTime getDATE_EXP() {
+    return DATE_EXP;
   }
 
   public String getPHONE_BILL() {
@@ -120,16 +120,33 @@ public class Bill_Entity {
     return BILL_STATUS;
   }
 
-  public Bill_Entity( LocalDateTime date_EXP, String ID_USER, Double TOTAL_PRICE, String DESCRIPTION, Status_Bill BILL_STATUS) {
+  public Bill_Entity(LocalDateTime DATE_EXP, String ID_USER, Double TOTAL_PRICE, String DESCRIPTION, Status_Bill BILL_STATUS) {
     long timestamp = System.currentTimeMillis();
     this.ID_BILL = "BILL-" + timestamp + "-" + (int)(Math.random() * 1000);
-    Date_EXP = date_EXP;
+    this.DATE_EXP = DATE_EXP;
     this.PHONE_BILL = PHONE_BILL;
     this.ADD_BILL = ADD_BILL;
     this.ID_USER = ID_USER;
     this.TOTAL_PRICE = TOTAL_PRICE;
     this.DESCRIPTION = DESCRIPTION;
     this.BILL_STATUS = BILL_STATUS;
+  }
+
+  public Bill_Entity( LocalDateTime DATE_EXP, String PHONE_BILL, String ADD_BILL, String ID_USER, Double TOTAL_PRICE, String DESCRIPTION, Status_Bill BILL_STATUS) {
+    long timestamp = System.currentTimeMillis();
+    this.ID_BILL = "BILL-" + timestamp + "-" + (int)(Math.random() * 1000);;
+    this.DATE_EXP = DATE_EXP;
+    this.PHONE_BILL = PHONE_BILL;
+    this.ADD_BILL = ADD_BILL;
+    this.ID_USER = ID_USER;
+    this.TOTAL_PRICE = TOTAL_PRICE;
+    this.DESCRIPTION = DESCRIPTION;
+    this.BILL_STATUS = BILL_STATUS;
+  }
+
+  public Bill_Entity(String abc) {
+    long timestamp = System.currentTimeMillis();
+    this.ID_BILL = "BILL-" + timestamp + "-" + (int)(Math.random() * 1000);;
   }
 
   public Bill_Entity() {

@@ -1,5 +1,6 @@
 package com.example.dkkp.model;
 
+import com.example.dkkp.service.SecurityFunction;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -123,5 +124,14 @@ public class User_Entity {
   }
 
   public User_Entity() {
+  }
+
+  @Override
+  public String toString() {
+      try {
+          return "EMAIL " + SecurityFunction.decrypt(EMAIL_ACC) ;
+      } catch (Exception e) {
+          throw new RuntimeException(e);
+      }
   }
 }

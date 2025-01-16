@@ -17,6 +17,8 @@
           <Label fx:id="numberTotalPage" text=" " />
         </VBox>
         <MFXButton buttonType="RAISED" fx:id="searchFld" mnemonicParsing="false" text="⚙ Filter" prefWidth="70" styleClass="Btn"/>
+        <MFXButton fx:id="detailBtn" buttonType="RAISED" mnemonicParsing="false" text="🔍 Detail" prefWidth="70"
+                   styleClass="Btn"/>
         <MFXButton fx:id="crtBtn" buttonType="RAISED" mnemonicParsing="false" text="+ Create" prefWidth="70"
                    styleClass="Btn"/>
         <MFXButton fx:id="delBtn" buttonType="RAISED" mnemonicParsing="false" text="X Delete" prefWidth="70"

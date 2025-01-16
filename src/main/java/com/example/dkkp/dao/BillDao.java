@@ -22,7 +22,14 @@ public class BillDao {
 
 
     public void createBill(Bill_Entity billE) {
+        System.out.println("trong dao");
+        try{
+//            System.out.println("day la " +billE.getPHONE_BILL());
             entityManager.persist(billE);
+        } catch (Exception e) {
+            System.out.println("loi gi day" +e.getMessage());
+        }
+        System.out.println("trong da1");
     }
 
     public Bill_Entity getBillByID(String idBill) {
@@ -48,13 +55,13 @@ public class BillDao {
             String typePrice,
             String sortField,
             String sortOrder,
-            Integer offset,
-            Integer setOff
+            Integer setOff,
+            Integer offset
     ) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Bill_Entity> query = cb.createQuery(Bill_Entity.class);
         Root<Bill_Entity> root = query.from(Bill_Entity.class);
-        Join<Bill_Entity, User_Entity> userJoin = root.join("uzer", JoinType.INNER);
+        Join<Bill_Entity, User_Entity> userJoin = root.join("uzer", JoinType.LEFT);
 
 
         Predicate conditions = cb.conjunction();
@@ -64,7 +71,6 @@ public class BillDao {
             conditions = cb.and(conditions, cb.like(userJoin.get("EMAIL_ACC"), "%" + EMAIL_ACC + "%"));
             hasConditions = true;
         }
-
         if (dateExport != null) {
             conditions = switch (typeDate) {
                 case "<" -> cb.and(conditions, cb.lessThan(root.get("DATE_EXP"), dateExport));
@@ -108,8 +114,10 @@ public class BillDao {
             hasConditions = true;
         }
         if (hasConditions) {
+            System.out.println("trong nay");
             query.where(conditions);
         } else {
+            System.out.println("nay");
             query.select(root);
         }
         if (sortField != null && sortOrder != null) {
@@ -120,7 +128,6 @@ public class BillDao {
                 query.orderBy(cb.asc(sortPath));
             }
         }
-
         query.select(cb.construct(
                 Bill_Entity.class,
                 root.get("ID_BILL"),
@@ -154,7 +161,7 @@ public class BillDao {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Long> query = cb.createQuery(Long.class);
         Root<Bill_Entity> root = query.from(Bill_Entity.class);
-        Join<Bill_Entity, User_Entity> userJoin = root.join("uzer", JoinType.INNER);
+        Join<Bill_Entity, User_Entity> userJoin = root.join("uzer", JoinType.LEFT);
 
         Predicate conditions = cb.conjunction();
         boolean hasConditions = false;

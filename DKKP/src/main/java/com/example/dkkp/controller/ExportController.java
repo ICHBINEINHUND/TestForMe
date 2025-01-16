@@ -80,7 +80,7 @@ public class ExportController {
 
   private void ftr() {
     ftrBtn.setOnAction(_ -> {
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dkkp/Bill/ExportFilter.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/dkkp/BillGeneral/ExportFilter.fxml"));
       main.getChildren().clear();
       try {
         main.getChildren().add(loader.load());

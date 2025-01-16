@@ -4,18 +4,22 @@ import com.example.dkkp.controller.impozt.importGeneral.ImportGeneralCreateContr
 import com.example.dkkp.model.*;
 import com.example.dkkp.service.ProductBaseService;
 import com.example.dkkp.service.ProductFinalService;
+import com.example.dkkp.service.Validator;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXFilterComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
 
-import static com.example.dkkp.controller.LoginController.entityManager;
-import static com.example.dkkp.controller.LoginController.transaction;
+import static com.example.dkkp.controller.LoginController.*;
 
 
 public class ImportDetailCreateController {
+    EntityManager entityManager = entityManagerFactory.createEntityManager();
+    EntityTransaction transaction = entityManager.getTransaction();
 
     @FXML
     private MFXTextField QUANTITY;
@@ -50,7 +54,7 @@ public class ImportDetailCreateController {
 
         if (uPrice != null && quantity != null && pPrice != null) {
             double calculatedTotal = uPrice * quantity;
-            if (calculatedTotal != pPrice) { // Dùng sai số nhỏ để so sánh số thực
+            if (calculatedTotal != pPrice) {
                 showAlert("Error", "The total price does not match the unit price multiplied by quantity.");
                 return;
             }
@@ -63,7 +67,14 @@ public class ImportDetailCreateController {
         }else if(pPrice != null && quantity != null){
             uPrice = (double) pPrice / quantity;
         }else{
-            showAlert("Error", "Total price and unit price and quantitt cannot be the same empty.");
+            showAlert("Error", "Total price and unit price and quantity cannot be the same empty.");
+            return;
+        }
+        if(baseProductId != null && finalProductId != null){
+            showAlert("Error", "Only 1 of 2 options are allowed: final product or base product");
+            return;
+        }else if(baseProductId == null && finalProductId == null){
+            showAlert("Error", "Must chose at lease 1 option: final product or base product");
             return;
         }
         Import_Detail_Entity import_Detail_Entity = new Import_Detail_Entity();
@@ -73,7 +84,7 @@ public class ImportDetailCreateController {
         import_Detail_Entity.setQUANTITY(quantity);
         import_Detail_Entity.setUNIT_PRICE(uPrice);
         import_Detail_Entity.setTOTAL_PRICE(pPrice);
-        importGeneralCreateController.observableList =FXCollections.observableArrayList(import_Detail_Entity);
+        importGeneralCreateController.listImportDetail.add(import_Detail_Entity);
         importGeneralCreateController.setItem();
         importGeneralCreateController.closePopup(popupStage);
     }
@@ -93,6 +104,14 @@ public class ImportDetailCreateController {
         ProductFinalService productFinalService = new ProductFinalService(entityManager);
         Product_Final_Entity productFinal = new Product_Final_Entity();
         finalProductCombobox.getItems().addAll(productFinalService.getProductFinalByCombinedCondition(productFinal, null, null, null, null, null, null, null));
+
+
+        Validator validator1 = new Validator();
+        Validator validator2 = new Validator();
+        Validator validator3 = new Validator();
+        QUANTITY.delegateSetTextFormatter(validator1.formatterInteger);
+        UNIT_PRICE.delegateSetTextFormatter(validator2.formatterDouble);
+        TOTAL_PRICE.delegateSetTextFormatter(validator3.formatterDouble);
 
     }
 

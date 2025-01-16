@@ -47,6 +47,7 @@ public class SecurityFunction {
 
     // Hàm mã hóa dữ liệu
     public static String encrypt(String data) throws Exception {
+        if(data == null) return null;
         SecretKeySpec keySpec = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.ENCRYPT_MODE, keySpec);  // Chế độ mã hóa (ENCRYPT_MODE)
@@ -56,6 +57,7 @@ public class SecurityFunction {
 
     // Hàm giải mã dữ liệu
     public static String decrypt(String encryptedData) throws Exception {
+        if(encryptedData == null) return null;
         SecretKeySpec keySpec = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.DECRYPT_MODE, keySpec);  // Chế độ giải mã (DECRYPT_MODE)

@@ -33,9 +33,11 @@
                 </HBox>
                 <MFXTableView fx:id="importDetailTable" footerVisible="false" prefWidth="700" minHeight="380">
                     <tableColumns>
-                        <MFXTableColumn fx:id="ID_BASE_PRODUCT" text="NAME" styleClass="productBF"
+                        <MFXTableColumn fx:id="ID_IMPD" text="ID IMPORT DETAIL" styleClass="productBF"
                                         style="-fx-font-size: 10px;"/>
-                        <MFXTableColumn fx:id="ID_FINAL_PRODUCT" text="DESCRIPTION" styleClass="productBF"
+                        <MFXTableColumn fx:id="ID_BASE_PRODUCT" text="ID BASE PRODUCT" styleClass="productBF"
+                                        style="-fx-font-size: 10px;"/>
+                        <MFXTableColumn fx:id="ID_FINAL_PRODUCT" text="ID FINAL PRODUCT" styleClass="productBF"
                                         style="-fx-font-size: 10px;"/>
                         <MFXTableColumn fx:id="QUANTITY" text="DESCRIPTION" styleClass="productBF"
                                         style="-fx-font-size: 10px;"/>

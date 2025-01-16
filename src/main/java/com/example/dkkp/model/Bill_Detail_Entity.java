@@ -32,13 +32,6 @@ public class Bill_Detail_Entity {
   @JoinColumn(name = "\"ID_BILL\"", referencedColumnName = "\"ID_BILL\"", insertable = false, updatable = false)
   private Bill_Entity bill_Entity;
 
-  public Integer getQUANTITY_SP() {
-    return QUANTITY_SP;
-  }
-
-  public void setQUANTITY_SP(Integer QUANTITY_SP) {
-    this.QUANTITY_SP = QUANTITY_SP;
-  }
 
   public String getNAME_FINAL_PRODUCT() {
     return NAME_FINAL_PRODUCT;
@@ -123,6 +116,16 @@ public class Bill_Detail_Entity {
     this.ID_FINAL_PRODUCT = ID_FINAL_PRODUCT;
     this.AVAILABLE = AVAILABLE;
     this.TOTAL_DETAIL_PRICE = this.UNIT_PRICE * this.QUANTITY_SP;
+  }
+
+  public Bill_Detail_Entity(Integer ID_BILL_DETAIL, String ID_BILL, Integer QUANTITY_SP, Double TOTAL_DETAIL_PRICE, Double UNIT_PRICE, Integer ID_FINAL_PRODUCT, Boolean AVAILABLE) {
+    this.ID_BILL_DETAIL = ID_BILL_DETAIL;
+    this.ID_BILL = ID_BILL;
+    this.QUANTITY_SP = QUANTITY_SP;
+    this.TOTAL_DETAIL_PRICE = TOTAL_DETAIL_PRICE;
+    this.UNIT_PRICE = UNIT_PRICE;
+    this.ID_FINAL_PRODUCT = ID_FINAL_PRODUCT;
+    this.AVAILABLE = AVAILABLE;
   }
 
   public Bill_Detail_Entity() {

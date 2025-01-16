@@ -9,6 +9,9 @@ import com.example.dkkp.service.ImportService;
 import com.example.dkkp.service.ProductFinalService;
 import io.github.palexdev.materialfx.controls.*;
 import io.github.palexdev.materialfx.controls.cell.MFXTableRowCell;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,12 +29,17 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
-import static com.example.dkkp.controller.LoginController.entityManager;
-import static com.example.dkkp.controller.LoginController.transaction;
+import static com.example.dkkp.controller.LoginController.*;
 
 
 public class ImportGeneralCreateController {
+
+    EntityManager entityManager = entityManagerFactory.createEntityManager();
+    EntityTransaction transaction = entityManager.getTransaction();
+
     @FXML
     private MFXTableView<Import_Detail_Entity> importDetailTable;
     @FXML
@@ -76,6 +84,8 @@ public class ImportGeneralCreateController {
     ImportGeneralController importGeneralController;
     ImportDetailCreateController importDetailCreateController = new ImportDetailCreateController();
 
+    public List<Import_Detail_Entity> listImportDetail = new ArrayList<>();
+
     @FXML
     public void createItem() {
         LocalDateTime dateTime;
@@ -83,18 +93,14 @@ public class ImportGeneralCreateController {
         int minute = 0;
         int second = 0;
         if (datePicker.getValue() != null) {
-            System.out.println("khong null nhe");
             LocalDate date = datePicker.getValue();
             if (hourSpinner.getValue() != null) hour = (int) hourSpinner.getValue();
             if (minuteSpinner.getValue() != null)  minute = (int) minuteSpinner.getValue();
             if (secondSpinner.getValue() != null) second = (int) secondSpinner.getValue();
             dateTime = LocalDateTime.of(date, LocalTime.of(hour, minute, second));
-            System.out.println("day la date time: " + dateTime ) ;
         }else{
             dateTime = LocalDateTime.now();
-            System.out.println("null r");
         }
-
         String des = (DESCRIPTION.getText().isEmpty()) ? null : DESCRIPTION.getText();
         String idReplace = (ID_REPLACE.getValue() != null) ? ID_REPLACE.getValue().getID_IMP() : null;
         transaction.begin();
@@ -103,7 +109,11 @@ public class ImportGeneralCreateController {
             Import_Entity importEntity = new Import_Entity(dateTime, des,true,idReplace,null);
             ImportService importService = new ImportService(entityManager);
             importService.registerNewImport(importEntity);
-//            importGeneralController.importController.setMainView("/com/example/dkkp/ImportGeneral/ImportGeneralView.fxml", importGeneralController);
+            for(Import_Detail_Entity item : observableList){
+                item.setID_IMPORT(importEntity.getID_IMP());
+            }
+                importService.registerNewImportDetail(observableList);
+            importGeneralController.importController.setMainView("/com/example/dkkp/ImportGeneral/ImportGeneralView.fxml", importGeneralController);
             transaction.commit();
             return ;
         } catch (Exception e) {
@@ -122,8 +132,6 @@ public class ImportGeneralCreateController {
         hourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 12)); // Giờ: 0 - 23, mặc định 12
         minuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0)); // Phút: 0 - 59, mặc định 0
         secondSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0)); // Giây: 0 - 59, mặc định 0
-
-
 
         ImportService importService = new ImportService(entityManager);
         Import_Entity importEntity = new Import_Entity();
@@ -150,6 +158,7 @@ public class ImportGeneralCreateController {
     }
 
     public void setItem() {
+        observableList = FXCollections.observableArrayList(listImportDetail);
         importDetailTable.setItems(observableList);
     }
 

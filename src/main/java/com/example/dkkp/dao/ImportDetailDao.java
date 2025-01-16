@@ -36,8 +36,8 @@ public class ImportDetailDao {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Import_Detail_Entity> query = cb.createQuery(Import_Detail_Entity.class);
         Root<Import_Detail_Entity> root = query.from(Import_Detail_Entity.class);
-        Join<Import_Detail_Entity, Product_Base_Entity> productBaseJoin = root.join("product_Base_Entity", JoinType.INNER);
-        Join<Import_Detail_Entity, Product_Final_Entity> productFinalJoin = root.join("product_Final_Entity", JoinType.INNER);
+        Join<Import_Detail_Entity, Product_Base_Entity> productBaseJoin = root.join("product_Base_Entity", JoinType.LEFT);
+        Join<Import_Detail_Entity, Product_Final_Entity> productFinalJoin = root.join("product_Final_Entity", JoinType.LEFT);
 
         Predicate conditions = cb.conjunction();
         boolean hasConditions = false;
@@ -47,7 +47,7 @@ public class ImportDetailDao {
             hasConditions = true;
         }
         if (ID_IMPORT != null ) {
-            conditions = cb.and(conditions, cb.equal(root.get("ID_IMPORT"),"%" + ID_IMPORT + "%"));
+            conditions = cb.and(conditions, cb.like(root.get("ID_IMPORT"),"%" + ID_IMPORT + "%"));
             hasConditions = true;
         }
         if (ID_FINAL_PRODUCT != null) {
@@ -110,6 +110,7 @@ public class ImportDetailDao {
         if (hasConditions) {
             query.where(conditions);
         } else {
+            System.out.println("trong root");
             query.select(root);
         }
 
@@ -146,8 +147,8 @@ public class ImportDetailDao {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Long> query = cb.createQuery(Long.class);
         Root<Import_Detail_Entity> root = query.from(Import_Detail_Entity.class);
-        Join<Import_Detail_Entity, Product_Base_Entity> productBaseJoin = root.join("product_Base_Entity", JoinType.INNER);
-        Join<Import_Detail_Entity, Product_Final_Entity> productFinalJoin = root.join("product_Final_Entity", JoinType.INNER);
+        Join<Import_Detail_Entity, Product_Base_Entity> productBaseJoin = root.join("product_Base_Entity", JoinType.LEFT);
+        Join<Import_Detail_Entity, Product_Final_Entity> productFinalJoin = root.join("product_Final_Entity", JoinType.LEFT);
 
         Predicate conditions = cb.conjunction();
         boolean hasConditions = false;

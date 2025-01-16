@@ -4,11 +4,17 @@ import com.example.dkkp.model.Brand_Entity;
 import com.example.dkkp.service.Validator;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
 
+import static com.example.dkkp.controller.LoginController.entityManagerFactory;
+
 
 public class ProductBrandFilterController {
+    EntityManager entityManager = entityManagerFactory.createEntityManager();
+    EntityTransaction transaction = entityManager.getTransaction();
 
     @FXML
     private MFXTextField ID_BRAND;

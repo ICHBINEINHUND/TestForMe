@@ -4,6 +4,8 @@ import com.example.dkkp.model.Brand_Entity;
 import com.example.dkkp.service.BrandService;
 import com.example.dkkp.service.Validator;
 import io.github.palexdev.materialfx.controls.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -11,11 +13,12 @@ import javafx.stage.Stage;
 
 import java.util.Optional;
 
-import static com.example.dkkp.controller.LoginController.entityManager;
-import static com.example.dkkp.controller.LoginController.transaction;
+import static com.example.dkkp.controller.LoginController.*;
 
 
 public class ProductBrandUpdateController {
+    EntityManager entityManager = entityManagerFactory.createEntityManager();
+    EntityTransaction transaction = entityManager.getTransaction();
     private Brand_Entity brandEntity;
     private ProductBrandController productBrandController;
 

@@ -4,6 +4,8 @@ import com.example.dkkp.model.*;
 import com.example.dkkp.service.*;
 import io.github.palexdev.materialfx.controls.*;
 import io.github.palexdev.materialfx.controls.cell.MFXTableRowCell;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -22,11 +24,12 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.dkkp.controller.LoginController.entityManager;
-import static com.example.dkkp.controller.LoginController.transaction;
+import static com.example.dkkp.controller.LoginController.*;
 
 
 public class ProductFinalUpdateController {
+    EntityManager entityManager = entityManagerFactory.createEntityManager();
+    EntityTransaction transaction = entityManager.getTransaction();
     private Product_Final_Entity productEntity;
     private ProductFinalController productFinalController;
     //
@@ -122,7 +125,6 @@ public class ProductFinalUpdateController {
         if (result.isPresent() && result.get() == yesButton) {
             try {
                 transaction.begin();
-
                 if (baseProductField.getSelectionModel().getSelectedItem() != null) {
                     productEntity.setID_BASE_PRODUCT(baseProductField.getSelectionModel().getSelectedItem().getID_BASE_PRODUCT());
                 }

@@ -9,6 +9,8 @@ import com.example.dkkp.service.ProductBaseService;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXFilterComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -16,11 +18,12 @@ import javafx.stage.Stage;
 
 import java.util.Optional;
 
-import static com.example.dkkp.controller.LoginController.entityManager;
-import static com.example.dkkp.controller.LoginController.transaction;
+import static com.example.dkkp.controller.LoginController.*;
 
 
 public class ProductAttributeValuesUpdateController {
+    EntityManager entityManager = entityManagerFactory.createEntityManager();
+    EntityTransaction transaction = entityManager.getTransaction();
     private Product_Attribute_Values_Entity productAttributeValuesEntity;
     private ProductAttributeValuesController productAttributeValuesController;
 
@@ -48,8 +51,8 @@ public class ProductAttributeValuesUpdateController {
         ProductBaseService productBaseService = new ProductBaseService(entityManager);
         Product_Base_Entity product = new Product_Base_Entity();
         Product_Attribute_Entity attribute = new Product_Attribute_Entity();
-        baseProductField.getItems().addAll(productBaseService.getProductBaseByCombinedCondition(product,null,null,null,null,null,null,null));
-        attributeField.getItems().addAll(productBaseService.getProductAttributeCombinedCondition(attribute,null,null,null,null));
+        baseProductField.getItems().addAll(productBaseService.getProductBaseByCombinedCondition(product, null, null, null, null, null, null, null));
+        attributeField.getItems().addAll(productBaseService.getProductAttributeCombinedCondition(attribute, null, null, null, null));
     }
 
     private void updateCategory() {
@@ -83,17 +86,19 @@ public class ProductAttributeValuesUpdateController {
             }
         }
     }
+
     public void pushEntity() {
         if (productAttributeValuesEntity != null) {
             ID.setText(productAttributeValuesEntity.getID().toString());
             VALUE.setText(productAttributeValuesEntity.getVALUE());
             ProductBaseService productBaseService = new ProductBaseService(entityManager);
-            Product_Base_Entity product = new Product_Base_Entity(productAttributeValuesEntity.getID_BASE_PRODUCT(),null,null,null,null,null,null,null);
-            Product_Attribute_Entity attribute= new Product_Attribute_Entity(productAttributeValuesEntity.getID_ATTRIBUTE(),null,null);
-            baseProductField.setText(productBaseService.getProductBaseByCombinedCondition(product,null,null,null,null,null,null,null).toString());
-            attributeField.setText(productBaseService.getProductAttributeCombinedCondition(attribute,null,null,null,null).toString());
+            Product_Base_Entity product = new Product_Base_Entity(productAttributeValuesEntity.getID_BASE_PRODUCT(), null, null, null, null, null, null, null);
+            Product_Attribute_Entity attribute = new Product_Attribute_Entity(productAttributeValuesEntity.getID_ATTRIBUTE(), null, null);
+            baseProductField.setText(productBaseService.getProductBaseByCombinedCondition(product, null, null, null, null, null, null, null).toString());
+            attributeField.setText(productBaseService.getProductAttributeCombinedCondition(attribute, null, null, null, null).toString());
         }
     }
+
     public void setProductAttributeValuesController(ProductAttributeValuesController productAttributeValuesController) {
         this.productAttributeValuesController = productAttributeValuesController;
 

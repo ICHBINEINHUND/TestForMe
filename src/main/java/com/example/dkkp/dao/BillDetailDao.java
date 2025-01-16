@@ -33,7 +33,9 @@ public class BillDetailDao {
 
     public List<Bill_Detail_Entity> getFilteredBillDetails(Integer ID_BILL_DETAIL,
                                                            Double TOTAL_DETAIL_PRICE,
+                                                           String typePPrice,
                                                            Double UNIT_PRICE,
+                                                           String typeUPrice,
                                                            Integer ID_FINAL_PRODUCT,
                                                            String NAME_FINAL_PRODUCT,
                                                            Integer QUANTITY_SP,
@@ -57,11 +59,25 @@ public class BillDetailDao {
             hasConditions = true;
         }
         if (TOTAL_DETAIL_PRICE != null) {
-            conditions = cb.and(conditions, cb.greaterThanOrEqualTo(root.get("TOTAL_DETAIL_PRICE"), TOTAL_DETAIL_PRICE));
+            conditions = switch (typePPrice) {
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("TOTAL_DETAIL_PRICE"), TOTAL_DETAIL_PRICE));
+                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("TOTAL_DETAIL_PRICE"), TOTAL_DETAIL_PRICE));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("TOTAL_DETAIL_PRICE"), TOTAL_DETAIL_PRICE));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("TOTAL_DETAIL_PRICE"), TOTAL_DETAIL_PRICE));
+                case "=" -> cb.and(conditions, cb.equal(root.get("TOTAL_DETAIL_PRICE"), TOTAL_DETAIL_PRICE));
+                default -> conditions;
+            };
             hasConditions = true;
         }
         if (UNIT_PRICE != null) {
-            conditions = cb.and(conditions, cb.greaterThanOrEqualTo(root.get("UNIT_PRICE"), UNIT_PRICE));
+            conditions = switch (typeUPrice) {
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("UNIT_PRICE"), UNIT_PRICE));
+                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("UNIT_PRICE"), UNIT_PRICE));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("UNIT_PRICE"), UNIT_PRICE));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("UNIT_PRICE"), UNIT_PRICE));
+                case "=" -> cb.and(conditions, cb.equal(root.get("UNIT_PRICE"), UNIT_PRICE));
+                default -> conditions;
+            };
             hasConditions = true;
         }
         if (typeQuantity != null) {
@@ -124,7 +140,9 @@ public class BillDetailDao {
     }
     public Integer getFilteredBillDetailsCount(Integer ID_BILL_DETAIL,
                                             Double TOTAL_DETAIL_PRICE,
+                                            String typePPrice,
                                             Double UNIT_PRICE,
+                                            String typeUPrice,
                                             Integer ID_FINAL_PRODUCT,
                                             String NAME_FINAL_PRODUCT,
                                             Integer QUANTITY_SP,
@@ -143,14 +161,6 @@ public class BillDetailDao {
             conditions = cb.and(conditions, cb.equal(root.get("ID_BILL_DETAIL"), ID_BILL_DETAIL));
             hasConditions = true;
         }
-        if (TOTAL_DETAIL_PRICE != null) {
-            conditions = cb.and(conditions, cb.greaterThanOrEqualTo(root.get("TOTAL_DETAIL_PRICE"), TOTAL_DETAIL_PRICE));
-            hasConditions = true;
-        }
-        if (UNIT_PRICE != null) {
-            conditions = cb.and(conditions, cb.greaterThanOrEqualTo(root.get("UNIT_PRICE"), UNIT_PRICE));
-            hasConditions = true;
-        }
         if (typeQuantity != null) {
             conditions = switch (typeQuantity) {
                 case "<" -> cb.and(conditions, cb.lessThan(root.get("QUANTITY_SP"), QUANTITY_SP));
@@ -158,6 +168,28 @@ public class BillDetailDao {
                 case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("QUANTITY_SP"), QUANTITY_SP));
                 case ">" -> cb.and(conditions, cb.greaterThan(root.get("QUANTITY_SP"), QUANTITY_SP));
                 case "=" -> cb.and(conditions, cb.equal(root.get("QUANTITY_SP"), QUANTITY_SP));
+                default -> conditions;
+            };
+            hasConditions = true;
+        }
+        if (TOTAL_DETAIL_PRICE != null) {
+            conditions = switch (typePPrice) {
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("TOTAL_DETAIL_PRICE"), TOTAL_DETAIL_PRICE));
+                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("TOTAL_DETAIL_PRICE"), TOTAL_DETAIL_PRICE));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("TOTAL_DETAIL_PRICE"), TOTAL_DETAIL_PRICE));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("TOTAL_DETAIL_PRICE"), TOTAL_DETAIL_PRICE));
+                case "=" -> cb.and(conditions, cb.equal(root.get("TOTAL_DETAIL_PRICE"), TOTAL_DETAIL_PRICE));
+                default -> conditions;
+            };
+            hasConditions = true;
+        }
+        if (UNIT_PRICE != null) {
+            conditions = switch (typeUPrice) {
+                case "<" -> cb.and(conditions, cb.lessThan(root.get("UNIT_PRICE"), UNIT_PRICE));
+                case "=>" -> cb.and(conditions, cb.greaterThanOrEqualTo(root.get("UNIT_PRICE"), UNIT_PRICE));
+                case "<=" -> cb.and(conditions, cb.lessThanOrEqualTo(root.get("UNIT_PRICE"), UNIT_PRICE));
+                case ">" -> cb.and(conditions, cb.greaterThan(root.get("UNIT_PRICE"), UNIT_PRICE));
+                case "=" -> cb.and(conditions, cb.equal(root.get("UNIT_PRICE"), UNIT_PRICE));
                 default -> conditions;
             };
             hasConditions = true;

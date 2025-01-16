@@ -54,7 +54,7 @@ public class HomeController {
 
   @FXML
   public void loadExportView() {
-    setMainView("/com/example/dkkp/Bill/ExportView.fxml");
+    setMainView("/com/example/dkkp/BillGeneral/ExportView.fxml");
     setActiveTab(exportTab);
   }
 

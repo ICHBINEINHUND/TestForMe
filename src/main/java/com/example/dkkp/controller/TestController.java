@@ -12,25 +12,26 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.dkkp.controller.LoginController.entityManager;
 
 public class TestController {
 
     public static void main(String[] args) throws Exception {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
+
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
 //             nhét code vào đây
-            ImportService importService = new ImportService(entityManager);
-            Import_Detail_Entity importDetailEntity = new Import_Detail_Entity();
-            importDetailEntity.setIS_AVAILABLE(null);
-            List<Import_Detail_Entity> p = importService.getImportDetailByCombinedCondition(importDetailEntity,null, null, null, null, null, null, null);
-            for (Import_Detail_Entity i : p) {
-                System.out.println("import " + i.getID_IMPD());
+            BillService billService = new BillService(entityManager);
+            Bill_Entity bill = new Bill_Entity();
+
+            List<Bill_Entity> bills = billService.getBillByCombinedCondition(bill,null,null,null,null,null,null);
+            for(Bill_Entity bill2 : bills) {
+                System.out.println("bill " + bill2.getDATE_EXP().toString());
             }
-            System.out.println("size " + p.size());
+            Integer number = billService.getCountBillByCombinedCondition(bill,null,null);
+            System.out.println("so luong " + number);
             transaction.commit();
         } catch (Exception e) {
             if (transaction.isActive()) {
