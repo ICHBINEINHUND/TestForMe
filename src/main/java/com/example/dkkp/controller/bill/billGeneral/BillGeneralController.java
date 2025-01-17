@@ -29,10 +29,15 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,6 +77,8 @@ public class BillGeneralController {
     @FXML
     private MFXButton detailBtn;
     @FXML
+    private MFXButton exportBtn;
+    @FXML
     private MFXTextField setOffField;
     @FXML
     private Label totalRowLabel;
@@ -109,6 +116,8 @@ public class BillGeneralController {
     public BillGeneralCreateController billGeneralCreateController = new BillGeneralCreateController();
     public BillGeneralFilterController billGeneralFilterController = new BillGeneralFilterController();
     public BillGeneralDetailController billGeneralDetailController = new BillGeneralDetailController();
+    public BillExportController billExportController = new BillExportController();
+    public String billExportName = null;
 
     @FXML
     public void initialize() throws Exception {
@@ -238,6 +247,17 @@ public class BillGeneralController {
             billTable.getSelectionModel().clearSelection();
             main.requestFocus();
         });
+        exportBtn.setOnMouseClicked(event -> {
+            try {
+                billExportController.setBillGeneralController(this);
+                Stage popupStage = setPopView("/com/example/dkkp/ExportName.fxml",  billExportController);
+                billExportController.setPopupStage(popupStage);
+                ;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         setOffField.setOnKeyPressed(event -> {
             try {
                 handleKeyPress(event);
@@ -322,6 +342,59 @@ public class BillGeneralController {
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    public void exportToFile() throws Exception {
+        Path currentDir = Path.of(System.getProperty("user.dir"));
+        Path destinationDir = currentDir.resolve("src/main/FILE/BILL_FILE");
+
+        List<Bill_Entity> p = billService.getBillByCombinedCondition(billEntity, typeDate, typePrice, sortField, sortOrder, null, null);
+
+        // Tạo workbook và sheet
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Bills");
+
+        // Tạo tiêu đề cho các cột
+        String[] headers = {"ID_BILL", "EMAIL", "BILL_STATUS", "PHONE_BILL", "ADD_BILL", "TOTAL_PRICE", "DATE_EXP", "DESCRIPTION"}; // Thay đổi theo thuộc tính của Bill_Entity
+        Row headerRow = sheet.createRow(0);
+        for (int i = 0; i < headers.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers[i]);
+
+            // Tùy chọn: Định dạng tiêu đề
+            CellStyle style = workbook.createCellStyle();
+            Font font = workbook.createFont();
+            font.setBold(true);
+            style.setFont(font);
+            cell.setCellStyle(style);
+        }
+
+        // Ghi dữ liệu từ danh sách vào các hàng
+        int rowNum = 1;
+        for (Bill_Entity bill : p) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(bill.getID_BILL()); // Thay đổi theo getter của Bill_Entity
+            row.createCell(1).setCellValue(bill.getEMAIL_ACC());
+            row.createCell(2).setCellValue(bill.getBILL_STATUS().getDescription());
+            row.createCell(3).setCellValue(bill.getPHONE_BILL());
+            row.createCell(4).setCellValue(bill.getADD_BILL());
+            row.createCell(5).setCellValue(bill.getTOTAL_PRICE());
+            row.createCell(6).setCellValue(bill.getDATE_EXP());
+            row.createCell(7).setCellValue(bill.getDESCRIPTION());
+        }
+
+        if (Files.notExists(destinationDir)) {
+            Files.createDirectories(destinationDir); // Tạo thư mục nếu chưa tồn tại
+        }
+        String fileName = "Bill_General-"+ billExportName + ".xlsx";
+//        String fileName ="dcm.xlsx";
+        Path filePath = destinationDir.resolve(fileName);
+        try (FileOutputStream fileOut = new FileOutputStream(filePath.toFile())) {
+            workbook.write(fileOut);
+        }
+
+        workbook.close();
+        System.out.println("File đã được xuất ra: " + filePath.toAbsolutePath());
     }
 
     private void detail() {
@@ -546,8 +619,8 @@ public class BillGeneralController {
 
     private ObservableList<Bill_Entity> getBill() throws Exception {
         List<Bill_Entity> p = billService.getBillByCombinedCondition(billEntity, typeDate, typePrice, sortField, sortOrder, setOff, offSet);
-        for(Bill_Entity item : p) {
-            System.out.println("bill " +item.getID_BILL());
+        for (Bill_Entity item : p) {
+            System.out.println("bill " + item.getID_BILL());
         }
         return FXCollections.observableArrayList(p);
     }

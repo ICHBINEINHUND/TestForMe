@@ -1,7 +1,9 @@
 package com.example.dkkp.controller.bill.billDetail;
 
 import com.example.dkkp.controller.bill.BillController;
+import com.example.dkkp.controller.bill.billGeneral.BillExportController;
 import com.example.dkkp.model.Bill_Detail_Entity;
+import com.example.dkkp.model.Bill_Entity;
 import com.example.dkkp.service.BillService;
 import com.example.dkkp.service.Validator;
 import io.github.palexdev.materialfx.controls.MFXButton;
@@ -24,10 +26,15 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import static com.example.dkkp.controller.LoginController.entityManagerFactory;
@@ -62,6 +69,8 @@ public class BillDetailController {
     private MFXButton delBtn;
     @FXML
     private MFXButton refreshBtn;
+    @FXML
+    private MFXButton exportBtn;
     @FXML
     private MFXTextField setOffField;
     @FXML
@@ -98,7 +107,11 @@ public class BillDetailController {
     public Bill_Detail_Entity billDetailEntity = new Bill_Detail_Entity();
     public BillController billController;
 
+
+    public BillDetailExportController billDetailExportController = new BillDetailExportController();
     public BillDetailFilterController billDetailFilterController = new BillDetailFilterController();
+
+    public String billDetailExportName = null;
     @FXML
     public void initialize() {
         observableList = getBill();
@@ -168,6 +181,17 @@ public class BillDetailController {
     }
 
     private void crt() {
+        exportBtn.setOnMouseClicked(event -> {
+            try {
+                billDetailExportController.setBillDetailController(this);
+                Stage popupStage = setPopView("/com/example/dkkp/ExportName.fxml",  billDetailExportController);
+                billDetailExportController.setPopupStage(popupStage);
+                ;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         main.setOnMouseClicked(event -> {
             billTable.getSelectionModel().clearSelection();
             main.requestFocus();
@@ -208,7 +232,58 @@ public class BillDetailController {
             billController.setMainView("/com/example/dkkp/BillDetail/BillDetailView.fxml", this);
         }
     }
+    public void exportToFile() throws Exception {
+        Path currentDir = Path.of(System.getProperty("user.dir"));
+        Path destinationDir = currentDir.resolve("src/main/FILE/BILL_FILE");
 
+        List<Bill_Detail_Entity> p =  billService.getBillDetailByCombinedCondition(billDetailEntity, typeUPrice,typeQuantity, typePPrice,sortField,sortOrder,setOff,offSet);
+
+        // Tạo workbook và sheet
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Bills");
+
+        // Tạo tiêu đề cho các cột
+        String[] headers = {"ID_BILL_DETAIL", "ID_BILL", "AVAILABLE", "ID_FINAL_PRODUCT", "NAME_FINAL_PRODUCT", "QUANTITY_SP", "UNIT_PRICE", "TOTAL_DETAIL_PRICE"}; // Thay đổi theo thuộc tính của Bill_Entity
+        Row headerRow = sheet.createRow(0);
+        for (int i = 0; i < headers.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers[i]);
+
+            // Tùy chọn: Định dạng tiêu đề
+            CellStyle style = workbook.createCellStyle();
+            Font font = workbook.createFont();
+            font.setBold(true);
+            style.setFont(font);
+            cell.setCellStyle(style);
+        }
+
+        // Ghi dữ liệu từ danh sách vào các hàng
+        int rowNum = 1;
+        for (Bill_Detail_Entity bill : p) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(bill.getID_BILL_DETAIL()); // Thay đổi theo getter của Bill_Entity
+            row.createCell(1).setCellValue(bill.getID_BILL());
+            row.createCell(2).setCellValue(bill.getAVAILABLE());
+            row.createCell(3).setCellValue(bill.getID_FINAL_PRODUCT());
+            row.createCell(4).setCellValue(bill.getNAME_FINAL_PRODUCT());
+            row.createCell(5).setCellValue(bill.getQUANTITY_BILL());
+            row.createCell(6).setCellValue(bill.getUNIT_PRICE());
+            row.createCell(7).setCellValue(bill.getTOTAL_DETAIL_PRICE());
+        }
+
+        if (Files.notExists(destinationDir)) {
+            Files.createDirectories(destinationDir); // Tạo thư mục nếu chưa tồn tại
+        }
+        String fileName = "Bill_Detail-"+ billDetailExportName + ".xlsx";
+//        String fileName ="dcm.xlsx";
+        Path filePath = destinationDir.resolve(fileName);
+        try (FileOutputStream fileOut = new FileOutputStream(filePath.toFile())) {
+            workbook.write(fileOut);
+        }
+
+        workbook.close();
+        System.out.println("File đã được xuất ra: " + filePath.toAbsolutePath());
+    }
 
     public void setPage(int page) {
         if (page < 1 || page > totalPages || totalPages == 1) {
