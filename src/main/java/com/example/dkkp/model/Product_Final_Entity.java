@@ -35,6 +35,28 @@ public class Product_Final_Entity {
     @Transient
     private String NAME_PRODUCT_BASE;
 
+
+    @Transient
+    private Double sum_total_price;
+    @Transient
+    private Long sum_quantity;
+
+    public Double getSum_total_price() {
+        return sum_total_price;
+    }
+
+    public void setSum_total_price(Double sum_total_price) {
+        this.sum_total_price = sum_total_price;
+    }
+
+    public Long getSum_quantity() {
+        return sum_quantity;
+    }
+
+    public void setSum_quantity(Long sum_quantity) {
+        this.sum_quantity = sum_quantity;
+    }
+
     public String getNAME_PRODUCT_BASE() {
         return NAME_PRODUCT_BASE;
     }
@@ -136,5 +158,19 @@ public class Product_Final_Entity {
     @Override
     public String toString() {
         return "ID " + ID_SP + " - NAME " + NAME_PRODUCT;
+    }
+
+    public Product_Final_Entity(Integer ID_SP, Integer ID_BASE_PRODUCT, String NAME_PRODUCT, Integer QUANTITY, Double PRICE_SP, Double DISCOUNT, String IMAGE_SP, String NAME_PRODUCT_BASE, String DES_PRODUCT, Double sum_total_price, Long sum_quantity) {
+        this.ID_SP = ID_SP;
+        this.NAME_PRODUCT = NAME_PRODUCT;
+        this.QUANTITY = QUANTITY;
+        this.PRICE_SP = PRICE_SP;
+        this.DISCOUNT = DISCOUNT;
+        this.IMAGE_SP = IMAGE_SP;
+        this.ID_BASE_PRODUCT = ID_BASE_PRODUCT;
+        this.NAME_PRODUCT_BASE = NAME_PRODUCT_BASE;
+        this.DES_PRODUCT = DES_PRODUCT;
+        this.sum_total_price = sum_total_price;
+        this.sum_quantity = sum_quantity;
     }
 }

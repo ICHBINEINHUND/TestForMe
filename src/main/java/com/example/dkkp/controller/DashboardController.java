@@ -46,7 +46,7 @@ public class DashboardController {
   }
 
   private void updatePieChart() {
-    List<Product> bestSellers = getBestSellerData();
+    List<Product_Final_Entity> bestSellers = getBestSellerData();
     bestSellerChart.getData().clear();
     bestSellers.forEach(product -> bestSellerChart.getData().add(new PieChart.Data(product.name(), product.quantity())));
   }
@@ -55,8 +55,8 @@ public class DashboardController {
     return List.of(new RevenueData(1, 1000), new RevenueData(2, 1200), new RevenueData(3, 900), new RevenueData(4, 1100), new RevenueData(5, 800), new RevenueData(6, 1800));
   }
 
-  private List<Product> getBestSellerData() {
-    return List.of(new Product("Samsung Galaxy S24", 100), new Product("NVIDIA GeForce RTX 4090", 90), new Product("NVIDIA GeForce GTX 1660 Super", 70), new Product("NVIDIA GeForce RTX 3060", 50), new Product("AMD Threadripper 7995WX", 30), new Product("Others", 5));
+  private List<Product_Final_Entity> getBestSellerData() {
+    return List.of(new Product_Final_Entity("Samsung Galaxy S24", 100), new Product_Final_Entity("NVIDIA GeForce RTX 4090", 90), new Product_Final_Entity("NVIDIA GeForce GTX 1660 Super", 70), new Product_Final_Entity("NVIDIA GeForce RTX 3060", 50), new Product_Final_Entity("AMD Threadripper 7995WX", 30), new Product_Final_Entity("Others", 5));
   }
 
   private double getTotalRevenueForMonth() {
@@ -72,5 +72,5 @@ public class DashboardController {
     return "NVIDIA GeForce RTX 4090";
   }
   public record RevenueData(int time, double revenue) {}
-  public record Product(String name, int quantity) {}
+  public record Product_Final_Entity(String name, int quantity) {}
 }
