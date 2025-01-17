@@ -57,8 +57,9 @@ public class UserService {
 //        String mail = SecurityFunction.encrypt(EMAIL_ACC);
         String mail = EMAIL_ACC;
         if (userDao.isUserByMail(mail)) {
-            PASSWORD_ACC += userDao.getUsersByMail(mail).getSALT();
-            PASSWORD_ACC = SecurityFunction.hashString(PASSWORD_ACC);
+            System.out.println("co tai khoan");
+//            PASSWORD_ACC += userDao.getUsersByMail(mail).getSALT();
+//            PASSWORD_ACC = SecurityFunction.hashString(PASSWORD_ACC);
         return userDao.loginValidate(mail, PASSWORD_ACC);
         }
         return false;

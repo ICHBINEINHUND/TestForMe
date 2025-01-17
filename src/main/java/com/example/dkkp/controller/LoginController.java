@@ -42,7 +42,8 @@ public class LoginController {
             alert.setHeaderText(null);  // Không cần tiêu đề cho cảnh báo
             alert.showAndWait();
         } else {
-            if(Validator.isValidAddress(username.getText())) {
+            System.out.println("email " + username.getText());
+            if(Validator.isValidEmail(username.getText())) {
 
             UserService userService = new UserService(entityManager);
             if(userService.login(username.getText(), password.getText())){

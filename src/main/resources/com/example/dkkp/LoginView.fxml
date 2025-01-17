@@ -14,7 +14,7 @@
     <ImageView fitWidth="100.0" fitHeight="100.0" preserveRatio="true">
       <Image url="@DKKP.png"/>
     </ImageView>
-    <MFXTextField fx:id="username" floatingText="Username" floatMode="BORDER" prefWidth="200" prefHeight="40"/>
+    <MFXTextField fx:id="username" floatingText="Email" floatMode="BORDER" prefWidth="200" prefHeight="40"/>
     <MFXPasswordField fx:id="password" floatingText="Password" floatMode="BORDER" prefWidth="200" prefHeight="40"/>
     <MFXButton buttonType="RAISED" mnemonicParsing="false" text="Login" prefWidth="100" prefHeight="40"
                onAction="#handleLogin" styleClass="Btn"/>
