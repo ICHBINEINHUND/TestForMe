@@ -38,6 +38,8 @@ public class HomeController {
   private ReportController reportController = new ReportController();
   private DashboardController dashboardController = new DashboardController();
 
+  public static Integer numberOr = 10;
+
   @FXML
   public void initialize() {
     loadDashboardView();

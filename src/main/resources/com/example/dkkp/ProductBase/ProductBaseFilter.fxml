@@ -9,6 +9,7 @@
 <?import io.github.palexdev.materialfx.controls.MFXComboBox?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import io.github.palexdev.materialfx.controls.MFXFilterComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXDatePicker?>
 <VBox prefHeight="500.0" prefWidth="350.0" spacing="15" xmlns="http://javafx.com/javafx/17.0.12"
       xmlns:fx="http://javafx.com/fxml/1" styleClass="productAP" stylesheets="@../DKKP.css">
     <MFXButton buttonType="RAISED" fx:id="back" mnemonicParsing="false" text="Back" prefWidth="50" prefHeight="25" styleClass="Btn"/>
@@ -32,7 +33,7 @@
                         </FXCollections>
                     </items>
                 </MFXComboBox>
-                <DatePicker fx:id="datePicker" prefWidth="250" prefHeight="40"/>
+                <MFXDatePicker fx:id="datePicker" prefWidth="250" prefHeight="40"/>
             </HBox>
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <MFXComboBox fx:id="viewCountOperatorComboBox" prefWidth="250" prefHeight="40" promptText="VIEW COUNT">

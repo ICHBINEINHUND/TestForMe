@@ -7,6 +7,7 @@ import com.example.dkkp.model.Import_Entity;
 import com.example.dkkp.model.Product_Option_Entity;
 import com.example.dkkp.service.ImportService;
 import com.example.dkkp.service.ProductFinalService;
+import com.example.dkkp.service.Validator;
 import io.github.palexdev.materialfx.controls.*;
 import io.github.palexdev.materialfx.controls.cell.MFXTableRowCell;
 import jakarta.persistence.EntityManager;
@@ -61,7 +62,7 @@ public class ImportGeneralCreateController {
     @FXML
     private MFXFilterComboBox<Import_Entity> ID_REPLACE;
     @FXML
-    private DatePicker datePicker;
+    private MFXDatePicker datePicker;
     @FXML
     private Spinner hourSpinner;
     @FXML

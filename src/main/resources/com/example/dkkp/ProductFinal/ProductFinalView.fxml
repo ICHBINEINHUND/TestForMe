@@ -33,6 +33,7 @@
           <MFXTableColumn fx:id="ID_FINAL_PRODUCT" text="Id" styleClass="productBF"/>
           <MFXTableColumn fx:id="ID_BASE_PRODUCT" text="Id Parent" styleClass="productBF"/>
           <MFXTableColumn fx:id="NAME_PRODUCT" text="Name" styleClass="productBF"/>
+          <MFXTableColumn fx:id="NAME_BASE_PRODUCT" text="Name base product" styleClass="productBF"/>
           <MFXTableColumn fx:id="QUANTITY" text="Quantity" styleClass="productBF"/>
           <MFXTableColumn fx:id="DES_PRODUCT" text="Description" styleClass="productBF"/>
           <MFXTableColumn fx:id="PRICE_SP" text="Price" styleClass="productBF"/>

@@ -10,6 +10,7 @@
 <?import io.github.palexdev.materialfx.controls.MFXTableColumn?>
 <?import javafx.scene.control.ScrollPane?>
 <?import io.github.palexdev.materialfx.controls.MFXFilterComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXDatePicker?>
 <StackPane xmlns:fx="http://javafx.com/fxml" stylesheets="@../DKKP.css" prefWidth="-Infinity">
     <ScrollPane fitToWidth="true" fitToHeight="true">
         <VBox spacing="20" prefWidth="800">
@@ -66,8 +67,8 @@
                     <MFXTextField editable="false" fx:id="viewCount" floatingText="VIEW COUNT" floatMode="BORDER"
                                   prefWidth="200"
                                   prefHeight="40"/>
-                    <DatePicker fx:id="date" prefWidth="200"
-                                prefHeight="40"/>
+                    <MFXDatePicker fx:id="date" prefWidth="200"
+                                   prefHeight="40"/>
                     <MFXFilterComboBox prefWidth="200" prefHeight="40" floatingText="BRAND" fx:id="brandField"
                                        floatMode="BORDER">
                     </MFXFilterComboBox>

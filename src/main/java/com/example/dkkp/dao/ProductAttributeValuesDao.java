@@ -87,14 +87,6 @@ public class ProductAttributeValuesDao {
             query.select(root);
         }
         if (sortField != null && sortOrder != null) {
-            Path<?> sortPath = root.get(sortField.toUpperCase());
-            if ("desc".equalsIgnoreCase(sortOrder)) {
-                query.orderBy(cb.desc(sortPath));
-            } else {
-                query.orderBy(cb.asc(sortPath));
-            }
-        }
-        if (sortField != null && sortOrder != null) {
             Path<?> sortPath;
             if ("NAME_ATTRIBUTE".equalsIgnoreCase(sortField)) {
                 sortPath = productAttributeJoin.get("NAME_ATTRIBUTE");

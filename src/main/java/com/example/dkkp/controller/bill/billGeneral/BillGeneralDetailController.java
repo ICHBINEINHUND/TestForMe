@@ -17,6 +17,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,8 +75,8 @@ public class BillGeneralDetailController implements TableInterface {
         list = getBillDetail();
 //        getBillDetail();
         billDetailTable.setItems(list);
-        updateBtn.setOnMouseClicked(event -> updateBill());
         setCol();
+        updateBtn.setOnMouseClicked(event -> updateBill());
         setWidth();
         pushEntity();
         backBtn.setOnMouseClicked(event -> billGeneralController.closePopup(popupStage));
@@ -155,8 +156,23 @@ public class BillGeneralDetailController implements TableInterface {
         AVAILABLE.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Detail_Entity::getAVAILABLE));
         ID_FINAL_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Detail_Entity::getID_FINAL_PRODUCT));
         QUANTITY_SP.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Detail_Entity::getQUANTITY_BILL));
-        UNIT_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Detail_Entity::getUNIT_PRICE));
-        TOTAL_DETAIL_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Detail_Entity::getTOTAL_DETAIL_PRICE));
+        UNIT_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(product -> {
+            // Định dạng giá trị số
+            Double price = product.getUNIT_PRICE();
+            if (price != null) {
+                DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                return decimalFormat.format(price);
+            }
+            return "";
+        }));
+        TOTAL_DETAIL_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(product -> {
+            Double price = product.getTOTAL_DETAIL_PRICE();
+            if (price != null) {
+                DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                return decimalFormat.format(price);
+            }
+            return "";
+        }));
     }
 
     public void setBillGeneralController(BillGeneralController billGeneralController) {
@@ -175,10 +191,10 @@ public class BillGeneralDetailController implements TableInterface {
             ID_BILL.setText(billEntity.getID_BILL());
             ID_USER.setText(SecurityFunction.decrypt(billEntity.getEMAIL_ACC()));
             BILL_STATUS.setText(billEntity.getBILL_STATUS().getDescription());
-            PHONE_BILL.setText(SecurityFunction.decrypt(billEntity.getPHONE_BILL()));
-            ADD_BILL.setText(SecurityFunction.decrypt(billEntity.getADD_BILL()));
+            PHONE_BILL.setText((billEntity.getPHONE_BILL()));
+            ADD_BILL.setText((billEntity.getADD_BILL()));
             DESCRIPTION.setText(billEntity.getDESCRIPTION());
-            DATE_EXP.setText(billEntity.getDESCRIPTION());
+            DATE_EXP.setText(billEntity.getDATE_EXP().toString());
         }
     }
 

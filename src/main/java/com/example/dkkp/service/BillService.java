@@ -149,7 +149,6 @@ public class BillService {
 
     public void registerNewBill(Bill_Entity billEntity, String phone, String add) throws Exception {
         //add check
-        LocalDateTime DATE_JOIN = LocalDateTime.now();
         if (billEntity.getID_USER() != null) {
             String idUser = billEntity.getID_USER();
             UserService userService = new UserService(entityManager);
@@ -164,7 +163,7 @@ public class BillService {
         }
         billEntity.setADD_BILL(add);
         billEntity.setPHONE_BILL(phone);
-        billEntity.setDATE_EXP(DATE_JOIN);
+
         billDao.createBill(billEntity);
     }
 

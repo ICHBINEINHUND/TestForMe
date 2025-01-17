@@ -33,6 +33,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import static com.example.dkkp.controller.LoginController.entityManagerFactory;
@@ -134,8 +135,22 @@ public class ImportDetailController {
         ID_BASE_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getID_BASE_PRODUCT));
         ID_FINAL_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getID_FINAL_PRODUCT));
         QUANTITY.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getQUANTITY));
-        UNIT_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getUNIT_PRICE));
-        TOTAL_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getTOTAL_PRICE));
+        UNIT_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(product -> {
+            Double price = product.getUNIT_PRICE();
+            if (price != null) {
+                DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                return decimalFormat.format(price);
+            }
+            return "";
+        }));
+        TOTAL_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(product -> {
+            Double price = product.getTOTAL_PRICE();
+            if (price != null) {
+                DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                return decimalFormat.format(price);
+            }
+            return "";
+        }));
         DESCRIPTION.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getDESCRIPTION));
     }
     public void setWidth() {

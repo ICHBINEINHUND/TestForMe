@@ -14,6 +14,8 @@ import io.github.palexdev.materialfx.controls.MFXTextField;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -68,8 +70,15 @@ public class ProductFinalCreateController {
         String des = (DES_PRODUCT.getText().isEmpty()) ? null : DES_PRODUCT.getText();
         Double price = (PRICE.getText().isEmpty()) ? null : Double.valueOf(PRICE.getText());
         Double discount = (DISCOUNT.getText().isEmpty()) ? null : Double.valueOf(DISCOUNT.getText());
-        Integer idBaseProduct = (ID_BASE_PRODUCT.getValue() != null) ? ID_BASE_PRODUCT.getValue().getID_BRAND() : null;
+        Integer idBaseProduct = (ID_BASE_PRODUCT.getValue() != null) ? ID_BASE_PRODUCT.getValue().getID_BASE_PRODUCT() : null;
         String imageName = null;
+        if (name == null || price ==null || discount ==null || idBaseProduct == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Please do not leave the Name or Category fields empty.", ButtonType.OK);
+            alert.setTitle("Input Warning");
+            alert.setHeaderText("Invalid Input");
+            alert.showAndWait();
+            return;
+        }
 //        if (true) {
             transaction.begin();
             try {
@@ -125,13 +134,15 @@ public class ProductFinalCreateController {
         Product_Base_Entity productBaseEntity = new Product_Base_Entity();
 
         ID_BASE_PRODUCT.getItems().addAll(productBaseService.getProductBaseByCombinedCondition(productBaseEntity,null,null,null,null,null,null,null));
+
+        setTextFormatter();
     }
     @FXML
     private void handleOpenFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Chose a picture file");
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("IMAGE", "*.png", "*.jpg", "*.jpeg")
+                new FileChooser.ExtensionFilter("IMAGE", "*.png", "*.jpg", "*.jpeg", "*.webp")
         );
 
         Stage stage = (Stage) image.getScene().getWindow();
@@ -160,9 +171,9 @@ public class ProductFinalCreateController {
         Validator validator2 = new Validator();
         Validator validator3 = new Validator();
         Validator validator4 = new Validator();
-        QUANTITY.delegateSetTextFormatter(validator2.formatterInteger);
+//        QUANTITY.delegateSetTextFormatter(validator2.formatterInteger);
         PRICE.delegateSetTextFormatter(validator3.formatterDouble);
-        DISCOUNT.delegateSetTextFormatter(validator4.formatterDouble);
+        DISCOUNT.delegateSetTextFormatter(validator4.formatterPercentage);
     }
 
 

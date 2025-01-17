@@ -1,5 +1,8 @@
 package com.example.dkkp.controller;
 
+import com.example.dkkp.model.User_Entity;
+import com.example.dkkp.service.UserService;
+import com.example.dkkp.service.Validator;
 import com.example.dkkp.util.ViewUtil;
 import com.example.dkkp.view.HomeView;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
@@ -10,6 +13,7 @@ import jakarta.persistence.Persistence;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.fxml.FXML;
@@ -20,28 +24,43 @@ import io.github.palexdev.materialfx.controls.MFXTextField;
 
 public class LoginController {
 
-  static public EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
-   public EntityManager entityManager = entityManagerFactory.createEntityManager();
+    static public EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("DKKPPersistenceUnit");
+    public EntityManager entityManager = entityManagerFactory.createEntityManager();
     public EntityTransaction transaction = entityManager.getTransaction();
-  @FXML
-  private MFXTextField username;
-  @FXML
-  private MFXPasswordField password;
+    @FXML
+    private MFXTextField username;
+    @FXML
+    private MFXPasswordField password;
 
-  @FXML
-  private void handleLogin(ActionEvent event) {
-    if (username != null && password != null) {
-      HomeView homeView = new HomeView();
-      Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-      homeView.showHomeView(currentStage);
-    } else {
-      Alert alert = new Alert(Alert.AlertType.ERROR);
-      Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
-      alertStage.getIcons().add(new Image(Objects.requireNonNull(ViewUtil.class.getResourceAsStream("/com/example/dkkp/DKKP.png"))));
-      alert.setTitle("");
-      alert.setHeaderText(null);
-      alert.setContentText("Invalid Credentials");
-      alert.showAndWait();
+    @FXML
+    private void handleLogin(ActionEvent event) throws Exception {
+        System.out.println("username: " + username.getText());
+        System.out.println("paa: " + password.getText());
+        if (username.getText().trim().isEmpty() || password.getText().trim().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Please enter both username and password.", ButtonType.OK);
+            alert.setTitle("Input Error");
+            alert.setHeaderText(null);  // Không cần tiêu đề cho cảnh báo
+            alert.showAndWait();
+        } else {
+            if(Validator.isValidAddress(username.getText())) {
+
+            UserService userService = new UserService(entityManager);
+            if(userService.login(username.getText(), password.getText())){
+            HomeView homeView = new HomeView();
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            homeView.showHomeView(currentStage);
+            }else{
+                Alert alert = new Alert(Alert.AlertType.WARNING, "Wrong pass or email.", ButtonType.OK);
+                alert.setTitle("Input Error");
+                alert.setHeaderText(null);  // Không cần tiêu đề cho cảnh báo
+                alert.showAndWait();
+            }
+            }else{
+                Alert alert = new Alert(Alert.AlertType.WARNING, "Wrong email format", ButtonType.OK);
+                alert.setTitle("Input Error");
+                alert.setHeaderText(null);  // Không cần tiêu đề cho cảnh báo
+                alert.showAndWait();
+            }
+        }
     }
-  }
 }

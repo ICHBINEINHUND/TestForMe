@@ -42,9 +42,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.dkkp.controller.HomeController.numberOr;
 import static com.example.dkkp.controller.LoginController.*;
 
 public class ProductFinalController {
@@ -54,19 +56,21 @@ public class ProductFinalController {
     @FXML
     private MFXTableView<Product_Final_Entity> productTable;
     @FXML
-    private MFXTableColumn ID_FINAL_PRODUCT;
+    private MFXTableColumn<Product_Final_Entity> ID_FINAL_PRODUCT;
     @FXML
-    private MFXTableColumn ID_BASE_PRODUCT;
+    private MFXTableColumn<Product_Final_Entity> ID_BASE_PRODUCT;
     @FXML
-    private MFXTableColumn NAME_PRODUCT;
+    private MFXTableColumn<Product_Final_Entity> NAME_PRODUCT;
     @FXML
-    private MFXTableColumn QUANTITY;
+    private MFXTableColumn<Product_Final_Entity> NAME_BASE_PRODUCT;
     @FXML
-    private MFXTableColumn DES_PRODUCT;
+    private MFXTableColumn<Product_Final_Entity> QUANTITY;
     @FXML
-    private MFXTableColumn PRICE_SP;
+    private MFXTableColumn<Product_Final_Entity> DES_PRODUCT;
     @FXML
-    private MFXTableColumn DISCOUNT;
+    private MFXTableColumn<Product_Final_Entity> PRICE_SP;
+    @FXML
+    private MFXTableColumn<Product_Final_Entity> DISCOUNT;
 
     Product_Final_Entity productFinalEntity = new Product_Final_Entity();
     ProductFinalService productFinalService = new ProductFinalService(entityManager);
@@ -103,7 +107,7 @@ public class ProductFinalController {
 
     String sortField = "ID_SP";
     String sortOrder = "desc";
-    Integer setOff = 2;
+    Integer setOff = numberOr;
     Integer offSet = 0;
 
     String typePrice = null;
@@ -249,7 +253,8 @@ public class ProductFinalController {
     private void setWidth() {
         ID_FINAL_PRODUCT.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
         ID_BASE_PRODUCT.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
-        NAME_PRODUCT.prefWidthProperty().bind(productTable.widthProperty().multiply(0.3));
+        NAME_PRODUCT.prefWidthProperty().bind(productTable.widthProperty().multiply(0.15));
+        NAME_BASE_PRODUCT.prefWidthProperty().bind(productTable.widthProperty().multiply(0.15));
         QUANTITY.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
         DES_PRODUCT.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
         PRICE_SP.prefWidthProperty().bind(productTable.widthProperty().multiply(0.1));
@@ -260,9 +265,18 @@ public class ProductFinalController {
         ID_FINAL_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Final_Entity::getID_SP));
         ID_BASE_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Final_Entity::getID_BASE_PRODUCT));
         NAME_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Final_Entity::getNAME_PRODUCT));
+        NAME_BASE_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Final_Entity::getNAME_PRODUCT_BASE));
         QUANTITY.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Final_Entity::getQUANTITY));
         DES_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Final_Entity::getDES_PRODUCT));
-        PRICE_SP.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Final_Entity::getPRICE_SP));
+        PRICE_SP.setRowCellFactory(cell -> new MFXTableRowCell<>(product -> {
+            // Định dạng giá trị số
+            Double price = product.getPRICE_SP();
+            if (price != null) {
+                DecimalFormat decimalFormat = new DecimalFormat("#,###.##");  // Định dạng số
+                return decimalFormat.format(price);  // Trả về số đã được định dạng
+            }
+            return "";  // Trả về chuỗi trống nếu không có giá trị
+        }));
         DISCOUNT.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Final_Entity::getDISCOUNT));
     }
 
@@ -271,6 +285,7 @@ public class ProductFinalController {
         ID_FINAL_PRODUCT.setOnMouseClicked(event -> handleSort("ID_SP"));
         ID_BASE_PRODUCT.setOnMouseClicked(event -> handleSort("ID_BASE_PRODUCT"));
         NAME_PRODUCT.setOnMouseClicked(event -> handleSort("NAME_PRODUCT"));
+        NAME_BASE_PRODUCT.setOnMouseClicked(event -> handleSort("NAME_BASE_PRODUCT"));
         QUANTITY.setOnMouseClicked(event -> handleSort("QUANTITY"));
         DES_PRODUCT.setOnMouseClicked(event -> handleSort("DES_PRODUCT"));
         PRICE_SP.setOnMouseClicked(event -> handleSort("PRICE_SP"));

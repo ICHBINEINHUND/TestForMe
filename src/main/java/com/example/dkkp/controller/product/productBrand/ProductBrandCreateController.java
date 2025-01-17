@@ -9,6 +9,8 @@ import io.github.palexdev.materialfx.controls.MFXTextField;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 import static com.example.dkkp.controller.LoginController.*;
 
@@ -33,6 +35,13 @@ public class ProductBrandCreateController {
     public void createProduct() {
         String name = (NAME_BRAND.getText().isEmpty()) ? null : NAME_BRAND.getText();
         String des = (DETAIL.getText().isEmpty()) ? null : DETAIL.getText();
+        if (name == null ) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Please do not leave the Name or Category fields empty.", ButtonType.OK);
+            alert.setTitle("Input Warning");
+            alert.setHeaderText("Invalid Input");
+            alert.showAndWait();
+            return;
+        }
             transaction.begin();
             try {
 

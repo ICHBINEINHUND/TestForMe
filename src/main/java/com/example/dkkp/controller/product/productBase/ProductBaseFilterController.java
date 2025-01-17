@@ -7,10 +7,7 @@ import com.example.dkkp.model.Product_Base_Entity;
 import com.example.dkkp.service.BrandService;
 import com.example.dkkp.service.CategoryService;
 import com.example.dkkp.service.Validator;
-import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXComboBox;
-import io.github.palexdev.materialfx.controls.MFXFilterComboBox;
-import io.github.palexdev.materialfx.controls.MFXTextField;
+import io.github.palexdev.materialfx.controls.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import javafx.fxml.FXML;
@@ -49,7 +46,7 @@ public class ProductBaseFilterController implements TableInterface {
     private MFXTextField quantityTextField;
 
     @FXML
-    private DatePicker datePicker;
+    private MFXDatePicker datePicker;
     @FXML
     private MFXButton back;
     @FXML

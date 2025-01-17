@@ -13,7 +13,7 @@ public class Product_Final_Entity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "\"ID_FINAL_PRODUCT\"")
     private Integer ID_SP;
-    @Column(name = "\"ID_BASE_PRODUCT\"" ,insertable = false, updatable = false)
+    @Column(name = "\"ID_BASE_PRODUCT\"")
     private Integer ID_BASE_PRODUCT;
     @Column(name = "\"NAME_PRODUCT\"")
     private String NAME_PRODUCT;
@@ -29,7 +29,7 @@ public class Product_Final_Entity {
     private String IMAGE_SP;
 
     @ManyToOne
-    @JoinColumn(name = "\"ID_BASE_PRODUCT\"", referencedColumnName = "\"ID_BASE_PRODUCT\"")
+    @JoinColumn(name = "\"ID_BASE_PRODUCT\"", referencedColumnName = "\"ID_BASE_PRODUCT\""  ,insertable = false, updatable = false)
     private Product_Base_Entity product_base;
 
     @Transient
@@ -39,7 +39,7 @@ public class Product_Final_Entity {
     @Transient
     private Double sum_total_price;
     @Transient
-    private Long sum_quantity;
+    private Integer sum_quantity;
 
     public Double getSum_total_price() {
         return sum_total_price;
@@ -49,11 +49,11 @@ public class Product_Final_Entity {
         this.sum_total_price = sum_total_price;
     }
 
-    public Long getSum_quantity() {
+    public Integer getSum_quantity() {
         return sum_quantity;
     }
 
-    public void setSum_quantity(Long sum_quantity) {
+    public void setSum_quantity(Integer sum_quantity) {
         this.sum_quantity = sum_quantity;
     }
 
@@ -160,7 +160,7 @@ public class Product_Final_Entity {
         return "ID " + ID_SP + " - NAME " + NAME_PRODUCT;
     }
 
-    public Product_Final_Entity(Integer ID_SP, Integer ID_BASE_PRODUCT, String NAME_PRODUCT, Integer QUANTITY, Double PRICE_SP, Double DISCOUNT, String IMAGE_SP, String NAME_PRODUCT_BASE, String DES_PRODUCT, Double sum_total_price, Long sum_quantity) {
+    public Product_Final_Entity(Integer ID_SP, Integer ID_BASE_PRODUCT, String NAME_PRODUCT, Integer QUANTITY, Double PRICE_SP, Double DISCOUNT, String IMAGE_SP, String NAME_PRODUCT_BASE, String DES_PRODUCT, Double sum_total_price, Integer sum_quantity) {
         this.ID_SP = ID_SP;
         this.NAME_PRODUCT = NAME_PRODUCT;
         this.QUANTITY = QUANTITY;
@@ -170,6 +170,13 @@ public class Product_Final_Entity {
         this.ID_BASE_PRODUCT = ID_BASE_PRODUCT;
         this.NAME_PRODUCT_BASE = NAME_PRODUCT_BASE;
         this.DES_PRODUCT = DES_PRODUCT;
+        this.sum_total_price = sum_total_price;
+        this.sum_quantity = sum_quantity;
+    }
+
+    public Product_Final_Entity(Integer ID_SP, String NAME_PRODUCT, Double sum_total_price, Integer sum_quantity) {
+        this.ID_SP = ID_SP;
+        this.NAME_PRODUCT = NAME_PRODUCT;
         this.sum_total_price = sum_total_price;
         this.sum_quantity = sum_quantity;
     }

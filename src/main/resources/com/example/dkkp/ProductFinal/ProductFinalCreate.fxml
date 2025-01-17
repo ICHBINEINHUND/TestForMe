@@ -21,7 +21,7 @@
     <HBox spacing="5">
     </HBox>
     <HBox spacing="5">
-      <MFXFilterComboBox floatingText="BASE PRODUCT" fx:id="ID_BASE_PRODUCT" floatMode="BORDER" prefWidth="250" prefHeight="40"/>
+      <MFXFilterComboBox floatingText="BASE PRODUCT" fx:id="ID_BASE_PRODUCT" floatMode="BORDER" prefWidth="400" prefHeight="40"/>
     </HBox>
     <HBox spacing="5">
       <MFXTextField fx:id="NAME_PRODUCT" floatingText="NAME PRODUCT" floatMode="BORDER" prefWidth="200"/>

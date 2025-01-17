@@ -1,6 +1,7 @@
 package com.example.dkkp.dao;
 
 import com.example.dkkp.model.*;
+import com.example.dkkp.model.EnumType;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
 
@@ -155,15 +156,57 @@ public class ProductFinalDao {
         if (setOff != null) typedQuery.setMaxResults(setOff);
         return typedQuery.getResultList();
     }
+//    public List<Product_Final_Entity> getProductFinalForDashBoard(LocalDateTime startDate, LocalDateTime endDate) {
+//        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+//        CriteriaQuery<Product_Final_Entity> query = cb.createQuery(Product_Final_Entity.class);
+//        Root<Product_Final_Entity> root = query.from(Product_Final_Entity.class);
+//
+//        Join<Product_Final_Entity, Product_Base_Entity> baseProductJoin = root.join("product_base", JoinType.LEFT);
+//
+//        Join<Product_Final_Entity, Bill_Detail_Entity> billDetailJoin = root.join("billDetails", JoinType.LEFT);
+//        Join<Bill_Detail_Entity, Bill_Entity> billJoin = billDetailJoin.join("bill_Entity", JoinType.LEFT);
+//
+//        Predicate conditions = cb.conjunction();
+//        if (startDate != null) {
+//            conditions = cb.and(conditions, cb.greaterThanOrEqualTo(billJoin.get("DATE_EXP"), startDate));
+//        }
+//        if (endDate != null) {
+//            conditions = cb.and(conditions, cb.lessThanOrEqualTo(billJoin.get("DATE_EXP"), endDate));
+//        }
+//            conditions = cb.and(conditions, cb.notEqual(billJoin.get("BILL_STATUS"), EnumType.Status_Bill.PEN));
+//            conditions = cb.and(conditions, cb.notEqual(billJoin.get("BILL_STATUS"), EnumType.Status_Bill.CANC));
+//
+//        query.where(conditions);
+//
+//        Expression<Double> sumTotalPrice = cb.sum(billDetailJoin.get("TOTAL_DETAIL_PRICE"));
+//        Expression<Long> sumQuantity = cb.sum(billDetailJoin.get("QUANTITY_SP"));
+//
+//        query.select(cb.construct(
+//                Product_Final_Entity.class,
+//                root.get("ID_SP"),
+//                root.get("ID_BASE_PRODUCT"),
+//                root.get("NAME_PRODUCT"),
+//                root.get("QUANTITY"),
+//                root.get("PRICE_SP"),
+//                root.get("DISCOUNT"),
+//                root.get("IMAGE_SP"),
+//                baseProductJoin.get("NAME_PRODUCT"),
+//                root.get("DES_PRODUCT"),
+//                sumTotalPrice,
+//                sumQuantity
+//        ));
+//
+//        TypedQuery<Product_Final_Entity> typedQuery = entityManager.createQuery(query);
+//        return typedQuery.getResultList();
+//    }
+
     public List<Product_Final_Entity> getProductFinalForDashBoard(LocalDateTime startDate, LocalDateTime endDate) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Product_Final_Entity> query = cb.createQuery(Product_Final_Entity.class);
-        Root<Product_Final_Entity> root = query.from(Product_Final_Entity.class);
+        Root<Bill_Detail_Entity> billDetailRoot = query.from(Bill_Detail_Entity.class);
 
-        Join<Product_Final_Entity, Product_Base_Entity> baseProductJoin = root.join("product_base", JoinType.LEFT);
-
-        Join<Product_Final_Entity, Bill_Detail_Entity> billDetailJoin = root.join("billDetails", JoinType.LEFT);
-        Join<Bill_Detail_Entity, Bill_Entity> billJoin = billDetailJoin.join("bill_Entity", JoinType.LEFT);
+        Join<Bill_Detail_Entity, Product_Final_Entity> productFinalJoin = billDetailRoot.join("product_Final_Entity", JoinType.LEFT);  // "productFinal" là trường trong Bill_Detail_Entity nối với Product_Final_Entity
+        Join<Bill_Detail_Entity, Bill_Entity> billJoin = billDetailRoot.join("bill_Entity", JoinType.LEFT);  // "bill_Entity" là trường trong Bill_Detail_Entity nối với Bill_Entity
 
         Predicate conditions = cb.conjunction();
         if (startDate != null) {
@@ -172,30 +215,32 @@ public class ProductFinalDao {
         if (endDate != null) {
             conditions = cb.and(conditions, cb.lessThanOrEqualTo(billJoin.get("DATE_EXP"), endDate));
         }
+        conditions = cb.and(conditions, cb.notEqual(billJoin.get("BILL_STATUS"), EnumType.Status_Bill.PEN));
+        conditions = cb.and(conditions, cb.notEqual(billJoin.get("BILL_STATUS"), EnumType.Status_Bill.CANC));
 
         query.where(conditions);
 
-        Expression<Double> sumTotalPrice = cb.sum(billDetailJoin.get("TOTAL_DETAIL_PRICE"));
-        Expression<Long> sumQuantity = cb.sum(billDetailJoin.get("QUANTITY_SP"));
+        Expression<Double> sumTotalPrice = cb.sum(billDetailRoot.get("TOTAL_DETAIL_PRICE"));
+        Expression<Long> sumQuantity = cb.sum(billDetailRoot.get("QUANTITY_SP"));
 
         query.select(cb.construct(
                 Product_Final_Entity.class,
-                root.get("ID_SP"),
-                root.get("ID_BASE_PRODUCT"),
-                root.get("NAME_PRODUCT"),
-                root.get("QUANTITY"),
-                root.get("PRICE_SP"),
-                root.get("DISCOUNT"),
-                root.get("IMAGE_SP"),
-                baseProductJoin.get("NAME_PRODUCT"),
-                root.get("DES_PRODUCT"),
+                productFinalJoin.get("ID_SP"),
+                productFinalJoin.get("NAME_PRODUCT"),
                 sumTotalPrice,
                 sumQuantity
         ));
 
+        query.groupBy(
+                productFinalJoin.get("ID_SP"),
+                productFinalJoin.get("NAME_PRODUCT")
+        );
+
         TypedQuery<Product_Final_Entity> typedQuery = entityManager.createQuery(query);
         return typedQuery.getResultList();
     }
+
+
     public Integer getFilteredProductFinalCount(Integer ID_SP,
                                                 Integer ID_BASE_PRODUCT,
                                                 String NAME_PRODUCT_BASE,

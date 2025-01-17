@@ -5,8 +5,6 @@
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import io.github.palexdev.materialfx.controls.MFXFilterComboBox?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Spinner?>
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:id="main" styleClass="productAP">
   <VBox spacing="10">
@@ -20,16 +18,6 @@
       <MFXButton fx:id="createBtn" buttonType="RAISED" mnemonicParsing="false" text="Create" styleClass="Btn"/>
     </HBox>
     <HBox>
-      <DatePicker fx:id="datePicker" />
-
-      <!-- Hour Spinner -->
-      <Spinner fx:id="hourSpinner" prefWidth="80" />
-
-      <!-- Minute Spinner -->
-      <Spinner fx:id="minuteSpinner" prefWidth="80" />
-
-      <!-- Second Spinner -->
-      <Spinner fx:id="secondSpinner" prefWidth="80" />
     </HBox>
   </VBox>
 </StackPane>

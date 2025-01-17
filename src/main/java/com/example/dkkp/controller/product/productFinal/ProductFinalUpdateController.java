@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,8 +54,7 @@ public class ProductFinalUpdateController {
     private MFXTextField DES_PRODUCT;
     @FXML
     private MFXTextField PRICE;
-    @FXML
-    private MFXTextField QUANTITY;
+
     @FXML
     private MFXTextField DISCOUNT;
 
@@ -98,17 +98,17 @@ public class ProductFinalUpdateController {
     }
 
     public void setImageView() {
-            Path currentDir = Path.of(System.getProperty("user.dir"));
-            Path imageDir = currentDir.resolve("src/main/IMAGE");
+        Path currentDir = Path.of(System.getProperty("user.dir"));
+        Path imageDir = currentDir.resolve("src/main/IMAGE");
         try {
             Path imagePath;
-             imagePath = imageDir.resolve(productEntity.getIMAGE_SP());
+            imagePath = imageDir.resolve(productEntity.getIMAGE_SP());
             File imageFile = imagePath.toFile();
-                Image image = new Image(imageFile.toURI().toString());
-                imageView.setImage(image);
+            Image image = new Image(imageFile.toURI().toString());
+            imageView.setImage(image);
         } catch (Exception e) {
-                File defaultImageFile = imageDir.resolve("default.png").toFile();
-                imageView.setImage(new Image(defaultImageFile.toURI().toString()));
+            File defaultImageFile = imageDir.resolve("default.png").toFile();
+            imageView.setImage(new Image(defaultImageFile.toURI().toString()));
         }
     }
 
@@ -128,12 +128,12 @@ public class ProductFinalUpdateController {
                 if (baseProductField.getSelectionModel().getSelectedItem() != null) {
                     productEntity.setID_BASE_PRODUCT(baseProductField.getSelectionModel().getSelectedItem().getID_BASE_PRODUCT());
                 }
-                productEntity.setNAME_PRODUCT(NAME_PRODUCT.getText());
-                productEntity.setDES_PRODUCT(DES_PRODUCT.getText());
-                productEntity.setPRICE_SP(Double.parseDouble(PRICE.getText()));
-                productEntity.setQUANTITY(Integer.parseInt(QUANTITY.getText()));
-                productEntity.setDISCOUNT(Double.parseDouble(DISCOUNT.getText()));
-
+                if (!NAME_PRODUCT.getText().isEmpty()) productEntity.setNAME_PRODUCT(NAME_PRODUCT.getText());
+                if ( DES_PRODUCT.getText() != null){
+                    productEntity.setDES_PRODUCT(DES_PRODUCT.getText());
+                }
+                if (PRICE.getText() != null) productEntity.setPRICE_SP(Double.parseDouble(PRICE.getText()));
+                if (DISCOUNT.getText() != null) productEntity.setDISCOUNT(Double.parseDouble(DISCOUNT.getText()));
                 if (imagePath == null) {
                     productEntity.setIMAGE_SP(productEntity.getIMAGE_SP());
                 } else {
@@ -145,7 +145,7 @@ public class ProductFinalUpdateController {
                         try {
                             Files.createDirectories(destinationDir);
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            System.out.println("loi " + e.getMessage());
                             return;
                         }
                     }
@@ -157,6 +157,7 @@ public class ProductFinalUpdateController {
                         Files.copy(sourceFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
                         productEntity.setIMAGE_SP(newFileName);
                     } catch (IOException e) {
+                        System.out.println("loi roi " + e.getMessage());
                         e.printStackTrace();
                     }
                 }
@@ -216,11 +217,9 @@ public class ProductFinalUpdateController {
         NAME_OPTION.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Option_Values_Entity::getNAME_OPTION));
     }
 
-    private void setTextFormatter(){
-        Validator validator2 = new Validator();
+    private void setTextFormatter() {
         Validator validator3 = new Validator();
         Validator validator4 = new Validator();
-        QUANTITY.delegateSetTextFormatter(validator2.formatterInteger);
         PRICE.delegateSetTextFormatter(validator3.formatterDouble);
         DISCOUNT.delegateSetTextFormatter(validator4.formatterDouble);
     }
@@ -230,9 +229,9 @@ public class ProductFinalUpdateController {
             ID_FINAL_PRODUCT.setText(productEntity.getID_SP().toString());
             NAME_PRODUCT.setText(productEntity.getNAME_PRODUCT());
             DES_PRODUCT.setText(productEntity.getDES_PRODUCT());
-            PRICE.setText(String.valueOf(productEntity.getPRICE_SP()));
-            QUANTITY.setText(productEntity.getQUANTITY().toString());
+            PRICE.setText(productEntity.getPRICE_SP().toString());
             DISCOUNT.setText(productEntity.getDISCOUNT().toString());
+
         }
     }
 

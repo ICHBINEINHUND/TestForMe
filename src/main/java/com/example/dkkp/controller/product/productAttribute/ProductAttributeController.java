@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.dkkp.controller.HomeController.numberOr;
 import static com.example.dkkp.controller.LoginController.*;
 
 public class ProductAttributeController {
@@ -84,7 +85,7 @@ public class ProductAttributeController {
 
     String sortField = "ID_ATTRIBUTE";
     String sortOrder = "desc";
-    Integer setOff = 2;
+    Integer setOff = numberOr;
     Integer offSet = 0;
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
     public ProductBaseService productBaseService = new ProductBaseService(entityManager);

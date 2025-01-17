@@ -16,6 +16,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.stage.Stage;
 
+import java.text.DecimalFormat;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -68,10 +69,10 @@ public class ImportGeneralDetailController implements TableInterface {
 
     @FXML
     public void initialize() {
-//        list = getImportDetail();
-//        importDetailTable.setItems(list);
-//        setCol();
-//        setWidth();
+        list = getImportDetail();
+        importDetailTable.setItems(list);
+        setCol();
+        setWidth();
         pushEntity();
         backBtn.setOnMouseClicked(event -> importGeneralController.closePopup(popupStage));
     }
@@ -104,8 +105,24 @@ public class ImportGeneralDetailController implements TableInterface {
         ID_BASE_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getID_BASE_PRODUCT));
         ID_FINAL_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getID_FINAL_PRODUCT));
         QUANTITY.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getQUANTITY));
-        UNIT_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getUNIT_PRICE));
-        TOTAL_PRICED.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getTOTAL_PRICE));
+        UNIT_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(product -> {
+            // Định dạng giá trị số
+            Double price = product.getUNIT_PRICE();
+            if (price != null) {
+                DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                return decimalFormat.format(price);
+            }
+            return "";
+        }));
+        TOTAL_PRICED.setRowCellFactory(_ -> new MFXTableRowCell<>(product -> {
+            // Định dạng giá trị số
+            Double price = product.getTOTAL_PRICE();
+            if (price != null) {
+                DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                return decimalFormat.format(price);
+            }
+            return "";
+        }));
         DESCRIPTIOND.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Detail_Entity::getDESCRIPTION));
     }
 

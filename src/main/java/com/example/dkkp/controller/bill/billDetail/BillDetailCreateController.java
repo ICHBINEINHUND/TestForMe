@@ -50,10 +50,10 @@ public class BillDetailCreateController {
             return;
         }
         ProductFinalService productFinalService = new ProductFinalService(entityManager);
-        Double basePrice = productFinalService.getProductByID(finalProductId).getDISCOUNT();
-       Double discount = productFinalService.getProductByID(finalProductId).getPRICE_SP();
+        Double basePrice = productFinalService.getProductByID(finalProductId).getPRICE_SP();
+       Double discount = productFinalService.getProductByID(finalProductId).getDISCOUNT();
         System.out.println("base price " + basePrice);
-        Double unitPrice = basePrice *(1- discount/100)  ;
+        Double unitPrice = basePrice *(1 - discount/100)  ;
         System.out.println("final price " + unitPrice);
 
         Bill_Detail_Entity bill_Detail_Entity = new Bill_Detail_Entity();

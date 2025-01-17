@@ -17,7 +17,7 @@
       </MFXFilterComboBox>
     </HBox>
     <HBox spacing="5">
-      <MFXFilterComboBox floatingText="FINAL PRODUCT" fx:id="finalProductField" floatMode="BORDER" prefWidth="250" prefHeight="40">
+      <MFXFilterComboBox floatingText="FINAL PRODUCT" fx:id="finalProductField" floatMode="BORDER" prefWidth="400" prefHeight="40">
       </MFXFilterComboBox>
     </HBox>
     <HBox alignment="CENTER">

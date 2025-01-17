@@ -5,6 +5,7 @@ import com.example.dkkp.controller.bill.billDetail.BillDetailCreateController;
 import com.example.dkkp.model.*;
 import com.example.dkkp.service.BillService;
 import com.example.dkkp.service.UserService;
+import com.example.dkkp.service.Validator;
 import io.github.palexdev.materialfx.controls.*;
 import io.github.palexdev.materialfx.controls.cell.MFXTableRowCell;
 import jakarta.persistence.EntityManager;
@@ -22,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -58,7 +60,7 @@ public class BillGeneralCreateController {
     @FXML
     private MFXFilterComboBox<User_Entity> ID_USER;
     @FXML
-    private DatePicker datePicker;
+    private MFXDatePicker datePicker;
     @FXML
     private Spinner hourSpinner;
     @FXML
@@ -85,35 +87,47 @@ public class BillGeneralCreateController {
 
     @FXML
     public void createItem() throws Exception {
+        System.out.println("Dang trong create");
         LocalDateTime dateTime;
         int hour = 0;
         int minute = 0;
         int second = 0;
+        System.out.println("Dang trong create");
         if (datePicker.getValue() != null) {
+            System.out.println("dang khong null");
             LocalDate date = datePicker.getValue();
             if (hourSpinner.getValue() != null) hour = (int) hourSpinner.getValue();
             if (minuteSpinner.getValue() != null) minute = (int) minuteSpinner.getValue();
             if (secondSpinner.getValue() != null) second = (int) secondSpinner.getValue();
             dateTime = LocalDateTime.of(date, LocalTime.of(hour, minute, second));
         } else {
+            System.out.println("duma nullll");
             dateTime = LocalDateTime.now();
         }
 
-
+        System.out.println("Dang trong create " + dateTime);
         String des = (DESCRIPTION.getText().isEmpty()) ? null : DESCRIPTION.getText();
         String idUser = (ID_USER.getValue() != null) ? ID_USER.getValue().getID_USER() : null;
 
         String phone = null;
         String add = null;
-        System.out.println("DCM LOI HOAI");
         if (idUser != null) {
             UserService userService = new UserService(entityManager);
             phone = userService.getUsersByID(idUser).getPHONE_ACC();
             add = userService.getUsersByID(idUser).getADDRESS();
         }
-        System.out.println("DCM LOI HOAI 2");
-        if (!PHONE_BILL.getText().isEmpty()) phone = PHONE_BILL.getText();
-        if (!ADD_BILL.getText().isEmpty()) add = ADD_BILL.getText();
+        if (!PHONE_BILL.getText().isEmpty()) {
+            System.out.println("dang khong null");
+            phone = PHONE_BILL.getText();
+            try {
+                Validator.normalizePhoneNumber(phone);
+            } catch (Exception e) {
+                showAlert("Error", "Please Enter right phone format");
+                return;
+            }
+        }
+        if
+        (!ADD_BILL.getText().isEmpty()) add = ADD_BILL.getText();
 
         EnumType.Status_Bill billStatus = EnumType.Status_Bill.PEN;
         transaction.begin();
@@ -125,10 +139,12 @@ public class BillGeneralCreateController {
                 for (Bill_Detail_Entity item : listBillDetail) {
                     System.out.println("dang trong for");
                     item.setID_BILL(billEntity.getID_BILL());
+                    item.setAVAILABLE(true);
                 }
             }
 //            if (!listBillDetail.isEmpty()) System.out.println("trong nay nay");
             ;
+            System.out.println("kiem tra phat cuoi " + billEntity.getDATE_EXP());
             if (!listBillDetail.isEmpty()) billService.registerNewBillDetail(listBillDetail);
             billGeneralController.billController.setMainView("/com/example/dkkp/BillGeneral/BillGeneralView.fxml", billGeneralController);
             transaction.commit();
@@ -137,6 +153,14 @@ public class BillGeneralCreateController {
         } catch (Exception e) {
             transaction.rollback();
         }
+    }
+
+    private void showAlert(String title, String message) {
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
 
@@ -212,8 +236,25 @@ public class BillGeneralCreateController {
     private void setCol() {
         ID_FINAL_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Detail_Entity::getID_FINAL_PRODUCT));
         QUANTITY_SP.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Detail_Entity::getQUANTITY_BILL));
-        UNIT_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Detail_Entity::getUNIT_PRICE));
-        TOTAL_DETAIL_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Detail_Entity::getTOTAL_DETAIL_PRICE));
+//        UNIT_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Detail_Entity::getUNIT_PRICE));
+        UNIT_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(product -> {
+            // Định dạng giá trị số
+            Double price = product.getUNIT_PRICE();
+            if (price != null) {
+                DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                return decimalFormat.format(price);
+            }
+            return "";
+        }));
+        TOTAL_DETAIL_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(product -> {
+            // Định dạng giá trị số
+            Double price = product.getTOTAL_DETAIL_PRICE();
+            if (price != null) {
+                DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                return decimalFormat.format(price);
+            }
+            return "";
+        }));
         AVAILABLE.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Detail_Entity::getAVAILABLE));
     }
 

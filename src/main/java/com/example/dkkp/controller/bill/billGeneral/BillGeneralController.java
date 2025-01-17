@@ -38,6 +38,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Optional;
 
@@ -143,7 +144,15 @@ public class BillGeneralController {
         }));
         PHONE_BILL.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Entity::getPHONE_BILL));
         ADD_BILL.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Entity::getADD_BILL));
-        TOTAL_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Entity::getTOTAL_PRICE));
+        TOTAL_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(product -> {
+            // Định dạng giá trị số
+            Double price = product.getTOTAL_PRICE();
+            if (price != null) {
+                DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                return decimalFormat.format(price);
+            }
+            return "";
+        }));
         DESCRIPTION.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Entity::getDESCRIPTION));
     }
 
@@ -608,7 +617,7 @@ public class BillGeneralController {
                     transaction.rollback();
                     Alert errorAlert = new Alert(Alert.AlertType.ERROR);
                     errorAlert.setTitle("Error");
-                    errorAlert.setHeaderText("An unexpected error occurred.");
+                    errorAlert.setHeaderText("An unexpected error occurred." +e.getMessage());
                     errorAlert.setContentText("Please try again later.");
                     errorAlert.showAndWait();
                 }

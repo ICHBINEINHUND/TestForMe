@@ -61,7 +61,7 @@ public class ProductBaseUpdateController implements TableInterface {
     @FXML
     private MFXTextField viewCount;
     @FXML
-    private DatePicker date;
+    private MFXDatePicker date;
     @FXML
     private MFXFilterComboBox<Brand_Entity> brandField;
     @FXML

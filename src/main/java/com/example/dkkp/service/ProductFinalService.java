@@ -6,6 +6,7 @@ import com.example.dkkp.dao.ProductFinalDao;
 import com.example.dkkp.model.*;
 import jakarta.persistence.EntityManager;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -44,12 +45,17 @@ public class ProductFinalService {
     }
 
     public  List<Product_Final_Entity> getProductDashBoard(LocalDateTime startDate, LocalDateTime endDate){
-        if (startDate != null) {
-            startDate = startDate.toLocalDate().atStartOfDay(); // Đặt giờ thành 00:00:00
+        if (startDate == null) {
+            startDate = LocalDate.now().withDayOfMonth(1).atStartOfDay();
+        } else {
+            startDate = startDate.toLocalDate().atStartOfDay();
         }
 
-        if (endDate != null) {
-            endDate = endDate.toLocalDate().atTime(23, 59, 59, 999999999); // Đặt giờ thành 23:59:59.999999999
+
+        if (endDate == null) {
+            endDate = LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth()).atTime(23, 59, 59, 999999999);
+        } else {
+            endDate = endDate.toLocalDate().atTime(23, 59, 59, 999999999);
         }
         return productFinalDao.getProductFinalForDashBoard(startDate,endDate);
     }

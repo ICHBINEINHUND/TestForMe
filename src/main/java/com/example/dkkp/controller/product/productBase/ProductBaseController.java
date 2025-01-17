@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.dkkp.controller.HomeController.numberOr;
 import static com.example.dkkp.controller.LoginController.*;
 
 public class ProductBaseController implements TableInterface {
@@ -105,7 +106,7 @@ public class ProductBaseController implements TableInterface {
     String typeQuantity = null;
     String typeView = null;
 
-    Integer setOff = 2;
+    Integer setOff = numberOr;
     Integer offSet = 0;
 
     @FXML
@@ -258,7 +259,7 @@ public class ProductBaseController implements TableInterface {
     private void setCol() {
         ID_BASE_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Base_Entity::getID_BASE_PRODUCT));
         NAME_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Base_Entity::getNAME_PRODUCT));
-        DES_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Base_Entity::getID_CATEGORY));
+        DES_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Base_Entity::getDES_PRODUCT));
         DATE_RELEASE.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Base_Entity::getDATE_RELEASE));
         VIEW_COUNT.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Base_Entity::getVIEW_COUNT));
         TOTAL_QUANTITY.setRowCellFactory(_ -> new MFXTableRowCell<>(Product_Base_Entity::getTOTAL_QUANTITY));

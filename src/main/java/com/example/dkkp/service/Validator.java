@@ -4,6 +4,7 @@ import javafx.scene.control.TextFormatter;
 import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
 
+import java.text.DecimalFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,7 +20,23 @@ public class Validator {
         }
     });
 
-    public  TextFormatter<Double> formatterDouble = new TextFormatter<>(new DoubleStringConverter(), null, c -> {
+    public TextFormatter<Double> formatterDouble = new TextFormatter<>(new DoubleStringConverter() {
+        private DecimalFormat decimalFormat = new DecimalFormat("#.################");
+
+        @Override
+        public String toString(Double value) {
+            return value == null ? "" : decimalFormat.format(value);
+        }
+
+        @Override
+        public Double fromString(String string) {
+            try {
+                return string.isEmpty() ? null : Double.parseDouble(string);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+    }, null, c -> {
         String newText = c.getControlNewText();
         return newText.matches("-?\\d*(\\.\\d*)?") && !newText.startsWith(".") || newText.isEmpty() ? c : null;
     });

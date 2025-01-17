@@ -38,6 +38,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Optional;
 
@@ -136,7 +137,15 @@ public class ImportGeneralController {
         DESCRIPTION.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Entity::getDESCRIPTION));
         IS_AVAILABLE.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Entity::getIS_AVAILABLE));
         ID_REPLACE.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Entity::getID_REPLACE));
-        TOTAL_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(Import_Entity::getTOTAL_PRICE));
+        TOTAL_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(product -> {
+            // Định dạng giá trị số
+            Double price = product.getTOTAL_PRICE();
+            if (price != null) {
+                DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                return decimalFormat.format(price);
+            }
+            return "";
+        }));
     }
     public void setWidth() {
         ID_IMP.prefWidthProperty().bind(importTable.widthProperty().multiply(0.2));

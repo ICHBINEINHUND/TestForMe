@@ -12,6 +12,8 @@ import io.github.palexdev.materialfx.controls.MFXTextField;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 import static com.example.dkkp.controller.LoginController.*;
 
@@ -39,6 +41,14 @@ public class ProductOptionValuesCreateController {
         String value = (VALUE.getText().isEmpty()) ? null : VALUE.getText();
         Integer optionId = (optionField.getValue() != null) ? optionField.getValue().getID_OPTION() : null;
         Integer finalId = (finalProductField.getValue() != null) ? finalProductField.getValue().getID_SP() : null;
+
+        if (value == null || optionId == null || finalId == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Please do not leave the Name or Category fields empty.", ButtonType.OK);
+            alert.setTitle("Input Warning");
+            alert.setHeaderText("Invalid Input");
+            alert.showAndWait();
+            return;
+        }
             transaction.begin();
             try {
                 Product_Option_Values_Entity productOptionValuesEntity = new Product_Option_Values_Entity(null, optionId,value,finalId);

@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.dkkp.controller.HomeController.numberOr;
 import static com.example.dkkp.controller.LoginController.*;
 
 public class ProductBrandController {
@@ -81,7 +82,7 @@ public class ProductBrandController {
 
     String sortField = "ID_BRAND";
     String sortOrder = "desc";
-    Integer setOff = 2;
+    Integer setOff = numberOr;
     Integer offSet = 0;
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
     public BrandService brandService = new BrandService(entityManager);

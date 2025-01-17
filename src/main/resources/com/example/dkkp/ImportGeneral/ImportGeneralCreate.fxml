@@ -13,6 +13,7 @@
 <?import javafx.scene.control.Spinner?>
 <?import io.github.palexdev.materialfx.controls.MFXTableView?>
 <?import io.github.palexdev.materialfx.controls.MFXTableColumn?>
+<?import io.github.palexdev.materialfx.controls.MFXDatePicker?>
 <StackPane xmlns:fx="http://javafx.com/fxml">
     <VBox spacing="5">
         <MFXButton buttonType="RAISED" fx:id="back" mnemonicParsing="false" text="BACK" prefWidth="50"
@@ -55,7 +56,7 @@
                                    prefHeight="40">
                 </MFXFilterComboBox>
                 <HBox>
-                    <DatePicker promptText="IMPORT DATE" fx:id="datePicker"/>
+                    <MFXDatePicker promptText="IMPORT DATE" fx:id="datePicker"/>
                     <Spinner fx:id="hourSpinner" prefWidth="80"/>
                     <Spinner fx:id="minuteSpinner" prefWidth="80"/>
                     <Spinner fx:id="secondSpinner" prefWidth="80"/>

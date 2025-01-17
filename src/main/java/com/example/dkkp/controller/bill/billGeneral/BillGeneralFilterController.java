@@ -5,15 +5,13 @@ import com.example.dkkp.model.EnumType;
 import com.example.dkkp.model.User_Entity;
 import com.example.dkkp.service.UserService;
 import com.example.dkkp.service.Validator;
-import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXComboBox;
-import io.github.palexdev.materialfx.controls.MFXFilterComboBox;
-import io.github.palexdev.materialfx.controls.MFXTextField;
+import io.github.palexdev.materialfx.controls.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
@@ -44,7 +42,7 @@ public class BillGeneralFilterController {
     @FXML
     private MFXTextField TOTAL_PRICE;
     @FXML
-    private DatePicker datePicker;
+    private MFXDatePicker datePicker;
     @FXML
     private Spinner hourSpinner;
     @FXML
@@ -124,6 +122,11 @@ public class BillGeneralFilterController {
 
     @FXML
     public void initialize() {
+
+        hourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 12)); // Giờ: 0 - 23, mặc định 12
+        minuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0)); // Phút: 0 - 59, mặc định 0
+        secondSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0)); // Giây: 0 - 59
+
         setTextFormatter();
         applyButton.setOnAction(event -> {
             try {

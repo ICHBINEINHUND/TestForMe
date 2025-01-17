@@ -54,7 +54,8 @@ public class UserService {
         //add check
         // chạy được
         // sửa lại các điều kiện kiểm tra định dạng email và pass
-        String mail = SecurityFunction.encrypt(EMAIL_ACC);
+//        String mail = SecurityFunction.encrypt(EMAIL_ACC);
+        String mail = EMAIL_ACC;
         if (userDao.isUserByMail(mail)) {
             PASSWORD_ACC += userDao.getUsersByMail(mail).getSALT();
             PASSWORD_ACC = SecurityFunction.hashString(PASSWORD_ACC);

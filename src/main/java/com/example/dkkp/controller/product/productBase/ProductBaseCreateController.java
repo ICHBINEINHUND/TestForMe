@@ -7,13 +7,12 @@ import com.example.dkkp.model.Product_Base_Entity;
 import com.example.dkkp.service.BrandService;
 import com.example.dkkp.service.CategoryService;
 import com.example.dkkp.service.ProductBaseService;
-import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXComboBox;
-import io.github.palexdev.materialfx.controls.MFXFilterComboBox;
-import io.github.palexdev.materialfx.controls.MFXTextField;
+import io.github.palexdev.materialfx.controls.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 
 import java.time.LocalDate;
@@ -34,7 +33,7 @@ public class ProductBaseCreateController implements TableInterface {
     @FXML
     private MFXTextField nameField;
     @FXML
-    private DatePicker releaseDatePicker;
+    private MFXDatePicker releaseDatePicker;
     @FXML
     private MFXTextField desField;
     @FXML
@@ -52,19 +51,25 @@ public class ProductBaseCreateController implements TableInterface {
         Integer brandId = (brandField.getValue() != null) ? brandField.getValue().getID_BRAND() : null;
         Integer categoryId = (cateField.getValue() != null) ? cateField.getValue().getID_CATEGORY() : null;
         LocalDate releaseDate = (releaseDatePicker.getValue() != null) ? releaseDatePicker.getValue() : null;
-        LocalDateTime releaseDateTime = (releaseDate != null) ? releaseDate.atTime(LocalTime.MIDNIGHT) : null;
-        if (true) {
-            transaction.begin();
-            try {
-                Product_Base_Entity product = new Product_Base_Entity(null, name, null, releaseDateTime, des, null, categoryId, brandId);
-                ProductBaseService productBaseService = new ProductBaseService(entityManager);
-                productBaseService.createProductBase(product);
-                transaction.commit();
-                productBaseController.setMainView("/com/example/dkkp/ProductBase/ProductBaseView.fxml", productBaseController);
-            } catch (Exception e) {
-                e.printStackTrace();
-                transaction.rollback();
-            }
+        LocalDateTime releaseDateTime = (releaseDate != null) ? releaseDate.atTime(LocalTime.MIDNIGHT) : LocalDateTime.now();
+        if (name == null || brandId == null || categoryId == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Please do not leave the Name or Category fields empty.", ButtonType.OK);
+            alert.setTitle("Input Warning");
+            alert.setHeaderText("Invalid Input");
+            alert.showAndWait();
+            return;
+        }
+        transaction.begin();
+        try {
+            Product_Base_Entity product = new Product_Base_Entity(null, name, 0, releaseDateTime, des, null, categoryId, brandId);
+            ProductBaseService productBaseService = new ProductBaseService(entityManager);
+            productBaseService.createProductBase(product);
+            transaction.commit();
+//            productBaseController.setPage(1);
+            productBaseController.productController.setMainView("/com/example/dkkp/ProductBase/ProductBaseView.fxml", productBaseController);
+        } catch (Exception e) {
+            e.printStackTrace();
+            transaction.rollback();
         }
     }
 

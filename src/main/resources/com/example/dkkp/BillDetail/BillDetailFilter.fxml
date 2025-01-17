@@ -15,8 +15,8 @@
     <HBox alignment="TOP_CENTER" prefHeight="60.0" prefWidth="350.0">
         <VBox spacing="10" alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
             <VBox spacing="10">
-                <MFXTextField floatingText="ID IMPORT DETAIL" fx:id="ID_BILL_DETAIL" prefWidth="250" prefHeight="40"/>
-                <MFXFilterComboBox fx:id="ID_BILL" floatingText="ID IMPORT" prefWidth="250" prefHeight="40"/>
+                <MFXTextField floatingText="ID BILL DETAIL" fx:id="ID_BILL_DETAIL" prefWidth="250" prefHeight="40"/>
+                <MFXFilterComboBox fx:id="ID_BILL" floatingText="ID BILL" prefWidth="250" prefHeight="40"/>
                 <MFXComboBox fx:id="isAvailableCombobox" prefWidth="250" prefHeight="40" floatingText="IS AVAILABLE">
                     <items>
                         <FXCollections fx:factory="observableArrayList">

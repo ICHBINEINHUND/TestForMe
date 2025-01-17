@@ -23,16 +23,16 @@ public class TestController {
         try {
             transaction.begin();
 //             nhét code vào đây
-            BillService billService = new BillService(entityManager);
-            Bill_Detail_Entity bill = new Bill_Detail_Entity();
+            ProductFinalService productFinalService = new ProductFinalService(entityManager);
 //            bill.setID_BILL("BILL-1737044899949-680");
-
-            List<Bill_Detail_Entity> bills = billService.getBillDetailByCombinedCondition(bill,null,null,null,null,null,null,null);
-            for(Bill_Detail_Entity bill2 : bills) {
-                System.out.println("bill " + bill2.getID_BILL());
+            LocalDateTime start = LocalDateTime.now();
+            LocalDateTime end = LocalDateTime.now();
+            List<Product_Final_Entity> p = productFinalService.getProductDashBoard(null, null);
+            for(Product_Final_Entity p1 : p){
+                System.out.println("ID " + p1.getID_SP() + " NAME " + p1.getNAME_PRODUCT()
+                        + " QUANTITY " + p1.getSum_quantity() + " PRICE " +p1.getPRICE_SP() );
             }
-//            Integer number = billService.getCountBillDetailByCombinedCondition(bill,null,null,null);
-//            System.out.println("so luong " + number);
+
             transaction.commit();
         } catch (Exception e) {
             if (transaction.isActive()) {

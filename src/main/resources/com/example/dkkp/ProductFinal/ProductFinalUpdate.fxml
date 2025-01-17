@@ -59,13 +59,10 @@
             <MFXTextField fx:id="DES_PRODUCT" floatingText="DESCRIPTION" floatMode="BORDER" prefWidth="200"/>
           </HBox>
           <HBox spacing="5">
-            <MFXTextField fx:id="PRICE" floatingText="PRICE" floatMode="BORDER" prefWidth="200"/>
+            <MFXTextField fx:id="PRICE" floatingText="NEW PRICE" floatMode="BORDER" prefWidth="200"/>
           </HBox>
           <HBox spacing="5">
-            <MFXTextField fx:id="QUANTITY" floatingText="QUANTITY" floatMode="BORDER" prefWidth="200"/>
-          </HBox>
-          <HBox spacing="5">
-            <MFXTextField fx:id="DISCOUNT" floatingText="DISCOUNT" floatMode="BORDER" prefWidth="200"/>
+            <MFXTextField fx:id="DISCOUNT" floatingText="NEW DISCOUNT" floatMode="BORDER" prefWidth="200"/>
           </HBox>
         </VBox>
       </HBox>

@@ -35,6 +35,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import static com.example.dkkp.controller.LoginController.entityManagerFactory;
@@ -132,8 +133,24 @@ public class BillDetailController {
         AVAILABLE.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Detail_Entity::getAVAILABLE));
         ID_FINAL_PRODUCT.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Detail_Entity::getID_FINAL_PRODUCT));
         QUANTITY_SP.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Detail_Entity::getQUANTITY_BILL));
-        UNIT_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Detail_Entity::getUNIT_PRICE));
-        TOTAL_DETAIL_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(Bill_Detail_Entity::getTOTAL_DETAIL_PRICE));
+        UNIT_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(product -> {
+            // Định dạng giá trị số
+            Double price = product.getUNIT_PRICE();
+            if (price != null) {
+                DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                return decimalFormat.format(price);
+            }
+            return "";
+        }));
+        TOTAL_DETAIL_PRICE.setRowCellFactory(_ -> new MFXTableRowCell<>(product -> {
+            // Định dạng giá trị số
+            Double price = product.getTOTAL_DETAIL_PRICE();
+            if (price != null) {
+                DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                return decimalFormat.format(price);
+            }
+            return "";
+        }));
     }
     public void setWidth() {
         ID_BILL_DETAIL.prefWidthProperty().bind(billTable.widthProperty().multiply(0.1));
