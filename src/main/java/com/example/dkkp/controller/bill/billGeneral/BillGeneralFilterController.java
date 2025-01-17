@@ -28,7 +28,7 @@ public class BillGeneralFilterController {
     EntityTransaction transaction = entityManager.getTransaction();
 
     @FXML
-    private MFXTextField ID_IMP;
+    private MFXTextField ID_BILL;
     @FXML
     private MFXTextField PHONE_BILL;
     @FXML
@@ -63,7 +63,7 @@ public class BillGeneralFilterController {
     @FXML
     public void createFilter() throws Exception {
 
-        LocalDateTime dateTime = LocalDateTime.now();
+        LocalDateTime dateTime = null;
         int hour = 0;
         int minute = 0;
         int second = 0;
@@ -74,8 +74,7 @@ public class BillGeneralFilterController {
             if (secondSpinner.getValue() != null) second = (int) secondSpinner.getValue();
             dateTime = LocalDateTime.of(date, LocalTime.of(hour, minute, second));
         }
-
-        String id = ID_IMP.getText().trim().isEmpty() ? null : ID_IMP.getText();
+        String id = ID_BILL.getText().trim().isEmpty() ? null : ID_BILL.getText();
         String idUser = (ID_USER.getValue() != null) ? ID_USER.getValue().getID_USER() : null;
         if (totalPriceComboBox != null) {
             billGeneralController.typePrice = getValueOperator(totalPriceComboBox.getValue());
@@ -83,29 +82,24 @@ public class BillGeneralFilterController {
         if (dateCombobox != null) {
             billGeneralController.typeDate = getValueOperator(dateCombobox.getValue());
         }
-        String phone =null;
-        String add =null;
-        if(idUser != null) {
-            UserService userService = new UserService(entityManager);
-            phone = userService.getUsersByID(idUser).getPHONE_ACC();
-            add = userService.getUsersByID(idUser).getADDRESS();
-        }else{
-            phone = (PHONE_BILL.getText().isEmpty()) ? null : PHONE_BILL.getText();
-            add = (ADD_BILL.getText().isEmpty()) ? null : ADD_BILL.getText();
-        }
+        String phone = null;
+        String add = null;
 
-        String billS =  (BILL_STATUS.getValue() != null) ? BILL_STATUS.getValue() : null;
-        EnumType.Status_Bill billStatus = switch (billS){
+        phone = (PHONE_BILL.getText().isEmpty()) ? null : PHONE_BILL.getText();
+        add = (ADD_BILL.getText().isEmpty()) ? null : ADD_BILL.getText();
+
+        String billS = (BILL_STATUS.getValue() != null) ? BILL_STATUS.getValue() : null;
+        EnumType.Status_Bill billStatus = switch (billS) {
             case "Pending" -> EnumType.Status_Bill.PEN;
             case "Payed" -> EnumType.Status_Bill.CONF;
-            case "Shipped"-> EnumType.Status_Bill.SHIP;
-            case "Delivered"-> EnumType.Status_Bill.DELI;
-            case "Cancel"-> EnumType.Status_Bill.CANC;
-            default -> EnumType.Status_Bill.PEN;
+            case "Shipped" -> EnumType.Status_Bill.SHIP;
+            case "Delivered" -> EnumType.Status_Bill.DELI;
+            case "Cancel" -> EnumType.Status_Bill.CANC;
+            case null -> null;
+            default -> null;
         };
         Double pPrice = TOTAL_PRICE.getText().isEmpty() ? null : Double.parseDouble(TOTAL_PRICE.getText());
-
-        billGeneralController.billEntity = new Bill_Entity(id,dateTime,phone,add,idUser,pPrice,null,billStatus,null);
+        billGeneralController.billEntity = new Bill_Entity(id, dateTime, phone, add, idUser, pPrice, null, billStatus, null);
         billGeneralController.setPage(1);
         billGeneralController.billController.setMainView("/com/example/dkkp/BillGeneral/BillGeneralView.fxml", billGeneralController);
         billGeneralController.closePopup(popupStage);
@@ -135,6 +129,7 @@ public class BillGeneralFilterController {
             try {
                 createFilter();
             } catch (Exception e) {
+                System.out.println("loi " + e.getMessage());
                 throw new RuntimeException(e);
             }
         });

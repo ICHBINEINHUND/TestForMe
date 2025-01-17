@@ -83,7 +83,7 @@ public class BillDao {
             hasConditions = true;
         }
         if (idBill != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("ID_BILL"), idBill));
+            conditions = cb.and(conditions, cb.like(root.get("ID_BILL"),"%"+ idBill + "%"));
             hasConditions = true;
         }
         if (idUser != null) {
@@ -95,11 +95,11 @@ public class BillDao {
             hasConditions = true;
         }
         if (phone != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("PHONE_BILL"), phone));
+            conditions = cb.and(conditions, cb.like(root.get("PHONE_BILL"), "%" + phone + "%"));
             hasConditions = true;
         }
         if (addBill != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("ADD_BILL"), addBill));
+            conditions = cb.and(conditions, cb.like(root.get("ADD_BILL"),"%"+ addBill + "%"));
             hasConditions = true;
         }
         if (typePrice != null) {
@@ -184,7 +184,7 @@ public class BillDao {
         }
 
         if (idBill != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("ID_BILL"), idBill));
+            conditions = cb.and(conditions, cb.like(root.get("ID_BILL"),"%" + idBill + "%"));
             hasConditions = true;
         }
 
@@ -199,12 +199,12 @@ public class BillDao {
         }
 
         if (phone != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("PHONE_BILL"), phone));
+            conditions = cb.and(conditions, cb.like(root.get("PHONE_BILL"),"%" + phone + "%"));
             hasConditions = true;
         }
 
         if (addBill != null) {
-            conditions = cb.and(conditions, cb.equal(root.get("ADD_BILL"), addBill));
+            conditions = cb.and(conditions, cb.like(root.get("ADD_BILL"),"%" + addBill + "%"));
             hasConditions = true;
         }
 

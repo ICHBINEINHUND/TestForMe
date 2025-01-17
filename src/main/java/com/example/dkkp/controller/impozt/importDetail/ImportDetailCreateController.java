@@ -84,7 +84,9 @@ public class ImportDetailCreateController {
         import_Detail_Entity.setQUANTITY(quantity);
         import_Detail_Entity.setUNIT_PRICE(uPrice);
         import_Detail_Entity.setTOTAL_PRICE(pPrice);
+        System.out.println("dcm");
         importGeneralCreateController.listImportDetail.add(import_Detail_Entity);
+        System.out.println("dcm2");
         importGeneralCreateController.setItem();
         importGeneralCreateController.closePopup(popupStage);
     }

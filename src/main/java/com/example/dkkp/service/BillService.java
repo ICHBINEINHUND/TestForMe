@@ -32,10 +32,8 @@ public class BillService {
     ) throws Exception {
         LocalDateTime dateExport = billEntity.getDATE_EXP();
         String id = billEntity.getID_BILL();
-//        String phone = SecurityFunction.encrypt(billEntity.getPHONE_BILL());
         String phone = billEntity.getPHONE_BILL();
         String add = billEntity.getADD_BILL();
-//        String add = SecurityFunction.encrypt(billEntity.getADD_BILL());
         String idUser = billEntity.getID_USER();
         Double totalPrice = billEntity.getTOTAL_PRICE();
         String EMAIL_ACC = billEntity.getEMAIL_ACC();
@@ -43,9 +41,6 @@ public class BillService {
 
         List<Bill_Entity> results = billDao.getFilteredBills(
                 dateExport, typeDate, id, phone, idUser, EMAIL_ACC, statusBill, add, totalPrice, typePrice, sortField, sortOrder, setOff, offset);
-//        for (Bill_Entity bill : results) {
-//            decryptBillSensitiveData(bill);
-//        }
         return results;
     }
 
@@ -53,11 +48,11 @@ public class BillService {
             Bill_Entity billEntity,
             String typeDate,
             String typePrice
-    ) throws Exception {
+    )  {
         LocalDateTime dateExport = billEntity.getDATE_EXP();
         String id = billEntity.getID_BILL();
-        String phone = SecurityFunction.encrypt(billEntity.getPHONE_BILL());
-        String add = SecurityFunction.encrypt(billEntity.getADD_BILL());
+        String phone = billEntity.getPHONE_BILL();
+        String add = billEntity.getADD_BILL();
         String idUser = billEntity.getID_USER();
         Double totalPrice = billEntity.getTOTAL_PRICE();
         String EMAIL_ACC = billEntity.getEMAIL_ACC();
@@ -156,39 +151,21 @@ public class BillService {
         //add check
         LocalDateTime DATE_JOIN = LocalDateTime.now();
         if (billEntity.getID_USER() != null) {
-            System.out.println("mem ay beo1");
             String idUser = billEntity.getID_USER();
-            System.out.println("mem ay beo2");
             UserService userService = new UserService(entityManager);
-            System.out.println("mem ay beo3");
             User_Entity user = userService.getUsersByID(idUser);
-            System.out.println("mem ay beo4");
             if (phone == null) {
-                phone = user.getPHONE_ACC();
-            } else {
-                phone = SecurityFunction.encrypt(phone);
+                phone = SecurityFunction.decrypt(user.getPHONE_ACC());
             }
-            System.out.println("mem ay beo5");
             if (add == null) {
-                add = user.getADDRESS();
-            } else {
-                add = SecurityFunction.encrypt(add);
+                add =SecurityFunction.decrypt( user.getADDRESS());
             }
-            System.out.println("mem ay beo6");
 
-        } else {
-            phone = SecurityFunction.encrypt(phone);
-            add = SecurityFunction.encrypt(add);
         }
-        System.out.println("mm beo111");
         billEntity.setADD_BILL(add);
-        System.out.println("mm beo122");
         billEntity.setPHONE_BILL(phone);
-        System.out.println("mm beo33");
         billEntity.setDATE_EXP(DATE_JOIN);
-        System.out.println("mm beo44");
         billDao.createBill(billEntity);
-        System.out.println("mm beo55");
     }
 
     public void registerNewBillDetail(List<Bill_Detail_Entity> listBillDetail) {
@@ -206,23 +183,4 @@ public class BillService {
         }
     }
 
-    public void decryptBillSensitiveData(Bill_Entity bill) throws Exception {
-        if (bill.getADD_BILL() != null) {
-            bill.setADD_BILL(SecurityFunction.decrypt(bill.getADD_BILL()));
-        }
-        if (bill.getPHONE_BILL() != null) {
-            bill.setPHONE_BILL(SecurityFunction.decrypt(bill.getPHONE_BILL()));
-        }
-
-    }
-
-    public void encryptBillSensitiveData(Bill_Entity bill) throws Exception {
-        if (bill.getADD_BILL() != null) {
-            bill.setADD_BILL(SecurityFunction.encrypt(bill.getADD_BILL()));
-        }
-        if (bill.getPHONE_BILL() != null) {
-            bill.setPHONE_BILL(SecurityFunction.encrypt(bill.getPHONE_BILL()));
-        }
-
-    }
 }

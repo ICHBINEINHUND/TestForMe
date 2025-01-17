@@ -225,7 +225,7 @@ public class BillGeneralController {
         billTable.setItems(observableList);
     }
 
-    private void updateTotalPage() throws Exception {
+    public void updateTotalPage() throws Exception {
         Integer number = billService.getCountBillByCombinedCondition(billEntity, typeDate, typePrice);
         totalPages = (int) Math.ceil((double) number / setOff);
         totalRowLabel.setText("Total row : " + number);

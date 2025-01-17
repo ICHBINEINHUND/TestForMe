@@ -115,6 +115,8 @@ public class ImportGeneralCreateController {
                 importService.registerNewImportDetail(observableList);
             importGeneralController.importController.setMainView("/com/example/dkkp/ImportGeneral/ImportGeneralView.fxml", importGeneralController);
             transaction.commit();
+            observableList.clear();
+            listImportDetail.clear();
             return ;
         } catch (Exception e) {
             transaction.rollback();
@@ -158,6 +160,8 @@ public class ImportGeneralCreateController {
     }
 
     public void setItem() {
+        Import_Detail_Entity  import_entity = new Import_Detail_Entity(1,"1",false,1,1,1,1.0,"2");
+//        listImportDetail.add(import_entity);
         observableList = FXCollections.observableArrayList(listImportDetail);
         importDetailTable.setItems(observableList);
     }

@@ -16,9 +16,9 @@
         <VBox spacing="10" alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
             <VBox spacing="10">
                 <MFXTextField floatingText="ID" fx:id="ID_BILL" prefWidth="250" prefHeight="40"/>
-                <MFXFilterComboBox fx:id="ID_USER" floatingText="ID REPLACE" prefWidth="250" prefHeight="40"/>
-                <MFXTextField floatingText="ID" fx:id="PHONE_BILL" prefWidth="250" prefHeight="40"/>
-                <MFXTextField floatingText="ID" fx:id="ADD_BILL" prefWidth="250" prefHeight="40"/>
+                <MFXFilterComboBox fx:id="ID_USER" floatingText="EMAIL" prefWidth="250" prefHeight="40"/>
+                <MFXTextField floatingText="PHONE" fx:id="PHONE_BILL" prefWidth="250" prefHeight="40"/>
+                <MFXTextField floatingText="ADDRESS" fx:id="ADD_BILL" prefWidth="250" prefHeight="40"/>
             </VBox>
                 <HBox>
                     <MFXComboBox fx:id="dateCombobox" prefWidth="250" prefHeight="40" promptText="DATE IMPORT">

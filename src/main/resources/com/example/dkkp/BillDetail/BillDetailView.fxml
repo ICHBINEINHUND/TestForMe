@@ -23,13 +23,13 @@
       </HBox>
       <MFXTableView fx:id="billTable" footerVisible="false" minHeight="380">
         <tableColumns>
-          <MFXTableColumn fx:id="ID_BILL_DETAIL" text="ID IMPORT DETAIL" styleClass="productBF"/>
-          <MFXTableColumn fx:id="ID_BILL" text="ID IMPORT GENERAL" styleClass="productBF"/>
-          <MFXTableColumn fx:id="AVAILABLE" text="IS AVAILABLE" styleClass="productBF"/>
-          <MFXTableColumn fx:id="ID_FINAL_PRODUCT" text="ID BASE PRODUCT" styleClass="productBF"/>
-          <MFXTableColumn fx:id="QUANTITY_SP" text="ID FINAL PRODUCT" styleClass="productBF"/>
-          <MFXTableColumn fx:id="UNIT_PRICE" text="QUANTITY" styleClass="productBF"/>
-          <MFXTableColumn fx:id="TOTAL_DETAIL_PRICE" text="UNIT PRICE" styleClass="productBF"/>
+          <MFXTableColumn style="-fx-font-size: 10px;"  fx:id="ID_BILL_DETAIL" text="ID IMPORT DETAIL" styleClass="productBF"/>
+          <MFXTableColumn style="-fx-font-size: 10px;"  fx:id="ID_BILL" text="ID IMPORT GENERAL" styleClass="productBF"/>
+          <MFXTableColumn style="-fx-font-size: 10px;"  fx:id="AVAILABLE" text="IS AVAILABLE" styleClass="productBF"/>
+          <MFXTableColumn style="-fx-font-size: 10px;"  fx:id="ID_FINAL_PRODUCT" text="ID FINAL PRODUCT" styleClass="productBF"/>
+          <MFXTableColumn style="-fx-font-size: 10px;"  fx:id="QUANTITY_SP" text="QUANTITY" styleClass="productBF"/>
+          <MFXTableColumn style="-fx-font-size: 10px;"  fx:id="UNIT_PRICE" text="UNIT PRICE" styleClass="productBF"/>
+          <MFXTableColumn style="-fx-font-size: 10px;"  fx:id="TOTAL_DETAIL_PRICE" text="TOTAL PRICE" styleClass="productBF"/>
         </tableColumns>
       </MFXTableView>
       <HBox fx:id="paginationHBox" spacing="5" alignment="CENTER">

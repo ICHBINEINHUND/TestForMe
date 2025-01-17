@@ -14,9 +14,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -29,6 +27,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.dkkp.controller.LoginController.entityManagerFactory;
 
@@ -119,7 +118,7 @@ public class BillGeneralCreateController {
         EnumType.Status_Bill billStatus = EnumType.Status_Bill.PEN;
         transaction.begin();
         try {
-            Bill_Entity billEntity = new Bill_Entity( dateTime, add, phone, idUser, null, des, billStatus);
+            Bill_Entity billEntity = new Bill_Entity(dateTime, add, phone, idUser, null, des, billStatus);
             BillService billService = new BillService(entityManager);
             billService.registerNewBill(billEntity, phone, add);
             if (!listBillDetail.isEmpty()) {
@@ -147,6 +146,7 @@ public class BillGeneralCreateController {
         setCol();
         setWidth();
         crt();
+        del();
 //
         hourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 12)); // Giờ: 0 - 23, mặc định 12
         minuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0)); // Phút: 0 - 59, mặc định 0
@@ -157,6 +157,26 @@ public class BillGeneralCreateController {
 
     }
 
+    private void del() {
+        deleteBillDetail.setOnMouseClicked(event -> {
+            List<Bill_Detail_Entity> selectedItems = billDetailTable.getSelectionModel().getSelectedValues();
+            if (!selectedItems.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirm Deletion");
+                alert.setHeaderText("Are you sure you want to delete this item?");
+                alert.setContentText("This action cannot be undone.");
+                ButtonType yesButton = new ButtonType("Yes");
+                ButtonType noButton = new ButtonType("No");
+                alert.getButtonTypes().setAll(yesButton, noButton);
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.isPresent() && result.get() == yesButton) {
+                    listBillDetail.removeAll(selectedItems);
+                    observableList.removeAll(selectedItems);
+                    setItem();
+                }
+            }
+        });
+    }
 
     private void crt() {
         createBtn.setOnAction(event -> {

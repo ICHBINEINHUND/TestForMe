@@ -68,10 +68,10 @@ public class ImportGeneralDetailController implements TableInterface {
 
     @FXML
     public void initialize() {
-        list = getImportDetail();
-        importDetailTable.setItems(list);
-        setCol();
-        setWidth();
+//        list = getImportDetail();
+//        importDetailTable.setItems(list);
+//        setCol();
+//        setWidth();
         pushEntity();
         backBtn.setOnMouseClicked(event -> importGeneralController.closePopup(popupStage));
     }

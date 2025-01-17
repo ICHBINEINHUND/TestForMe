@@ -30,7 +30,7 @@
       <MFXTableView fx:id="billTable" footerVisible="false" minHeight="380">
         <tableColumns>
           <MFXTableColumn  fx:id="ID_BILL" style="-fx-font-size: 10px;" text="ID BILL GENERAL" styleClass="productBF"/>
-          <MFXTableColumn fx:id="ID_USER" style="-fx-font-size: 10px;" text="ID USER" styleClass="productBF"/>
+          <MFXTableColumn fx:id="ID_USER" style="-fx-font-size: 10px;" text="EMAIL" styleClass="productBF"/>
           <MFXTableColumn fx:id="BILL_STATUS" style="-fx-font-size: 10px;" text="BILL STATUS" styleClass="productBF"/>
           <MFXTableColumn fx:id="PHONE_BILL" style="-fx-font-size: 10px;" text="PHONE BILL" styleClass="productBF"/>
           <MFXTableColumn fx:id="ADD_BILL"  style="-fx-font-size: 10px;" text="ADDRESS" styleClass="productBF"/>
