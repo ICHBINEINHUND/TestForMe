@@ -1,11 +1,10 @@
 package com.example.dkkp.controller.impozt.importGeneral;
 
 import com.example.dkkp.controller.impozt.ImportController;
+import com.example.dkkp.controller.impozt.importDetail.ImportDetailExportController;
 import com.example.dkkp.model.Import_Entity;
-import com.example.dkkp.model.Product_Attribute_Values_Entity;
 import com.example.dkkp.service.ImportService;
 import com.example.dkkp.service.Validator;
-import com.sun.source.tree.TryTree;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTableColumn;
 import io.github.palexdev.materialfx.controls.MFXTableView;
@@ -30,10 +29,15 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,6 +76,8 @@ public class ImportGeneralController {
     @FXML
     private MFXTextField setOffField;
     @FXML
+    private MFXButton exportBtn;
+    @FXML
     private Label totalRowLabel;
     @FXML
     private Label numberSetOff;
@@ -107,6 +113,9 @@ public class ImportGeneralController {
     public ImportGeneralCreateController importGeneralCreateController = new ImportGeneralCreateController();
     public ImportGeneralFilterController importGeneralFilterController = new ImportGeneralFilterController();
     public ImportGeneralDetailController importGeneralDetailController = new ImportGeneralDetailController();
+    public String importExportName = null;
+
+    public ImportExportController importExportController = new ImportExportController();
     @FXML
     public void initialize() {
         observableList = getImport();
@@ -172,6 +181,16 @@ public class ImportGeneralController {
     }
 
     private void crt() {
+        exportBtn.setOnMouseClicked(event -> {
+            try {
+                importExportController.setImportGeneralController(this);
+                Stage popupStage = setPopView("/com/example/dkkp/ExportName.fxml",  importExportController);
+                importExportController.setPopupStage(popupStage);
+                ;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
         main.setOnMouseClicked(event -> {
             importTable.getSelectionModel().clearSelection();
             main.requestFocus();
@@ -206,6 +225,8 @@ public class ImportGeneralController {
         prevPageBtn.setOnAction(event -> setPage(currentPage - 1));
         nextPageBtn.setOnAction(event -> setPage(currentPage + 1));
     }
+    
+    
 
     private void detail() {
         try{
@@ -223,6 +244,57 @@ public class ImportGeneralController {
             System.out.println("co loi " +e.getMessage());
         }
         ;
+    }
+
+    public void exportToFile() throws Exception {
+        Path currentDir = Path.of(System.getProperty("user.dir"));
+        Path destinationDir = currentDir.resolve("src/main/FILE/IMPORT_FILE/IMPORT_GENERAL");
+
+        List<Import_Entity> p = importService.getImportByCombinedCondition(importEntity, typeDate, typePrice, sortField, sortOrder, null, null);
+
+        // Tạo workbook và sheet
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Imports");
+
+        // Tạo tiêu đề cho các cột
+        String[] headers = {"ID_IMPORT", "ID_REPLACE", "IS_AVAILABLE", "DATE_IMP", "TOTAL_PRICE", "DESCRIPTION"}; // Thay đổi theo thuộc tính của Import_Entity
+        Row headerRow = sheet.createRow(0);
+        for (int i = 0; i < headers.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers[i]);
+
+            // Tùy chọn: Định dạng tiêu đề
+            CellStyle style = workbook.createCellStyle();
+            Font font = workbook.createFont();
+            font.setBold(true);
+            style.setFont(font);
+            cell.setCellStyle(style);
+        }
+
+        // Ghi dữ liệu từ danh sách vào các hàng
+        int rowNum = 1;
+        for (Import_Entity bill : p) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(bill.getID_IMP() != null ? bill.getID_IMP().toString() : "X");
+            row.createCell(1).setCellValue(bill.getID_IMP() != null ? bill.getID_IMP().toString() : "X");
+            row.createCell(2).setCellValue(bill.getIS_AVAILABLE() != null ? bill.getIS_AVAILABLE().toString() : "X");
+            row.createCell(3).setCellValue(bill.getDATE_IMP() != null ? bill.getDATE_IMP().toString() : ""); // Ngày tháng để trống nếu null
+            row.createCell(4).setCellValue(bill.getTOTAL_PRICE() != null ? bill.getTOTAL_PRICE() : 0.0); // Giá mặc định là 0.0
+            row.createCell(5).setCellValue(bill.getDESCRIPTION() != null ? bill.getDESCRIPTION() : ""); // Để trống nếu null
+        }
+
+
+        if (Files.notExists(destinationDir)) {
+            Files.createDirectories(destinationDir); // Tạo thư mục nếu chưa tồn tại
+        }
+        String fileName = "Import_General-"+ importExportName + ".xlsx";
+        Path filePath = destinationDir.resolve(fileName);
+        try (FileOutputStream fileOut = new FileOutputStream(filePath.toFile())) {
+            workbook.write(fileOut);
+        }
+
+        workbook.close();
+        System.out.println("File đã được xuất ra: " + filePath.toAbsolutePath());
     }
 
     private void handleKeyPress(KeyEvent event) {

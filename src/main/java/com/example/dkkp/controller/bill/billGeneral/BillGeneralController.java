@@ -346,7 +346,7 @@ public class BillGeneralController {
 
     public void exportToFile() throws Exception {
         Path currentDir = Path.of(System.getProperty("user.dir"));
-        Path destinationDir = currentDir.resolve("src/main/FILE/BILL_FILE");
+        Path destinationDir = currentDir.resolve("src/main/FILE/BILL_FILE/BILL_GENERAL");
 
         List<Bill_Entity> p = billService.getBillByCombinedCondition(billEntity, typeDate, typePrice, sortField, sortOrder, null, null);
 
@@ -373,15 +373,16 @@ public class BillGeneralController {
         int rowNum = 1;
         for (Bill_Entity bill : p) {
             Row row = sheet.createRow(rowNum++);
-            row.createCell(0).setCellValue(bill.getID_BILL()); // Thay đổi theo getter của Bill_Entity
-            row.createCell(1).setCellValue(bill.getEMAIL_ACC());
-            row.createCell(2).setCellValue(bill.getBILL_STATUS().getDescription());
-            row.createCell(3).setCellValue(bill.getPHONE_BILL());
-            row.createCell(4).setCellValue(bill.getADD_BILL());
-            row.createCell(5).setCellValue(bill.getTOTAL_PRICE());
-            row.createCell(6).setCellValue(bill.getDATE_EXP());
-            row.createCell(7).setCellValue(bill.getDESCRIPTION());
+            row.createCell(0).setCellValue(bill.getID_BILL() != null ? bill.getID_BILL().toString() : "X");
+            row.createCell(1).setCellValue(bill.getEMAIL_ACC() != null ? bill.getEMAIL_ACC() : "N/A");
+            row.createCell(2).setCellValue(bill.getBILL_STATUS() != null ? bill.getBILL_STATUS().getDescription() : "Unknown");
+            row.createCell(3).setCellValue(bill.getPHONE_BILL() != null ? bill.getPHONE_BILL() : "N/A");
+            row.createCell(4).setCellValue(bill.getADD_BILL() != null ? bill.getADD_BILL() : "N/A");
+            row.createCell(5).setCellValue(bill.getTOTAL_PRICE() != null ? bill.getTOTAL_PRICE() : 0.0);
+            row.createCell(6).setCellValue(bill.getDATE_EXP() != null ? bill.getDATE_EXP().toString() : ""); // Hoặc định dạng ngày
+            row.createCell(7).setCellValue(bill.getDESCRIPTION() != null ? bill.getDESCRIPTION() : "");
         }
+
 
         if (Files.notExists(destinationDir)) {
             Files.createDirectories(destinationDir); // Tạo thư mục nếu chưa tồn tại

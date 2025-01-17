@@ -26,7 +26,7 @@
         <MFXButton fx:id="refreshBtn" buttonType="RAISED" mnemonicParsing="false" text="🔄 Refresh" prefWidth="100"
                    styleClass="Btn"/>
         <MFXTextField fx:id="setOffField"   style="-fx-font-size: 10px;" prefWidth="150" promptText="Enter number row per page"  prefHeight="30" minHeight="1"> </MFXTextField>
-      </HBox>
+        <MFXButton fx:id="exportBtn" buttonType="RAISED" mnemonicParsing="false" text="📤    " styleClass="Btn"/>      </HBox>
       <MFXTableView fx:id="importTable" footerVisible="false" minHeight="380">
         <tableColumns>
           <MFXTableColumn  fx:id="ID_IMP" style="-fx-font-size: 10px;" text="ID IMPORT GENERAL" styleClass="productBF"/>

@@ -8,7 +8,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 public class BillDetailExportController {
-    private BillDetailController bullDetailController;
+    private BillDetailController billDetailController;
     @FXML
     private MFXTextField fileToEx;
     private Stage popupStage;
@@ -32,16 +32,16 @@ public class BillDetailExportController {
                 alert.setContentText("Date of export cannot be empty!");
                 alert.showAndWait();
             } else {
-                bullDetailController.billDetailExportName = fileToEx.getText();
-                bullDetailController.exportToFile();
-                bullDetailController.closePopup(popupStage);
+                billDetailController.billDetailExportName = fileToEx.getText();
+                billDetailController.exportToFile();
+                billDetailController.closePopup(popupStage);
             }
         }
     }
 
 
-    public void setBillDetailController(BillDetailController bullDetailController) {
-        this.bullDetailController = bullDetailController;
+    public void setBillDetailController(BillDetailController billDetailController) {
+        this.billDetailController = billDetailController;
     }
 
 

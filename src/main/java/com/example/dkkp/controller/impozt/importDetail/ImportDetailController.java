@@ -24,10 +24,15 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import static com.example.dkkp.controller.LoginController.entityManagerFactory;
@@ -68,6 +73,8 @@ public class ImportDetailController {
     @FXML
     private MFXTextField setOffField;
     @FXML
+    private MFXButton exportBtn;
+    @FXML
     private Label totalRowLabel;
     @FXML
     private Label numberSetOff;
@@ -102,6 +109,10 @@ public class ImportDetailController {
     public ImportController importController;
 
     public ImportDetailFilterController importDetailFilterController = new ImportDetailFilterController();
+
+    public ImportDetailExportController importDetailExportController = new ImportDetailExportController();
+
+    public String importDetailExportName = null;
     @FXML
     public void initialize() {
         observableList = getImport();
@@ -177,6 +188,18 @@ public class ImportDetailController {
     }
 
     private void crt() {
+
+        exportBtn.setOnMouseClicked(event -> {
+            try {
+                importDetailExportController.setImportDetailController(this);
+                Stage popupStage = setPopView("/com/example/dkkp/ExportName.fxml",  importDetailExportController);
+                importDetailExportController.setPopupStage(popupStage);
+                ;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         main.setOnMouseClicked(event -> {
             importTable.getSelectionModel().clearSelection();
             main.requestFocus();
@@ -228,6 +251,65 @@ public class ImportDetailController {
         updatePagination();
         refreshProductTable();
     }
+
+    public void exportToFile() throws Exception {
+        Path currentDir = Path.of(System.getProperty("user.dir"));
+        Path destinationDir = currentDir.resolve("src/main/FILE/IMPORT_FILE/IMPORT_DETAIL");
+
+        List<Import_Detail_Entity> p =  importService.getImportDetailByCombinedCondition(importDetailEntity, typeUPrice,typeQuantity, typePPrice,sortField,sortOrder,null,null);
+
+        // Tạo workbook và sheet
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Imports");
+
+        // Tạo tiêu đề cho các cột
+        String[] headers = {"ID_IMPORT_DETAIL", "ID_IMPORT", "IS_AVAILABLE", "ID_BASE_PRODUCT", "NAME_BASE_PRODUCT", "ID_FINAL_PRODUCT", "NAME_FINAL_PRODUCT", "QUANTITY", "UNIT_PRICE", "TOTAL_PRICE", "DESCRIPTION"}; // Thay đổi theo thuộc tính của Import_Entity
+        Row headerRow = sheet.createRow(0);
+        for (int i = 0; i < headers.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers[i]);
+
+            // Tùy chọn: Định dạng tiêu đề
+            CellStyle style = workbook.createCellStyle();
+            Font font = workbook.createFont();
+            font.setBold(true);
+            style.setFont(font);
+            cell.setCellStyle(style);
+        }
+
+        // Ghi dữ liệu từ danh sách vào các hàng
+        // Ghi dữ liệu từ danh sách vào các hàng
+        int rowNum = 1;
+        for (Import_Detail_Entity importDetail : p) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(importDetail.getID_IMPD() != null ? importDetail.getID_IMPD().toString() : "X");
+            row.createCell(1).setCellValue(importDetail.getID_IMPORT() != null ? importDetail.getID_IMPORT().toString() : "X");
+            row.createCell(2).setCellValue(importDetail.getIS_AVAILABLE() != null ? importDetail.getIS_AVAILABLE().toString() : "X");
+            row.createCell(3).setCellValue(importDetail.getID_BASE_PRODUCT() != null ? importDetail.getID_BASE_PRODUCT().toString() : "X");
+            row.createCell(4).setCellValue(importDetail.getNAME_PRODUCT_BASE() != null ? importDetail.getNAME_PRODUCT_BASE() : "X");
+            row.createCell(5).setCellValue(importDetail.getID_FINAL_PRODUCT() != null ? importDetail.getID_FINAL_PRODUCT().toString() : "X");
+            row.createCell(6).setCellValue(importDetail.getNAME_PRODUCT_FINAL() != null ? importDetail.getNAME_PRODUCT_FINAL() : "X");
+            row.createCell(7).setCellValue(importDetail.getQUANTITY() != null ? importDetail.getQUANTITY() : 0); // Nếu muốn số lượng mặc định là 0
+            row.createCell(8).setCellValue(importDetail.getUNIT_PRICE() != null ? importDetail.getUNIT_PRICE() : 0.0); // Giá mặc định là 0.0
+            row.createCell(9).setCellValue(importDetail.getTOTAL_PRICE() != null ? importDetail.getTOTAL_PRICE() : 0.0); // Giá mặc định là 0.0
+            row.createCell(10).setCellValue(importDetail.getDESCRIPTION() != null ? importDetail.getDESCRIPTION() : ""); // Để trống nếu null
+        }
+
+
+        if (Files.notExists(destinationDir)) {
+            Files.createDirectories(destinationDir); // Tạo thư mục nếu chưa tồn tại
+        }
+        String fileName = "Import_Detail-"+ importDetailExportName + ".xlsx";
+//        String fileName ="dcm.xlsx";
+        Path filePath = destinationDir.resolve(fileName);
+        try (FileOutputStream fileOut = new FileOutputStream(filePath.toFile())) {
+            workbook.write(fileOut);
+        }
+
+        workbook.close();
+        System.out.println("File đã được xuất ra: " + filePath.toAbsolutePath());
+    }
+    
     private void updatePagination() {
         if (totalPages < 3) {
             if (totalPages == 1) {

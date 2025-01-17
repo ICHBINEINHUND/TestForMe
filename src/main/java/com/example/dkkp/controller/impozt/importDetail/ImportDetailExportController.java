@@ -1,6 +1,5 @@
 package com.example.dkkp.controller.impozt.importDetail;
 
-import com.example.dkkp.controller.bill.billGeneral.BillGeneralController;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -9,7 +8,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 public class ImportDetailExportController {
-    private BillGeneralController billGeneralController;
+    private ImportDetailController importDetailController;
     @FXML
     private MFXTextField fileToEx;
     private Stage popupStage;
@@ -33,16 +32,16 @@ public class ImportDetailExportController {
                 alert.setContentText("Date of export cannot be empty!");
                 alert.showAndWait();
             } else {
-                billGeneralController.billExportName = fileToEx.getText();
-                billGeneralController.exportToFile();
-                billGeneralController.closePopup(popupStage);
+                importDetailController.importDetailExportName = fileToEx.getText();
+                importDetailController.exportToFile();
+                importDetailController.closePopup(popupStage);
             }
         }
     }
 
 
-    public void setBillGeneralController(BillGeneralController billGeneralController) {
-        this.billGeneralController = billGeneralController;
+    public void setImportDetailController(ImportDetailController importDetailController) {
+        this.importDetailController = importDetailController;
     }
 
 

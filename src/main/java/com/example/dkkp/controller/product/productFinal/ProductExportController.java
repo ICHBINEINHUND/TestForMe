@@ -1,4 +1,4 @@
-package com.example.dkkp.controller.impozt.importGeneral;
+package com.example.dkkp.controller.product.productFinal;
 
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.fxml.FXML;
@@ -7,8 +7,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
-public class ImportExportController {
-    private ImportGeneralController importGeneralController;
+public class ProductExportController {
+    private ProductFinalController productFinalController;
     @FXML
     private MFXTextField fileToEx;
     private Stage popupStage;
@@ -32,16 +32,16 @@ public class ImportExportController {
                 alert.setContentText("Date of export cannot be empty!");
                 alert.showAndWait();
             } else {
-                importGeneralController.importExportName = fileToEx.getText();
-                importGeneralController.exportToFile();
-                importGeneralController.closePopup(popupStage);
+                productFinalController.productExportName = fileToEx.getText();
+                productFinalController.exportToFile();
+                productFinalController.closePopup(popupStage);
             }
         }
     }
 
 
-    public void setImportGeneralController(ImportGeneralController importGeneralController) {
-        this.importGeneralController = importGeneralController;
+    public void setProductFinalController(ProductFinalController productFinalController) {
+        this.productFinalController = productFinalController;
     }
 
 

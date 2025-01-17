@@ -234,9 +234,9 @@ public class BillDetailController {
     }
     public void exportToFile() throws Exception {
         Path currentDir = Path.of(System.getProperty("user.dir"));
-        Path destinationDir = currentDir.resolve("src/main/FILE/BILL_FILE");
+        Path destinationDir = currentDir.resolve("src/main/FILE/BILL_FILE/BILL_DETAIL");
 
-        List<Bill_Detail_Entity> p =  billService.getBillDetailByCombinedCondition(billDetailEntity, typeUPrice,typeQuantity, typePPrice,sortField,sortOrder,setOff,offSet);
+        List<Bill_Detail_Entity> p =  billService.getBillDetailByCombinedCondition(billDetailEntity, typeUPrice,typeQuantity, typePPrice,sortField,sortOrder,null,null);
 
         // Tạo workbook và sheet
         Workbook workbook = new XSSFWorkbook();
@@ -261,15 +261,16 @@ public class BillDetailController {
         int rowNum = 1;
         for (Bill_Detail_Entity bill : p) {
             Row row = sheet.createRow(rowNum++);
-            row.createCell(0).setCellValue(bill.getID_BILL_DETAIL()); // Thay đổi theo getter của Bill_Entity
-            row.createCell(1).setCellValue(bill.getID_BILL());
-            row.createCell(2).setCellValue(bill.getAVAILABLE());
-            row.createCell(3).setCellValue(bill.getID_FINAL_PRODUCT());
-            row.createCell(4).setCellValue(bill.getNAME_FINAL_PRODUCT());
-            row.createCell(5).setCellValue(bill.getQUANTITY_BILL());
-            row.createCell(6).setCellValue(bill.getUNIT_PRICE());
-            row.createCell(7).setCellValue(bill.getTOTAL_DETAIL_PRICE());
+            row.createCell(0).setCellValue(bill.getID_BILL_DETAIL() != null ? bill.getID_BILL_DETAIL().toString() : "X");
+            row.createCell(1).setCellValue(bill.getID_BILL() != null ? bill.getID_BILL() : "X");
+            row.createCell(2).setCellValue(bill.getAVAILABLE() != null ? bill.getAVAILABLE().toString() : "N/A");
+            row.createCell(3).setCellValue(bill.getID_FINAL_PRODUCT() != null ? bill.getID_FINAL_PRODUCT().toString() : "N/A");
+            row.createCell(4).setCellValue(bill.getNAME_FINAL_PRODUCT() != null ? bill.getNAME_FINAL_PRODUCT() : "Unknown");
+            row.createCell(5).setCellValue(bill.getQUANTITY_BILL() != null ? bill.getQUANTITY_BILL() : 0.0);
+            row.createCell(6).setCellValue(bill.getUNIT_PRICE() != null ? bill.getUNIT_PRICE() : 0.0);
+            row.createCell(7).setCellValue(bill.getTOTAL_DETAIL_PRICE() != null ? bill.getTOTAL_DETAIL_PRICE() : 0.0);
         }
+
 
         if (Files.notExists(destinationDir)) {
             Files.createDirectories(destinationDir); // Tạo thư mục nếu chưa tồn tại

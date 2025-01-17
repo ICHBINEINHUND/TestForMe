@@ -5,6 +5,7 @@ import com.example.dkkp.controller.product.TableInterface;
 import com.example.dkkp.controller.product.productBase.ProductBaseController;
 import com.example.dkkp.controller.product.productBase.ProductBaseCreateController;
 import com.example.dkkp.controller.product.productBase.ProductBaseFilterController;
+import com.example.dkkp.model.Import_Entity;
 import com.example.dkkp.model.Product_Base_Entity;
 import com.example.dkkp.model.Product_Final_Entity;
 import com.example.dkkp.service.ProductBaseService;
@@ -31,10 +32,16 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,6 +82,8 @@ public class ProductFinalController {
     @FXML
     private Button crtBtn;
     @FXML
+    private MFXButton exportBtn;
+    @FXML
     private Button updBtn;
     @FXML
     private Button delBtn;
@@ -110,6 +119,10 @@ public class ProductFinalController {
     private int totalPages = 5;
 
     private ObservableList<Product_Final_Entity> observableList;
+
+    public String productExportName = null;
+
+    public ProductExportController productExportController = new ProductExportController() ;
     @FXML
     public void initialize() {
         observableList = getProducts();
@@ -125,6 +138,18 @@ public class ProductFinalController {
     }
 
     private void crt() {
+
+        exportBtn.setOnMouseClicked(event -> {
+            try {
+                productExportController.setProductFinalController(this);
+                Stage popupStage = setPopView("/com/example/dkkp/ExportName.fxml",  productExportController);
+                productExportController.setPopupStage(popupStage);
+                ;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         main.setOnMouseClicked(event -> {
             productTable.getSelectionModel().clearSelection();
             main.requestFocus();
@@ -159,6 +184,62 @@ public class ProductFinalController {
         nextBtn.setOnAction(event -> setPage(totalPages));
         prevPageBtn.setOnAction(event -> setPage(currentPage - 1));
         nextPageBtn.setOnAction(event -> setPage(currentPage + 1));
+    }
+
+    public void exportToFile() throws Exception {
+        Path currentDir = Path.of(System.getProperty("user.dir"));
+        Path destinationDir = currentDir.resolve("src/main/FILE/PRODUCT_FINAL");
+
+        List<Product_Final_Entity> p = productFinalService.getProductFinalByCombinedCondition(productFinalEntity,typePrice, typeDiscount,  typeQuantity, sortField, sortOrder, null, null);
+
+        // Tạo workbook và sheet
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Imports");
+
+        // Tạo tiêu đề cho các cột
+        String[] headers = {"ID_FINAL_PRODUCT", "NAME_FINAL_PRODUCT", "ID_BASE_PRODUCT", "NAME_BASE_PRODUCT", "QUANTITY","DISCOUNT", "BASE_PRICE" ,"LAST_PRICE", "DES_PRODUCT"}; // Thay đổi theo thuộc tính của Import_Entity
+        Row headerRow = sheet.createRow(0);
+        for (int i = 0; i < headers.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers[i]);
+
+            // Tùy chọn: Định dạng tiêu đề
+            CellStyle style = workbook.createCellStyle();
+            Font font = workbook.createFont();
+            font.setBold(true);
+            style.setFont(font);
+            cell.setCellStyle(style);
+        }
+
+        // Ghi dữ liệu từ danh sách vào các hàng
+        int rowNum = 1;
+        for (Product_Final_Entity product : p) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(product.getID_SP() != null ? product.getID_SP().toString() : "X");
+            row.createCell(1).setCellValue(product.getNAME_PRODUCT() != null ? product.getNAME_PRODUCT() : "X");
+            row.createCell(2).setCellValue(product.getID_BASE_PRODUCT() != null ? product.getID_BASE_PRODUCT().toString() : "X");
+            row.createCell(3).setCellValue(product.getNAME_PRODUCT_BASE() != null ? product.getNAME_PRODUCT_BASE() : "X"); // Ngày tháng để trống nếu null
+            row.createCell(4).setCellValue(product.getQUANTITY() != null ? product.getQUANTITY() : 0.0); // Giá mặc định là 0.0
+            row.createCell(5).setCellValue(product.getDISCOUNT()!= null ? product.getDISCOUNT().toString() : "X"); // Để trống nếu null
+            row.createCell(6).setCellValue(product.getPRICE_SP() != null ? product.getPRICE_SP().toString() : "X"); // Để trống nếu null
+            row.createCell(7).setCellValue(((product.getPRICE_SP()!= null) && (product.getDISCOUNT() != null))
+                    ?String.valueOf (product.getPRICE_SP() *(1-product.getDISCOUNT() /100)) :
+                    (product.getPRICE_SP()!= null ? product.getPRICE_SP().toString() : " " )); // Để trống nếu null
+            row.createCell(8).setCellValue(product.getDES_PRODUCT() != null ? product.getDES_PRODUCT() : "X"); // Để trống nếu null
+        }
+
+
+        if (Files.notExists(destinationDir)) {
+            Files.createDirectories(destinationDir); // Tạo thư mục nếu chưa tồn tại
+        }
+        String fileName = "FINAL_PRODUCT-"+ productExportName + ".xlsx";
+        Path filePath = destinationDir.resolve(fileName);
+        try (FileOutputStream fileOut = new FileOutputStream(filePath.toFile())) {
+            workbook.write(fileOut);
+        }
+
+        workbook.close();
+        System.out.println("File đã được xuất ra: " + filePath.toAbsolutePath());
     }
 
     public void setProductController(ProductController productController) {
